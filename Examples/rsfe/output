@@ -1,0 +1,75 @@
+
+CPPTRAJ: Trajectory Analysis. V4.26.4 (AmberTools V21.00)
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 12/07/20 12:28:19
+| Available memory: 2.645 GB
+
+INPUT: Reading input from 'STDIN'
+  [parm initial/SmallMol/aq/methanol_aq.parm7]
+	Reading 'initial/SmallMol/aq/methanol_aq.parm7' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+  [trajin initial/SmallMol/aq/methanol_aq.rst7]
+	Reading 'initial/SmallMol/aq/methanol_aq.rst7' as Amber Restart
+  [strip :WAT,K+,Na+,Cl-]
+    STRIP: Stripping atoms in mask [:WAT,K+,Na+,Cl-]
+  [change parmindex 0 resname from :L1 to methanol]
+	Using topology: methanol_aq.parm7
+Warning: Name truncation detected: Name='methano' vs Original='methanol'
+	Changing residue L1 to methano
+  [trajout methanol.mol2]
+	Writing 'methanol.mol2' as Mol2
+  [go]
+---------- RUN BEGIN -------------------------------------------------
+
+PARAMETER FILES (1 total):
+ 0: methanol_aq.parm7, 2115 atoms, 704 res, box: Orthogonal, 704 mol, 703 solvent
+
+INPUT TRAJECTORIES (1 total):
+ 0: 'methanol_aq.rst7' is an AMBER restart file, no velocities, Parm methanol_aq.parm7 (Orthogonal box) (reading 1 of 1)
+  Coordinate processing will occur on 1 frames.
+
+OUTPUT TRAJECTORIES (1 total):
+  'methanol.mol2' (1 frames) is a Tripos Mol2 file
+
+BEGIN TRAJECTORY PROCESSING:
+.....................................................
+ACTION SETUP FOR PARM 'methanol_aq.parm7' (1 actions):
+  0: [strip :WAT,K+,Na+,Cl-]
+	Stripping 2109 atoms.
+	Stripped topology: 6 atoms, 1 res, box: Orthogonal, 1 mol
+.....................................................
+ACTIVE OUTPUT TRAJECTORIES (1):
+  methanol.mol2 (coordinates, box)
+----- methanol_aq.rst7 (1-1, 1) -----
+100% Complete.
+
+Read 1 frames and processed 1 frames.
+TIME: Avg. throughput= 5208.3333 frames / second.
+
+ACTION OUTPUT:
+TIME: Analyses took 0.0000 seconds.
+
+RUN TIMING:
+TIME:		Init               : 0.0000 s (  4.31%)
+TIME:		Trajectory Process : 0.0002 s ( 82.76%)
+TIME:		Action Post        : 0.0000 s (  0.00%)
+TIME:		Analysis           : 0.0000 s (  0.00%)
+TIME:		Data File Write    : 0.0000 s (  0.43%)
+TIME:		Other              : 0.0000 s (  0.12%)
+TIME:	Run Total 0.0002 s
+---------- RUN END ---------------------------------------------------
+  [quit]
+TIME: Total execution time: 0.0058 seconds.
+--------------------------------------------------------------------------------
+To cite CPPTRAJ use:
+Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for
+  Processing and Analysis of Molecular Dynamics Trajectory Data". J. Chem.
+  Theory Comput., 2013, 9 (7), pp 3084-3095.
+
+Running RDKit/fmcs (c++ implementation) with arguments:
+maximizeBonds=False, threshold=1.0, verbose=False, matchValences=False, ringMatchesRingOnly=True, completeRingsOnly=True, bondCompare=CompareAny, timeout=60, atomCompare=CompareAny
+Running RDKit/fmcs (c++ implementation) with arguments:
+maximizeBonds=False, threshold=1.0, verbose=False, matchValences=False, ringMatchesRingOnly=True, completeRingsOnly=True, bondCompare=CompareAny, timeout=60, atomCompare=CompareAny

@@ -1,0 +1,12 @@
+-O -p unisc.parm7 -c t1/0.00000000_npt.rst7 -i inputs/0.00000000_ti.mdin -o t1/0.00000000_ti.mdout -r t1/0.00000000_ti.rst7 -x t1/0.00000000_ti.nc -inf t1/0.00000000.info 
+-O -p unisc.parm7 -c t1/0.09090909_npt.rst7 -i inputs/0.09090909_ti.mdin -o t1/0.09090909_ti.mdout -r t1/0.09090909_ti.rst7 -x t1/0.09090909_ti.nc -inf t1/0.09090909.info 
+-O -p unisc.parm7 -c t1/0.18181818_npt.rst7 -i inputs/0.18181818_ti.mdin -o t1/0.18181818_ti.mdout -r t1/0.18181818_ti.rst7 -x t1/0.18181818_ti.nc -inf t1/0.18181818.info 
+-O -p unisc.parm7 -c t1/0.27272727_npt.rst7 -i inputs/0.27272727_ti.mdin -o t1/0.27272727_ti.mdout -r t1/0.27272727_ti.rst7 -x t1/0.27272727_ti.nc -inf t1/0.27272727.info 
+-O -p unisc.parm7 -c t1/0.36363636_npt.rst7 -i inputs/0.36363636_ti.mdin -o t1/0.36363636_ti.mdout -r t1/0.36363636_ti.rst7 -x t1/0.36363636_ti.nc -inf t1/0.36363636.info 
+-O -p unisc.parm7 -c t1/0.45454545_npt.rst7 -i inputs/0.45454545_ti.mdin -o t1/0.45454545_ti.mdout -r t1/0.45454545_ti.rst7 -x t1/0.45454545_ti.nc -inf t1/0.45454545.info 
+-O -p unisc.parm7 -c t1/0.54545455_npt.rst7 -i inputs/0.54545455_ti.mdin -o t1/0.54545455_ti.mdout -r t1/0.54545455_ti.rst7 -x t1/0.54545455_ti.nc -inf t1/0.54545455.info 
+-O -p unisc.parm7 -c t1/0.63636364_npt.rst7 -i inputs/0.63636364_ti.mdin -o t1/0.63636364_ti.mdout -r t1/0.63636364_ti.rst7 -x t1/0.63636364_ti.nc -inf t1/0.63636364.info 
+-O -p unisc.parm7 -c t1/0.72727273_npt.rst7 -i inputs/0.72727273_ti.mdin -o t1/0.72727273_ti.mdout -r t1/0.72727273_ti.rst7 -x t1/0.72727273_ti.nc -inf t1/0.72727273.info 
+-O -p unisc.parm7 -c t1/0.81818182_npt.rst7 -i inputs/0.81818182_ti.mdin -o t1/0.81818182_ti.mdout -r t1/0.81818182_ti.rst7 -x t1/0.81818182_ti.nc -inf t1/0.81818182.info 
+-O -p unisc.parm7 -c t1/0.90909091_npt.rst7 -i inputs/0.90909091_ti.mdin -o t1/0.90909091_ti.mdout -r t1/0.90909091_ti.rst7 -x t1/0.90909091_ti.nc -inf t1/0.90909091.info 
+-O -p unisc.parm7 -c t1/1.00000000_npt.rst7 -i inputs/1.00000000_ti.mdin -o t1/1.00000000_ti.mdout -r t1/1.00000000_ti.rst7 -x t1/1.00000000_ti.nc -inf t1/1.00000000.info 

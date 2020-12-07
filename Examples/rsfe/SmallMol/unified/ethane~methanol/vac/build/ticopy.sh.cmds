@@ -1,0 +1,20 @@
+source leaprc.protein.ff14SB
+source leaprc.RNA.OL3
+source leaprc.gaff
+source leaprc.water.tip4pew
+loadOff ticopy.lib
+loadAmberParams ticopy.frcmod
+loadOff methano.lib
+loadAmberParams methano.frcmod
+
+mol0 = loadPdbUsingSeq ticopy.mol0.pdb { L1 }
+mol1 = loadPdbUsingSeq ticopy.mol1.pdb { methano }
+
+
+
+x = combine { mol0 mol1 }
+
+setbox x centers
+
+saveAmberParm x ticopy.parm7 ticopy.rst7
+quit

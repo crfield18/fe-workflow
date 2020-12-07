@@ -1,0 +1,69 @@
+!!index array str
+ "methano"
+!entry.methano.unit.atoms table  str name  str type  int typex  int resx  int flags  int seq  int elmnt  dbl chg
+ "C1" "c3" 0 1 131072 1 6 0.116700
+ "O2" "oh" 0 1 131072 2 8 -0.598800
+ "H3" "h1" 0 1 131072 3 1 0.028700
+ "H4" "h1" 0 1 131072 4 1 0.028700
+ "H5" "h1" 0 1 131072 5 1 0.028700
+ "H6" "ho" 0 1 131072 6 1 0.396000
+!entry.methano.unit.atomspertinfo table  str pname  str ptype  int ptypex  int pelmnt  dbl pchg
+ "C1" "c3" 0 -1 0.0
+ "O2" "oh" 0 -1 0.0
+ "H3" "h1" 0 -1 0.0
+ "H4" "h1" 0 -1 0.0
+ "H5" "h1" 0 -1 0.0
+ "H6" "ho" 0 -1 0.0
+!entry.methano.unit.boundbox array dbl
+ -1.000000
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+!entry.methano.unit.childsequence single int
+ 2
+!entry.methano.unit.connect array int
+ 0
+ 0
+!entry.methano.unit.connectivity table  int atom1x  int atom2x  int flags
+ 1 2 1
+ 1 3 1
+ 1 4 1
+ 1 5 1
+ 2 6 1
+!entry.methano.unit.hierarchy table  str abovetype  int abovex  str belowtype  int belowx
+ "U" 0 "R" 1
+ "R" 1 "A" 1
+ "R" 1 "A" 2
+ "R" 1 "A" 3
+ "R" 1 "A" 4
+ "R" 1 "A" 5
+ "R" 1 "A" 6
+!entry.methano.unit.name single str
+ "Cpptraj"
+!entry.methano.unit.positions table  dbl x  dbl y  dbl z
+ 15.638900 16.015600 15.686000
+ 17.054900 16.006600 15.690000
+ 15.277900 16.411600 14.734000
+ 15.275900 16.632600 16.512000
+ 15.277900 14.991600 15.813000
+ 17.345900 16.927600 15.576000
+!entry.methano.unit.residueconnect table  int c1x  int c2x  int c3x  int c4x  int c5x  int c6x
+ 0 0 0 0 0 0
+!entry.methano.unit.residues table  str name  int seq  int childseq  int startatomx  str restype  int imagingx
+ "methano" 1 7 1 "?" 0
+!entry.methano.unit.residuesPdbSequenceNumber array int
+ 0
+!entry.methano.unit.solventcap array dbl
+ -1.000000
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+!entry.methano.unit.velocities table  dbl x  dbl y  dbl z
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0
+ 0.0 0.0 0.0

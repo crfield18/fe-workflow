@@ -1,0 +1,22 @@
+source leaprc.protein.ff14SB
+source leaprc.RNA.OL3
+source leaprc.gaff
+source leaprc.water.tip4pew
+loadOff ticopy.lib
+loadAmberParams ticopy.frcmod
+loadOff ejm55.lib
+loadAmberParams ejm55.frcmod
+
+mol0 = loadPdbUsingSeq ticopy.mol0.pdb { L1 }
+mol1 = loadPdbUsingSeq ticopy.mol1.pdb { ejm55 }
+
+solvent = loadPdb ticopy.solvent.pdb
+
+
+
+x = combine { mol0 mol1 solvent }
+
+setbox x centers
+
+saveAmberParm x ticopy.parm7 ticopy.rst7
+quit

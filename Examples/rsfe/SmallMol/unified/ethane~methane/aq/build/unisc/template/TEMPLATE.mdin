@@ -1,0 +1,80 @@
+Title
+&cntrl
+! STEPS ===========================
+imin        = 0
+maxcyc      = 0
+ntmin       = 2
+nstlim      = 1000000
+numexchg    = 0
+dt          = 0.001
+! START/RESTART ===================
+irest       = 1
+ntx         = 5
+ntxo        = 1
+! ENERGY
+noshakemask = '@1-13'
+ntc         = 2
+ntf         = 1
+tol         = 0.00001
+! PRINTING ========================
+ntwx        = 20000
+ntwr        = 20000
+ntpr        = 20000
+ntwe        = 0
+! PERIODIC ========================
+cut         = 10.0
+ntb         = 1
+iwrap       = 1
+nscm        = 0
+! TEMPERATURE =====================
+tempi       = 298.
+temp0       = 298.
+ntt         = 3
+gamma_ln    = 1.
+! PRESSURE ========================
+ntp         = 0
+! RESTRAINTS ======================
+ntr         = 0
+restraintmask = ''
+restraint_wt  = 0.
+nmropt      = 0
+! MISC ============================
+klambda     = 1
+ig          = -1
+       icfe = 1
+       ifsc = 1
+    clambda = CLAMBDA
+ifmbar=1, bar_intervall=1, mbar_states=21
+mbar_lambda(1)=0.00000000
+mbar_lambda(2)=0.05000000
+mbar_lambda(3)=0.10000000
+mbar_lambda(4)=0.15000000
+mbar_lambda(5)=0.20000000
+mbar_lambda(6)=0.25000000
+mbar_lambda(7)=0.30000000
+mbar_lambda(8)=0.35000000
+mbar_lambda(9)=0.40000000
+mbar_lambda(10)=0.45000000
+mbar_lambda(11)=0.50000000
+mbar_lambda(12)=0.55000000
+mbar_lambda(13)=0.60000000
+mbar_lambda(14)=0.65000000
+mbar_lambda(15)=0.70000000
+mbar_lambda(16)=0.75000000
+mbar_lambda(17)=0.80000000
+mbar_lambda(18)=0.85000000
+mbar_lambda(19)=0.90000000
+mbar_lambda(20)=0.95000000
+mbar_lambda(21)=1.00000000
+crgmask = ''
+    timask1 = '@1-8'
+    timask2 = '@9-13'
+    scmask1 = '@6-8'
+    scmask2 = '@0'
+     !
+/
+
+&ewald
+   chngmask = 1 ! default 1; set to 0 when using piscti softcore
+/
+

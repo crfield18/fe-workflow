@@ -1,0 +1,46 @@
+&cntrl
+imin 		= 1
+maxcyc 		= 2000
+drms 		= 0.1
+dx0 		= 0.005
+ntmin 		= 2
+irest 		= 0
+ntx 		= 1
+ntxo 		= 1
+ntc 		= 1 
+ntf 		= 1 
+tishake 	= 1 
+ntwx 		= 500
+ntwr 		= 500
+ntpr 		= 500
+cut 		= 8
+iwrap 		= 1
+ig 		= -1
+
+ntb             = 1 
+
+ifsc 		= 1
+icfe 		= 1
+
+clambda 	= 0.95000000
+timask1 	= "@1-8"
+timask2 	= "@9-14"
+crgmask 	= ""
+scmask1 	= "@7-8"
+scmask2 	= ""
+scalpha 	= 0.5
+scbeta 		= 1.0
+
+gti_cut 	= 1
+gti_output 	= 1
+gti_add_sc 	= 5
+gti_scale_beta	= 1
+gti_cut_sc_on 	= 6
+gti_cut_sc_off 	= 8
+gti_lam_sch 	= 1
+gti_ele_sc 	= 1
+gti_vdw_sc 	= 1
+gti_cut_sc 	= 2
+gti_ele_exp 	= 2
+gti_vdw_exp 	= 2
+/

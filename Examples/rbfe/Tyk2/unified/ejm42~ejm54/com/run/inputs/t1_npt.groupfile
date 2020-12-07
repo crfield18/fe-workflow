@@ -1,0 +1,12 @@
+-O -p unisc.parm7 -c t1/0.00000000_heat.rst7 -i inputs/0.00000000_npt.mdin -o t1/0.00000000_npt.mdout -r t1/0.00000000_npt.rst7 -x t1/0.00000000_npt.nc -inf t1/0.00000000_npt.info 
+-O -p unisc.parm7 -c t1/0.09090909_heat.rst7 -i inputs/0.09090909_npt.mdin -o t1/0.09090909_npt.mdout -r t1/0.09090909_npt.rst7 -x t1/0.09090909_npt.nc -inf t1/0.09090909_npt.info 
+-O -p unisc.parm7 -c t1/0.18181818_heat.rst7 -i inputs/0.18181818_npt.mdin -o t1/0.18181818_npt.mdout -r t1/0.18181818_npt.rst7 -x t1/0.18181818_npt.nc -inf t1/0.18181818_npt.info 
+-O -p unisc.parm7 -c t1/0.27272727_heat.rst7 -i inputs/0.27272727_npt.mdin -o t1/0.27272727_npt.mdout -r t1/0.27272727_npt.rst7 -x t1/0.27272727_npt.nc -inf t1/0.27272727_npt.info 
+-O -p unisc.parm7 -c t1/0.36363636_heat.rst7 -i inputs/0.36363636_npt.mdin -o t1/0.36363636_npt.mdout -r t1/0.36363636_npt.rst7 -x t1/0.36363636_npt.nc -inf t1/0.36363636_npt.info 
+-O -p unisc.parm7 -c t1/0.45454545_heat.rst7 -i inputs/0.45454545_npt.mdin -o t1/0.45454545_npt.mdout -r t1/0.45454545_npt.rst7 -x t1/0.45454545_npt.nc -inf t1/0.45454545_npt.info 
+-O -p unisc.parm7 -c t1/0.54545455_heat.rst7 -i inputs/0.54545455_npt.mdin -o t1/0.54545455_npt.mdout -r t1/0.54545455_npt.rst7 -x t1/0.54545455_npt.nc -inf t1/0.54545455_npt.info 
+-O -p unisc.parm7 -c t1/0.63636364_heat.rst7 -i inputs/0.63636364_npt.mdin -o t1/0.63636364_npt.mdout -r t1/0.63636364_npt.rst7 -x t1/0.63636364_npt.nc -inf t1/0.63636364_npt.info 
+-O -p unisc.parm7 -c t1/0.72727273_heat.rst7 -i inputs/0.72727273_npt.mdin -o t1/0.72727273_npt.mdout -r t1/0.72727273_npt.rst7 -x t1/0.72727273_npt.nc -inf t1/0.72727273_npt.info 
+-O -p unisc.parm7 -c t1/0.81818182_heat.rst7 -i inputs/0.81818182_npt.mdin -o t1/0.81818182_npt.mdout -r t1/0.81818182_npt.rst7 -x t1/0.81818182_npt.nc -inf t1/0.81818182_npt.info 
+-O -p unisc.parm7 -c t1/0.90909091_heat.rst7 -i inputs/0.90909091_npt.mdin -o t1/0.90909091_npt.mdout -r t1/0.90909091_npt.rst7 -x t1/0.90909091_npt.nc -inf t1/0.90909091_npt.info 
+-O -p unisc.parm7 -c t1/1.00000000_heat.rst7 -i inputs/1.00000000_npt.mdin -o t1/1.00000000_npt.mdout -r t1/1.00000000_npt.rst7 -x t1/1.00000000_npt.nc -inf t1/1.00000000_npt.info 
