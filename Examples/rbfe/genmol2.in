@@ -1,7 +1,0 @@
-parm initial/Tyk2/aq/ejm54_aq.parm7
-trajin initial/Tyk2/aq/ejm54_aq.rst7
-strip :WAT,K+,Na+,Cl-
-change parmindex 0 resname from :L1 to ejm54
-trajout ejm54.mol2
-go
-quit
