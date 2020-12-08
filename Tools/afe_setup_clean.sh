@@ -12,7 +12,7 @@ path=`pwd`
 function read_input {
 
 while read line; do
-        varlist=(system translist nlambda protocol mapping ntrials cutoff mincyc nstlimnvt nstlimnpt repex nstlimti numexchgti hmr scalpha scbeta gti_add_sc gti_scale_beta gti_cut gti_cut_sc_on gti_cut_sc_off gti_lam_sch gti_ele_sc gti_vdw_sc gti_cut_sc gti_ele_exp gti_vdw_exp stage ticalc partition nnodes ngpus wallclock) 
+        varlist=(system translist path_to_input nlambda protocol mapping ntrials cutoff mincyc nstlimnvt nstlimnpt repex nstlimti numexchgti hmr scalpha scbeta gti_add_sc gti_scale_beta gti_cut gti_cut_sc_on gti_cut_sc_off gti_lam_sch gti_ele_sc gti_vdw_sc gti_cut_sc gti_ele_exp gti_vdw_exp stage ticalc partition nnodes ngpus wallclock) 
 	IFS=$'\t| |=' read -ra args <<< $line
         if [[ "${args[0]}" =~ ^#.* ]]; then continue; fi
         keyword=${args[0]}; value=${args[1]}
@@ -43,8 +43,9 @@ function parse_input {
         if [ ! -z "$1" ]; then
                 if [ "$1" == "-h" ] || [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ] ; then
                         cat << EOFN > input.template
-system=cdk2                     # system
-translist=(1h1q~1h1s 1h1q~1h1r 1h1q~1oiy 1h1q~1oi9 1oi9~1h1s 1oi9~1oiy 1h1q~1oiu 1oiu~1h1r)               # list of transformations format:ligandA~ligandB represents transformation ligandA->ligandB
+system=Tyk2                     # system
+translist=(ejm42~ejm54 ejm42~ejm55 ejm55~ejm54)
+path_to_input=../initial	# path to folder containing input configuration files 
 nlambda=4                       # number of lambda windows
 protocol=unified                # unified protocol for TI
 mapping=MCSS                    # "MCSS/manual/checked" manual if atom mapping between state A and state B needs to be manually inspected. set to 'default' if manual inspection is not needed, or 'checked' is manual inspection has already been done after running the script with mapping=manual
@@ -102,15 +103,15 @@ EOFN
         if ! command -v parmed &> /dev/null;  then echo "parmed is missing." && exit 0; fi
 
         # check if input directories and files are present
-        if [ ! -d initial/${system}/${dir1} ] || [ ! -d initial/${system}/${dir2} ];
-                then echo "initial/${system}/${dir1} or initial/${system}/${dir2} folder(s) missing" && exit 0
+        if [ ! -d ${path_to_input}/${system}/${dir1} ] || [ ! -d ${path_to_input}/${system}/${dir2} ];
+                then echo "${path_to_input}/${system}/${dir1} or ${path_to_input}/${system}/${dir2} folder(s) missing" && exit 0
         else
                 for s in ${dir1} ${dir2}; do
-                        cd initial/${system}/$s
+                        cd ${path_to_input}/${system}/$s
                                 for i in "${!translist[@]}";do
                                         stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
                                         if [ ! -f ${stA}_${s}.parm7 ] || [ ! -f ${stA}_${s}.rst7 ] || [ ! -f ${stB}_${s}.parm7 ] || [ ! -f ${stB}_${s}.rst7 ]; then
-                                                echo "one or more of ${stA}/${stB} parm/rst files are missing in initial/${system}/${s}"
+                                                echo "one or more of ${stA}/${stB} parm/rst files are missing in ${path_to_input}/${system}/${s}"
                                         fi
                                 done
                         cd $path
@@ -137,6 +138,7 @@ EOFN
                 if [ -z "${gti_cut_sc_on}" ] || [ -z "${gti_cut_sc_off}" ]; then echo "if \"gti_cut_sc_on\" is set to 1 or 2, gti_cut_sc_on and gti_cut_sc_off must be defined." && exit 0; fi
         fi
         if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then echo "Should be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" " && exit 0; fi
+	if [ "${ticalc}" == "rbfe" ]; then dir1=com; dir2=aq; else dir1=aq; dir2=vac; fi
 
 
 
@@ -163,6 +165,7 @@ EOF
 local nlambda=$1
 local lams=$(python2.7 gen_lambda.py ${nlambda})
 echo $lams
+rm -rf gen_lambda.py
 }
 
 ###########################################
@@ -1150,719 +1153,8 @@ EOFN
 
 ###########################################
 
-#################################
-function write_analysis2results {
-	local lamlist=("$@")
-	cat << EOFN > analysis2results.py
-#!/usr/bin/env python2.7
-import os
-from collections import defaultdict as ddict
-prefix="unisc"
-${lamlist[@]}
-merge_gaps=False
 
-mdin = "TEMPLATE.mdin"
-fh = file(mdin,"r")
-numexchg=0
-nstlim=None
-ntwx=None
-dt=None
-for line in fh:
-    cmdstr,sepstr,comstr = line.partition("!")
-    if "ntpr" in cmdstr:
-        cols = cmdstr.replace("="," ").replace(",","").strip().split()
-        for icol in range(len(cols)-1):
-            if cols[icol] == "ntpr":
-                ntwx = int( cols[icol+1] )
-                break
-    if "dt" in cmdstr:
-        cols = cmdstr.replace("=","").replace(",","").strip().split()
-        for icol in range(len(cols)-1):
-            if cols[icol] == "dt":
-                dt = float( cols[icol+1] )
-                break
-    if "numexchg" in cmdstr:
-        cols = cmdstr.replace("=","").replace(",","").strip().split()
-        for icol in range(len(cols)-1):
-            if cols[icol] == "numexchg":
-                numexchg = int( cols[icol+1] )
-                break
-    if "nstlim" in cmdstr:
-        cols = cmdstr.replace("=","").replace(",","").strip().split()
-        for icol in range(len(cols)-1):
-            if cols[icol] == "nstlim":
-                nstlim = int( cols[icol+1] )
-                break
-
-if ntwx is None:
-    raise Exception("Could not determine ntwx from %s"%(mdin))
-
-if dt is None:
-    raise Exception("Could not determine dt from %s"%(mdin))
-
-if nstlim is None:
-    raise Exception("Could not determine nstlim from %s"%(mdin))
-
-if numexchg < 1:
-    numexchg = 1
-
-dt = dt
-nstep_per_sim = nstlim * numexchg
-nframe_per_sim = nstep_per_sim / ntwx
-
-if nstep_per_sim % ntwx != 0:
-    print "num md steps per simulation is not a multiple of ntwx. Unclear how the simulation time works"
-
-t_per_frame = dt * ntwx
-t_per_sim = t_per_frame * nframe_per_sim
-
-dvdl_data = ddict( lambda: ddict( float ) )
-efep_data = ddict( lambda: ddict( lambda: ddict( float ) ) )
-
-last_read_sim=0
-missing_dirs=[]
-for isim in range(1,100001):
-
-    dirstr = "production/%06i"%(isim)
-    if not os.path.isdir(dirstr):
-        missing_dirs.append(dirstr)
-        continue
-
-    if last_read_sim != (isim-1):
-        for d in missing_dirs:
-            print "TIME GAP! Missing directory: %s"%(d)
-        missing_dirs=[]
-
-    t0 = (isim-1) * t_per_sim + t_per_frame
-
-    missing_files=False
-    error_msgs=[]
-    error=False
-    data = ddict(list)
-    for lam in lams:
-        nframe = 0
-        dat = "%s/dvdl_%s.dat"%(dirstr,lam)
-        if not os.path.isfile(dat):
-            error=True
-            missing_files=True
-        else:
-            fh = file(dat,"r")
-            for line in fh:
-                cols = line.strip().split()
-                if len(cols) == 2:
-                    nframe += 1
-                    data[lam].append( cols[-1] )
-        if nframe != nframe_per_sim and nframe-1 != nframe_per_sim:
-            msg="%s expected %i frames, but found %i"%(dat,nframe_per_sim,nframe)
-            error_msgs.append(msg)
-            error=True
-    if not error:
-        for iframe in range(nframe_per_sim):
-            t = t0 + iframe * t_per_frame
-            for lam in lams:
-                dvdl_data[t][lam] = data[lam][iframe]
-
-    if missing_files and len(error_msgs) == len(lams):
-        print "%s doesn't appear to have been analyzed yet"%(dirstr)
-    else:
-        for msg in error_msgs:
-            print msg
-    if len(error_msgs) > 0:
-        missing_dirs.append(dirstr)
-        continue
-
-
-
-    missing_files=False
-    error_msgs=[]
-    error=False
-    data = ddict(lambda: ddict(list))
-    for tlam in lams:
-        for plam in lams:
-            nframe = 0
-            dat = "%s/efep_%s_%s.dat"%(dirstr,tlam,plam)
-            if not os.path.isfile(dat):
-                error=True
-                missing_files=True
-            else:
-                fh = file(dat,"r")
-                for line in fh:
-                    cols = line.strip().split()
-                    if len(cols) == 2:
-                        nframe += 1
-                        data[tlam][plam].append( cols[-1] )
-            if nframe != nframe_per_sim and nframe-1 != nframe_per_sim:
-                msg="%s expected %i frames, but found %i"%(dat,nframe_per_sim,nframe)
-                error_msgs.append(msg)
-                error=True
-    if not error:
-        for iframe in range(nframe_per_sim):
-            t = t0 + iframe * t_per_frame
-            for tlam in lams:
-                for plam in lams:
-                    efep_data[t][tlam][plam] = data[tlam][plam][iframe]
-
-
-    for msg in error_msgs:
-        print msg
-    if len(error_msgs) > 0:
-        missing_dirs.append(dirstr)
-        continue
-
-
-if not os.path.exists("results/data"):
-    os.makedirs("results/data")
-
-ts=[ t for t in dvdl_data ]
-if len( ts ) > 0:
-    for lam in lams:
-        dat = "results/data/dvdl_%s.dat"%(lam)
-        fh = file(dat,"w")
-        for i,t in enumerate(sorted(dvdl_data)):
-            time=t
-            if merge_gaps:
-                time = (i+1)*t_per_frame
-            fh.write("%12.1f %s\n"%(t,dvdl_data[t][lam]))
-        fh.close()
-
-ts=[ t for t in dvdl_data ]
-if len( ts ) > 0:
-    for tlam in lams:
-        for plam in lams:
-            dat = "results/data/efep_%s_%s.dat"%(tlam,plam)
-            fh = file(dat,"w")
-            for i,t in enumerate(sorted(efep_data)):
-                time=t
-                if merge_gaps:
-                    time = (i+1)*t_per_frame
-                fh.write("%12.1f %s\n"%(t,efep_data[t][tlam][plam]))
-            fh.close()
-EOFN
-
-}
-
-
-#################################
-
-
-#################################
-function write_analysis_slurm {
-	cat << EOFN > analyze.slurm.sh
-#!/bin/bash
-
-main() {
-
-    if [ -z \${AMBERHOME+x} ]; then
-       echo "AMBERHOME is unset. Please set AMBERHOME and try again."
-       exit 1
-    fi
-
-    local base="unisc"
-    local lams=( ${lams[@]} )
-
-    #
-    # if we don't have any completed production, then there's nothing to analyze
-    #
-
-    if [ ! -d production ]; then
-       echo "Nothing to analyze because you don't have a production directory yet"
-       exit
-    fi
-
-    #
-    # the analysis will use a python utility to transform the data in the
-    # re-analyzed mdout files to a series of .dat files
-    #
-
-    if [ ! -e "production/stdti_step2dats.py" ]; then
-       write_python_script
-    fi
-
-    #
-    # the production dir contains many subdirs that are 0-padded integers.
-    # what is the largest number that we can find?
-    #
-
-    local last_step=\$(for f in \$(ls production | grep -v '\.' | tail -n 1); do bc -l <<< \$f; done)
-
-    #
-    # if we couldn't find a valid subdirectory, then exit now
-    #
-
-    if [ "\${last_step}" == "" ]; then
-       echo "Nothing to analyze because I couldn't find a valid subdirectory name in production/"
-       exit
-    fi
-
-
-    #
-    # collect the existing results, if any
-    #
-
-    echo "Collecting existing results before submitting new analysis..."
-    python2.7 analysis2results.py
-
-    echo ""
-    echo ""
-    echo "Searching for un-analyzed production directories..."
-
-    local script="analysis.slurm"
-    local jarr=()
-    for step in \$(seq \${last_step}); do
-
-       #
-       # this is the zero-padded name
-       #
-
-       local step_name=\$(printf "%06i" \${step})
-
-       #
-       # if the subdir does not exist, then skip it
-       #
-
-       if [ ! -d "production/\${step_name}" ]; then
-          echo "skipping \${step_name} because dir does not exist"
-          continue
-       fi
-
-
-       #
-       # do we actually have to analyze this subdir?
-       #
-
-
-       #
-       # if it doesn't have mdout files, then I think I already deleted it to save disk space
-       #
-
-       local ok=1
-       local cnt=0
-       for lam in \${lams[@]}; do
-           if [ -e "production/\${step_name}/\${base}_\${lam}.mdout" ]; then
-               cnt=\$(( \${cnt} + 1 ))
-           else
-               ok=0
-           fi
-       done
-       if [ "\${cnt}" == "0" ]; then
-          echo "skipping \${step_name} because it was probably already deleted from this machine"
-          continue
-       elif [ "\${ok}" == "0" ]; then
-          echo "skipping \${step_name} because it has some, but not all, of the mdout files (something wrong here?)"
-          continue
-       fi
-
-
-       ok=1
-       for lam in \${lams[@]}; do
-           if [ ! -e "production/\${step_name}/\${base}_${lam}.nc" ]; then
-               ok=0
-               echo "Missing production/\${step_name}/\${base}_${lam}.nc"
-           fi
-       done
-       if [ "\${ok}" == "0" ]; then
-          echo "skipping \${step_name} because it is missing 1-or-more nc files"
-          continue
-       fi
-
-
-       #
-       # do we have the mbar trace file generated from the analysis
-       #
-
-       local testfile=\$(printf "production/\${step_name}/efep_%.8f_%.8f.dat" 1. 1.)
-       if [ -e \${testfile} ]; then
-          echo "skipping \${step_name} because it has already been analyzed"
-          continue
-       fi
-
-
-       cd production/\${step_name}
-       python2.7 ../stdti_step2dats.py \${base}_*.mdout
-       cd ../../
-
-
-    done
-
-
-    python2.7 analysis2results.py
-
-
-}
-
-
-
-##############################################################################
-
-
-write_template() {
-    local fname="\$1"
-    shift
-    local sarr=("\$@")
-    local nsarr=\${#sarr[@]}
-    local lsarr=\$((${nsarr}-1))
-    local sline=\${sarr[0]}
-    for istep in \$(seq \${lsarr}); do sline="\${sline},\${sarr[${istep}]}"; done
-
-    cat << EOF > production/\${fname}
-#!/bin/bash
-#SBATCH --job-name="\${fname}"
-#SBATCH --output="\${fname}.slurmout"
-#SBATCH --error="\${fname}.slurmerr"
-#SBATCH --array=\${sline}
-EOF
-    cat << 'EOF' >> production/\${fname}
-#SBATCH --partition=main
-#SBATCH --nodes=${nnodes}
-#SBATCH --ntasks-per-node=25
-#SBATCH --cpus-per-task=1
-#SBATCH --exclusive
-#SBATCH --export=ALL
-#SBATCH --time=1-00:00:00
-##SBATCH --exclude=cuda[001-008]
-
-export MV2_ENABLE_AFFINITY=0
-source \${AMBERHOME}/amber.sh
-export LAUNCH="srun --mpi=pmi2"
-
-
-export EXE="\${AMBERHOME}/bin/pmemd.MPI"
-
-prefix="unisc"
-lams=(${lams[@]})
-EOF
-    cat << 'EOF' >> production/\${fname}
-istep=\${SLURM_ARRAY_TASK_ID}
-
-
-#
-# is the input file asking for a replica-exchange simulation?
-#
-numexchg=\$( grep numexchg ../inputs/\${prefix}_\${lams[0]}_analyze.mdin | sed -e 's/\!.*//' -e 's/ *//g' -e 's/.*numexchg\=\([0-9]*\)/\1/' )
-if [ "\${numexchg}" == "" ]; then
-   numexchg="0"
-fi
-rem=0
-if [ "\${numexchg}" != "0" ]; then
-   rem="3"
-fi
-
-#
-# if rem > 0, then it IS asking for replica exchange
-#
-
-if [ "\${rem}" != "0" ]; then
-   echo "CANNOT RUN REPLICA EXCHANGE IN ANALYSIS-MODE"
-   exit 1
-fi
-
-#
-# each step consists of running all windows for some length of time
-#
-
-istep=\$(printf "%06i" \${istep})
-
-#
-# if don't have the subdirectory, then something's gone wrong
-#
-
-if [ ! -d \${istep} ]; then
-   exit
-fi
-
-cd \${istep}
-
-#
-# run analysis for each window
-#
-
-for lambda in \${lams[@]}; do
-    base="\${prefix}_\${lambda}"
-    rest="\${base}_restart"
-    init="\${base}_initial"
-    anal="\${base}_analyze"
-
-    \${LAUNCH} \${EXE} -O -c \${base}.rst7 -p ../../\${prefix}.parm7 -i ../../inputs/\${anal}.mdin -o \${anal}.mdout -r \${anal}.rst7 -x \${anal}.nc -inf \${anal}.mdinfo -y \${base}.nc
-
-    for tmpfile in \${anal}.rst7 \${anal}.nc \${anal}.mdinfo logfile; do
-       if [ -e "\${tmpfile}" ]; then
-          rm -f "\${tmpfile}"
-       fi
-    done
-done
-
-python2.7 ../stdti_step2dats.py *_analyze.mdout
-
-ok=1
-for lambda in \${lams[@]}; do
-    if [ ! -e "dvdl_\${lambda}.dat" ]; then
-      ok=0
-    fi
-done
-if [ "\${ok}" == "1" ]; then
-    for lambda in \${lams[@]}; do
-       base="\${prefix}_\${lambda}"
-       anal="\${base}_analyze"
-       if [ -e "\${anal}.mdout" ]; then
-          rm -f "\${anal}.mdout"
-       fi
-    done
-fi
-
-EOF
-
-}
-
-
-
-
-write_python_script() {
-
-cat << 'EOF' > production/stdti_step2dats.py
-#!/usr/bin/env python2.7
-import sys,os
-
-def extract_traditional_ti( fname, write=False ):
-    import os
-    from collections import defaultdict as ddict
-
-    fh = open(fname,"r")
-    if not fh:
-        raise Exception("Could not open %s\n"%(fname))
-
-
-
-    numexchg=0
-    nstlim=None
-    ntpr=None
-    dt=None
-    irest=0
-    for line in fh:
-        cmdstr,sepstr,comstr = line.partition("!")
-        if "ntpr" in cmdstr:
-            cols = cmdstr.replace("=","").replace(",","").strip().split()
-            for icol in range(len(cols)-1):
-                if cols[icol] == "ntpr":
-                    ntpr = int( cols[icol+1] )
-                    break
-        if "dt" in cmdstr:
-            cols = cmdstr.replace("=","").replace(",","").strip().split()
-            for icol in range(len(cols)-1):
-                if cols[icol] == "dt":
-                    dt = float( cols[icol+1] )
-                    break
-        if "numexchg" in cmdstr:
-            cols = cmdstr.replace("=","").replace(",","").strip().split()
-            for icol in range(len(cols)-1):
-                if cols[icol] == "numexchg":
-                    numexchg = int( cols[icol+1] )
-                    break
-        if "nstlim" in cmdstr:
-            cols = cmdstr.replace("="," ").replace(",","").strip().split()
-            for icol in range(len(cols)-1):
-                if cols[icol] == "nstlim":
-                    nstlim = int( cols[icol+1] )
-                    break
-        if "irest" in cmdstr:
-            cols = cmdstr.replace("="," ").replace(",","").strip().split()
-            for icol in range(len(cols)-1):
-                if cols[icol] == "irest":
-                    irest = int( cols[icol+1] )
-                    break
-
-    if ntpr is None:
-        raise Exception("Could not determine ntpr from %s"%(fname))
-
-    if dt is None:
-        raise Exception("Could not determine dt from %s"%(fname))
-
-    if nstlim is None:
-        raise Exception("Could not determine nstlim from %s"%(fname))
-
-    if numexchg < 1:
-        numexchg = 1
-
-    dt = dt
-    nstep_per_sim = nstlim * numexchg
-    nframe_per_sim = nstep_per_sim / ntpr
-
-    if nstep_per_sim % ntpr != 0:
-        print "num md steps per simulation is not a multiple of ntpr. Unclear how the simulation time works"
-
-    t_per_frame = dt * ntpr
-    t_per_sim = t_per_frame * nframe_per_sim
-
-
-    fh = open(fname,"r")
-
-
-    efeps = []
-    dvdls = []
-    efep = []
-    reading_region_1 = False
-
-    lam = None
-    nlam = 0
-
-    for line in fh:
-        if "A V E R A G E S" in line:
-            break
-        if "MBAR Energy analysis:" in line:
-            efep = []
-        if "clambda" in line:
-            if lam is None:
-                cols = line.replace("="," ").replace(","," ").split()
-                for i in range(len(cols)):
-                    if cols[i] == "clambda":
-                        lam = float(cols[i+1])
-                        break
-        elif "Energy at " in line:
-            #print line
-            val = line.strip().split()[-1]
-            if "****" in val:
-                val = 10000.00
-                #if len(efep) > 0:
-                #   if efep[-1] < 0:
-                #       val = -val
-            else:
-                val = float(val)
-            efep.append( val )
-        elif "TI region  1" in line:
-            reading_region_1 = True
-            dvdl = 0
-        elif "| TI region  2" in line:
-            #print line
-            reading_region_1 = False
-            #print dvdl
-            dvdls.append( dvdl )
-            if len( efep ) > 0:
-                efeps.append( efep )
-                nlam = len(efep)
-        elif "TI region " in line:
-            reading_region_1 = False
-
-        if "DV/DL  =" in line and reading_region_1:
-            #print line
-            cols = line.strip().split()
-            #print cols
-            dvdl = float( cols[-1] )
-            #dvdls.append( float( cols[-1] ) )
-            #if len( efep ) > 0:
-            #    efeps.append( efep )
-            #    nlam = len(efep)
-    if write:
-        lams = [ float(i) / ( nlam-1. ) for i in range(nlam) ]
-        for l in lams:
-            if abs(l-lam) < 0.001:
-                lam = l
-                break
-        head, tail = os.path.split(fname)
-        dvdl_fname = os.path.join( head, "dvdl_%.8f.dat"%( lam ) )
-
-        if irest == 0:
-           dvdls=dvdls[1:]
-
-        fh = file(dvdl_fname,"w")
-        for i in range(len(dvdls)):
-            fh.write("%.4f %18.6f\n"%((i+1)*t_per_frame,dvdls[i]))
-        fh.close()
-        for ilam,plam in enumerate(lams):
-            efep_fname = os.path.join( head, "efep_%.8f_%.8f.dat"%( lam, plam ) )
-            fh = file(efep_fname,"w")
-            for i in range(len(efeps)):
-                fh.write("%.4f %18.6f\n"%((i+1)*t_per_frame,efeps[i][ilam]))
-            fh.close()
-
-    return dvdls,efeps
-
-
-for arg in sys.argv[1:]:
-    if os.path.isfile( arg ):
-        if ".mdout" in arg:
-            extract_traditional_ti( arg, write=True )
-        else:
-            print "File does not end in .mdout: %s"%(arg)
-    else:
-        print "File not found: %s"%(arg)
-
-EOF
-
-chmod u+x production/stdti_step2dats.py
-
-}
-
-
-
-
-
-# ---------------------------
-# call to the main function
-# ---------------------------
-
-main
-
-EOFN
-}
-#################################
-
-
-#################################
-function writelatex {
-cat << EOFN > makelatex.py
-#!/usr/bin/env python2.7
-
-if __name__ == "__main__":
-
-    import matplotlib
-    matplotlib.use("Agg")
-
-    from ndmbar.tianalysis import DataLoc as dloc
-    from ndmbar.tianalysis import UsePkaUnits
-    from ndmbar.tianalysis import make_latex_document
-    from collections import defaultdict as ddict
-    import os
-    import glob
-
-    #UsePkaUnits()
-
-    tequil=0
-    tmax=1.e+10
-    odir="latex"
-
-    D = ddict( lambda: ddict( lambda: ddict( list ) ) )
-
-    scs=[]
-    for itrial in range(10):
-        trial="t%i"%(itrial+1)
-        d = "com/%s/results/data/"%(trial)
-        if os.path.exists(d):
-            if len(glob.glob(d+"dvdl_*.dat")) > 0:
-                scs.append( dloc(trial,d,"",tequil,tmax) )
-
-    if len(scs) > 0:
-        D["lig"]["bio"]["uni"]  = scs
-
-    scs=[]
-    for itrial in range(10):
-        trial="t%i"%(itrial+1)
-        d = "lig/%s/results/data/"%(trial)
-        if os.path.exists(d):
-            if len(glob.glob(d+"dvdl_*.dat")) > 0:
-                scs.append( dloc(trial,d,"",tequil,tmax) )
-
-    if len(scs) > 0:
-        D["lig"]["ref"]["uni"]  = scs
-
-    make_latex_document( odir, D, methods=["TI","TI3","BAR","MBAR"] )
-
-EOFN
-}
-
-#################################
-
-
-
-##################################
+###########################################
 # Main program begins
 
 #read and parse input data
@@ -1874,24 +1166,6 @@ parse_input $1
 if [ "$stage" == "setup" ]; then
 #################################
 
-#check if initial structures are present
-if [ "${ticalc}" == "rbfe" ]; then dir1=com; dir2=aq; else dir1=aq; dir2=vac; fi
-
-if [ ! -d initial/${system}/${dir1} ] || [ ! -d initial/${system}/${dir2} ]; 
-	then echo "initial/${system}/${dir1} or initial/${system}/${dir2} folder(s) missing" && exit 0
-else
-	for s in ${dir1} ${dir2}; do
-		cd initial/${system}/$s
-			for i in "${!translist[@]}";do
-        			stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-				if [ ! -f ${stA}_${s}.parm7 ] || [ ! -f ${stA}_${s}.rst7 ] || [ ! -f ${stB}_${s}.parm7 ] || [ ! -f ${stB}_${s}.rst7 ]; then
-					echo "one or more of ${stA}/${stB} parm/rst files are missing in initial/${system}/${s}"
-				fi
-			done
-		cd $path
-	done
-fi
-#####
 
 #setup TI files for UNIFIED protocol
 if [ "${protocol}" == "unified" ]; then
@@ -1900,8 +1174,8 @@ if [ "${protocol}" == "unified" ]; then
 		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
 		# generate stateB mol2 file
 		cat << EOF > genmol2.in
-parm initial/${system}/aq/${stB}_aq.parm7
-trajin initial/${system}/aq/${stB}_aq.rst7
+parm ${path_to_input}/${system}/aq/${stB}_aq.parm7
+trajin ${path_to_input}/${system}/aq/${stB}_aq.rst7
 strip :WAT,K+,Na+,Cl-
 change parmindex 0 resname from :L1 to ${stB}
 trajout ${stB}.mol2
@@ -1912,7 +1186,7 @@ EOF
 		sleep 1
 		for s in ${dir1} ${dir2}; do
 			if [ "${mapping}" != "checked" ]; then
-				parmutils-timutate.py -p initial/${system}/$s/${stA}_${s}.parm7 -c initial/${system}/$s/${stA}_${s}.rst7 --target ":L1" --mol2 ${stB}.mol2 --uniti --nlambda ${nlambda} >> output 2>&1
+				python3 parmutils-timutate.py -p ${path_to_input}/${system}/$s/${stA}_${s}.parm7 -c ${path_to_input}/${system}/$s/${stA}_${s}.rst7 --target ":L1" --mol2 ${stB}.mol2 --uniti --nlambda ${nlambda} >> output 2>&1
 				sleep 1
 				mkdir -p        ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build
                                 mv ticopy.*     ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/
@@ -1934,6 +1208,7 @@ EOF
 			       		continue	       
 				else
 					cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build
+						sed -i "s,parmutils-tigen.py,python3 ${path}/parmutils-tigen.py,g" ticopy.sh
 						sh ticopy.sh >> output 2>&1
 						sleep 1
 
@@ -1999,6 +1274,7 @@ EOF
 		done
 		echo "Done with ${stA}~${stB}..."
 	done
+	rm -rf ${path}/*mol2 ${path}/genmol2.in
 fi
 
 #################################
@@ -2014,7 +1290,7 @@ if [ "$stage" == "run-equil" ]; then
 #################################
 	for i in "${!translist[@]}";do
 		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-		for s in com aq; do
+		for s in ${dir1} ${dir2}; do
 			cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run
 				echo "Submitting TI equil jobs in ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run"
 				sh sub-eq.sh
@@ -2036,7 +1312,7 @@ if [ "$stage" == "check-equil" ]; then
 	lams=($(gen_lambdas $nlambda))
 	for i in "${!translist[@]}";do
 		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-		for s in com aq; do
+		for s in ${dir1} ${dir2}; do
 			cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run
 				for(( t=1;t<=${ntrials};t++));do
 					for file in heat npt; do
@@ -2062,7 +1338,7 @@ if [ "$stage" == "run-TI" ]; then
 #################################
         for i in "${!translist[@]}";do
                 stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-                for s in com aq; do
+                for s in ${dir1} ${dir2}; do
                         cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run
                                 echo "Submitting TI production jobs in ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run"
                                 sh sub-ti.sh
@@ -2083,7 +1359,7 @@ if [ "$stage" == "check-TI" ]; then
         lams=($(gen_lambdas $nlambda))
         for i in "${!translist[@]}";do
                 stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-                for s in com aq; do
+                for s in ${dir1} ${dir2}; do
 			if [ ! -d ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run ]; then echo "Folder ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run missing" && continue; fi
                         cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run
                                 for(( t=1;t<=${ntrials};t++));do

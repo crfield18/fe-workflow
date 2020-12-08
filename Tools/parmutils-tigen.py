@@ -433,7 +433,7 @@ class Disang1D(object):
 
     def WriteDisang(self,fname):
         cout = open(fname,"w")
-        cin = file(self.TEMPLATE,"r")
+        cin = open(self.TEMPLATE,"r")
         for line in cin:
             line = re.sub(r'R1',"%.2f"%(self.R1),line)
             line = re.sub(r'K1',"%.2f"%(self.K1),line)
@@ -662,7 +662,7 @@ class Mdin(AmberCmd):
 
     def WriteMdin(self):
         from collections import defaultdict as ddict
-        fh = file(self.MDIN,"w")
+        fh = open(self.MDIN,"w")
         fh.write("%s\n"%(self.title))
         fh.write("&cntrl\n")
         iokeys = ddict(str)
@@ -816,12 +816,12 @@ def WriteFrcmodObj(self,native_frcmod,angfact=1.0,uniqueparams=False,selected_na
                 self.fh1.write(s)
                 self.fh2.write(s)
         
-        nfile = file(native_frcmod,"w")
+        nfile = open(native_frcmod,"w")
         if changed_frcmod is None:
             cfile = nfile
             outfile = nfile
         else:
-            cfile = file(changed_frcmod,"w")
+            cfile = open(changed_frcmod,"w")
             outfile = combofile( nfile, cfile )
 
 #        self = parmed.amber.parameters.AmberParameterSet.from_structure(param)
@@ -1041,7 +1041,7 @@ def ticopy( parm, molmask, base="ticopy" ):
     import copy
     import os
 
-    fh = file("%s.sh"%(base),"w")
+    fh = open("%s.sh"%(base),"w")
     fh.write("""#!/bin/bash
 
 cat << 'EOF' > %s.sh.cmds
@@ -1127,7 +1127,7 @@ sed -i 's|0       0       1|0       0       2|' %s.parm7
 
 
 def write_makelatex():
-    fh=file("makelatex.py","w")
+    fh=open("makelatex.py","w")
     fh.write("""#!/usr/bin/env python2.7
 
 if __name__ == "__main__":
@@ -1260,7 +1260,7 @@ def RefitCharges( p, timask, scmask, equivH=False, equivQ=False ):
                     umask[j]=i+1
         
     q0=0
-    fh = file("mmresp.inp","w")
+    fh = open("mmresp.inp","w")
     fh.write("%i\n\n"%(len(atoms)))
     for i,msk in zip(atoms,umask):
         a = p.atoms[i]
@@ -1272,7 +1272,7 @@ def RefitCharges( p, timask, scmask, equivH=False, equivQ=False ):
     
     fh.close()
     subprocess.call("mmresp mmresp.inp > mmresp.out",shell=True)
-    fh = file("mmresp.out","r")
+    fh = open("mmresp.out","r")
     q=[]
     for line in fh:
         line = line.strip()
@@ -1281,8 +1281,8 @@ def RefitCharges( p, timask, scmask, equivH=False, equivQ=False ):
     fh.close()
     
 
-    print "qin "," ".join(["%10.6f"%(qa) for qa in atomq])
-    print "qout"," ".join(["%10.6f"%(qa) for qa in q])
+    print("qin "," ".join(["%10.6f"%(qa) for qa in atomq]))
+    print("qout"," ".join(["%10.6f"%(qa) for qa in q]))
 
     if len(q) != len(atomq):
         raise Exception("Failed to refit charges. (size mismatch)")
@@ -1869,7 +1869,7 @@ done
     os.chmod(fname, st.st_mode | stat.S_IEXEC)
 
     mergescript = os.path.join(dirname,"analysis2results.py")
-    fh=file(mergescript,"w")
+    fh=open(mergescript,"w")
     fh.write("""#!/usr/bin/env python2.7
 import os
 from collections import defaultdict as ddict
@@ -1879,7 +1879,7 @@ merge_gaps=False
 """%(basename,",".join( ["\"%.8f\""%(lam) for lam in lams ] )))
     fh.write("""
 mdin = "TEMPLATE.mdin"
-fh = file(mdin,"r")
+fh = open(mdin,"r")
 numexchg=0
 nstlim=None
 ntwx=None
@@ -1928,7 +1928,7 @@ nstep_per_sim = nstlim * numexchg
 nframe_per_sim = nstep_per_sim / ntwx
 
 if nstep_per_sim % ntwx != 0:
-    print "num md steps per simulation is not a multiple of ntwx. Unclear how the simulation time works"
+    print("num md steps per simulation is not a multiple of ntwx. Unclear how the simulation time works")
 
 t_per_frame = dt * ntwx
 t_per_sim = t_per_frame * nframe_per_sim
@@ -1947,7 +1947,7 @@ for isim in range(1,100001):
     
     if last_read_sim != (isim-1):
         for d in missing_dirs:
-            print "TIME GAP! Missing directory: %s"%(d)
+            print("TIME GAP! Missing directory: %s"%(d))
         missing_dirs=[]
 
     t0 = (isim-1) * t_per_sim + t_per_frame
@@ -1963,7 +1963,7 @@ for isim in range(1,100001):
             error=True
             missing_files=True
         else:
-            fh = file(dat,"r")
+            fh = open(dat,"r")
             for line in fh:
                 cols = line.strip().split()
                 if len(cols) == 2:
@@ -1980,10 +1980,10 @@ for isim in range(1,100001):
                 dvdl_data[t][lam] = data[lam][iframe]
 
     if missing_files and len(error_msgs) == len(lams):
-        print "%s doesn't appear to have been analyzed yet"%(dirstr)
+        print("%s doesn't appear to have been analyzed yet"%(dirstr))
     else:
         for msg in error_msgs:
-            print msg
+            print(msg)
     if len(error_msgs) > 0:
         missing_dirs.append(dirstr)
         continue
@@ -2002,7 +2002,7 @@ for isim in range(1,100001):
                 error=True
                 missing_files=True
             else:
-                fh = file(dat,"r")
+                fh = open(dat,"r")
                 for line in fh:
                     cols = line.strip().split()
                     if len(cols) == 2:
@@ -2021,7 +2021,7 @@ for isim in range(1,100001):
         
 
     for msg in error_msgs:
-        print msg
+        print(msg)
     if len(error_msgs) > 0:
         missing_dirs.append(dirstr)
         continue
@@ -2034,7 +2034,7 @@ ts=[ t for t in dvdl_data ]
 if len( ts ) > 0:
     for lam in lams:
         dat = "results/data/dvdl_%s.dat"%(lam)
-        fh = file(dat,"w")
+        fh = open(dat,"w")
         for i,t in enumerate(sorted(dvdl_data)):
             time=t
             if merge_gaps:
@@ -2047,7 +2047,7 @@ if len( ts ) > 0:
     for tlam in lams:
         for plam in lams:
             dat = "results/data/efep_%s_%s.dat"%(tlam,plam)
-            fh = file(dat,"w")
+            fh = open(dat,"w")
             for i,t in enumerate(sorted(efep_data)):
                 time=t
                 if merge_gaps:
@@ -3367,7 +3367,7 @@ def extract_traditional_ti( fname, write=False ):
     nframe_per_sim = nstep_per_sim / ntpr
 
     if nstep_per_sim % ntpr != 0:
-        print "num md steps per simulation is not a multiple of ntpr. Unclear how the simulation time works"
+        print("num md steps per simulation is not a multiple of ntpr. Unclear how the simulation time works")
 
     t_per_frame = dt * ntpr
     t_per_sim = t_per_frame * nframe_per_sim
@@ -3442,13 +3442,13 @@ def extract_traditional_ti( fname, write=False ):
         if irest == 0:
            dvdls=dvdls[1:]
 
-        fh = file(dvdl_fname,"w")
+        fh = open(dvdl_fname,"w")
         for i in range(len(dvdls)):
             fh.write("%.4f %18.6f\\n"%((i+1)*t_per_frame,dvdls[i]))
         fh.close()
         for ilam,plam in enumerate(lams):
             efep_fname = os.path.join( head, "efep_%.8f_%.8f.dat"%( lam, plam ) )
-            fh = file(efep_fname,"w")
+            fh = open(efep_fname,"w")
             for i in range(len(efeps)):
                 fh.write("%.4f %18.6f\\n"%((i+1)*t_per_frame,efeps[i][ilam]))
             fh.close()
@@ -3461,9 +3461,9 @@ for arg in sys.argv[1:]:
         if ".mdout" in arg:
             extract_traditional_ti( arg, write=True )
         else:
-            print "File does not end in .mdout: %s"%(arg)
+            print("File does not end in .mdout: %s"%(arg))
     else:
-        print "File not found: %s"%(arg)
+        print("File not found: %s"%(arg))
 
 EOF
 
@@ -3510,9 +3510,9 @@ main() {
     has_parmed=$( python2.7 << 'EOF'
 try:
     import parmed
-    print "1"
+    print("1")
 except:
-    print "0"
+    print("0")
 EOF
 )
 
@@ -4181,7 +4181,7 @@ def analyze_interpolated_charge_dedparms( parmfile_lambda0, parmfile_lambda1, pr
         dEdLambdas[lam] = CptdEdLambda( param_0, param_1, lam, dedparm )
     nframes = len(dEdLambdas[lam0])
     for lam in dEdLambdas:
-        fh = file("dvdl_%.8f.dat"%(lam),"w")
+        fh = open("dvdl_%.8f.dat"%(lam),"w")
         for frame in range(nframes):
             fh.write("%8i %15.6f\\n"%(frame+1,dEdLambdas[lam][frame]))
         fh.close()
@@ -4818,7 +4818,7 @@ def SetSCTI_BondedLJTypes( parm, common, dbgprint=False ):
     for i in common:
         sele = ListToSelection( [i] )
         if dbgprint:
-            print "New LJ type for common atom (because it torsions):",sele
+            print("New LJ type for common atom (because it torsions):",sele)
         parmed.tools.addLJType( parm, sele ).execute()
 
         
@@ -4838,12 +4838,12 @@ def SetSCTI_LJTypes( parm, s1, dbgprint=False ):
     for typ in d1:
         sele = ListToSelection( d1[typ] )
         if dbgprint:
-            print "New LJ type for tireg atoms:",sele
+            print("New LJ type for tireg atoms:",sele)
         parmed.tools.addLJType( parm, sele ).execute()
     for i in t1:
         sele = ListToSelection( [i] )
         if dbgprint:
-            print "New LJ type for tireg atoms (because it torsions):",sele
+            print("New LJ type for tireg atoms (because it torsions):",sele)
         parmed.tools.addLJType( parm, sele ).execute()
 
         
@@ -4854,7 +4854,7 @@ def PrintExclusions( parm, s1 ):
         aname = "%3s%04i:%-4s [%4i]"%(a.residue.name,a.residue.idx+1,a.name,a.idx+1)
         es = a.exclusion_partners
         ex = ListToSelection( [ b.idx for b in a.exclusion_partners ] )
-        print "%s EXCLUDES: %s"%(aname,ex)
+        print("%s EXCLUDES: %s"%(aname,ex))
 
     
 def SetSCTI_Exclusions( parm, s1, s2, dbgprint=False ):
@@ -5178,7 +5178,7 @@ def get_stdti_dvdl(parm,parmfilename,basename,rst,nc,lam,timask1,timask2,scmask1
     #print cmd
     subprocess.call(cmd,shell=True)
     
-    fh = file(mdin.MDOUT,"r")
+    fh = open(mdin.MDOUT,"r")
     dvdl=None
     for line in fh:
         if "DV/DL" in line:
@@ -5253,8 +5253,8 @@ def calc_stdti_dvdls(tiobj):
         deq = ( sum(dvdl)-0.5*(dvdl[0]+dvdl[-1]) ) / (nlam-1.)
 
 
-        print "# %4s %12.4f"%("deq",deq)
-        fh = file("dvdl.%s.dat"%(o.basename),"w")
+        print("# %4s %12.4f"%("deq",deq))
+        fh = open("dvdl.%s.dat"%(o.basename),"w")
         fh.write("# %4s %12.4f\n"%("deq",deq))
         for ilam in range(len(lams)):
             fh.write(" %.8f %12.4f\n"%(lams[ilam],dvdl[ilam]))
@@ -5281,8 +5281,8 @@ def calc_stdti_dvdls(tiobj):
             dvdl.append( get_stdti_dvdl(parm,parmfilename,basename,rst,nc,lam,timask1,timask2,scmask1,scmask2) )
         sc = ( sum(dvdl)-0.5*(dvdl[0]+dvdl[-1]) ) / (nlam-1.)
     
-        print "# %4s %12.4f"%("sc",sc)
-        fh = file("dvdl.%s.dat"%(o.basename),"w")
+        print("# %4s %12.4f"%("sc",sc))
+        fh = open("dvdl.%s.dat"%(o.basename),"w")
         fh.write("\n# %4s %12.4f\n"%("sc",sc))
         for ilam in range(len(lams)):
             fh.write(" %.8f %12.4f\n"%(lams[ilam],dvdl[ilam]))
@@ -5308,13 +5308,13 @@ def calc_stdti_dvdls(tiobj):
             dvdl.append( get_stdti_dvdl(parm,parmfilename,basename,rst,nc,lam,timask1,timask2,scmask1,scmask2) )
         req = ( sum(dvdl)-0.5*(dvdl[0]+dvdl[-1]) ) / (nlam-1.)
     
-        print "# %4s %12.4f"%("req",req)
-        fh = file("dvdl.%s.dat"%(o.basename),"w")
+        print("# %4s %12.4f"%("req",req))
+        fh = open("dvdl.%s.dat"%(o.basename),"w")
         fh.write("\n# %4s %12.4f\n"%("req",req))
         for ilam in range(len(lams)):
             fh.write(" %.8f %12.4f\n"%(lams[ilam],dvdl[ilam]))
         fh.close()
-    print "# %4s %12.4f"%("sum",deq+sc+req)
+    print("# %4s %12.4f"%("sum",deq+sc+req))
 
     fh.close()
         
@@ -5429,8 +5429,8 @@ def calc_piti_dvdls(tiobj):
             dvdl.append( get_piti_dvdl(parm0,parm1,parm,rebase,rst,nc,lam,"","") )
         deq = ( sum(dvdl)-0.5*(dvdl[0]+dvdl[-1]) ) / (nlam-1.)
 
-        print "# %4s %12.4f"%("deq",deq)
-        fh = file("dvdl.%s.dat"%(o.basename),"w")
+        print("# %4s %12.4f"%("deq",deq))
+        fh = open("dvdl.%s.dat"%(o.basename),"w")
         fh.write("# %4s %12.4f\n"%("deq",deq))
         for ilam in range(len(lams)):
             fh.write(" %.8f %12.4f\n"%(lams[ilam],dvdl[ilam]))
@@ -5461,8 +5461,8 @@ def calc_piti_dvdls(tiobj):
             dvdl.append( get_piti_dvdl(parm0,parm1,parm,rebase,rst,nc,lam,scmask1,scmask2) )
         sc = ( sum(dvdl)-0.5*(dvdl[0]+dvdl[-1]) ) / (nlam-1.)
 
-        print "# %4s %12.4f"%("sc",sc)
-        fh = file("dvdl.%s.dat"%(o.basename),"w")
+        print("# %4s %12.4f"%("sc",sc))
+        fh = open("dvdl.%s.dat"%(o.basename),"w")
         fh.write("\n# %4s %12.4f\n"%("sc",sc))
         for ilam in range(len(lams)):
             fh.write(" %.8f %12.4f\n"%(lams[ilam],dvdl[ilam]))
@@ -5488,13 +5488,13 @@ def calc_piti_dvdls(tiobj):
             dvdl.append( get_piti_dvdl(parm0,parm1,parm,rebase,rst,nc,lam,"","") )
         req = ( sum(dvdl)-0.5*(dvdl[0]+dvdl[-1]) ) / (nlam-1.)
     
-        print "# %4s %12.4f"%("req",req)
-        fh = file("dvdl.%s.dat"%(o.basename),"w")
+        print("# %4s %12.4f"%("req",req))
+        fh = open("dvdl.%s.dat"%(o.basename),"w")
         fh.write("\n# %4s %12.4f\n"%("req",req))
         for ilam in range(len(lams)):
             fh.write(" %.8f %12.4f\n"%(lams[ilam],dvdl[ilam]))
         fh.close()
-    print "# %4s %12.4f"%("sum",deq+sc+req)
+    print("# %4s %12.4f"%("sum",deq+sc+req))
 
     fh.close()
         
@@ -5978,7 +5978,7 @@ class sctisetup(object):
             pass
         else:
             basename=self.pathway + "deq"
-            print "prepare_decharge"
+            print("prepare_decharge")
             self.prepare_decharge(lams,save=True,basename=basename)
             o = self.deqti
             crgmask = l2s( s2l( o.tiparm, o.merged_scmask1 ) + s2l( o.tiparm, o.merged_scmask2 ) )
@@ -5994,7 +5994,7 @@ class sctisetup(object):
             if sclams is None:
                 sclams = lams
             basename=self.pathway + "sc"
-            print "prepare_softcore"
+            print("prepare_softcore")
             self.prepare_softcore(sclams,save=True,basename=basename)
             o = self.scti
             c1 = s2l( o.tiparm, o.merged_scmask1 )
@@ -6010,7 +6010,7 @@ class sctisetup(object):
 
         if len(self.scsel2) > 0:
             basename=self.pathway + "req"
-            print "prepare_recharge"
+            print("prepare_recharge")
             self.prepare_recharge(lams,save=True,basename=basename)
             o = self.reqti
             crgmask = l2s( s2l( o.tiparm, o.merged_scmask1 ) + s2l( o.tiparm, o.merged_scmask2 ) )
@@ -6068,7 +6068,7 @@ class sctisetup(object):
 
         if len(self.refit) > 0:
             if len(self.tisel1) - len(self.scsel1) > 0 and len(self.scsel1) > 0:
-                print "refitting ti1_charges"
+                print("refitting ti1_charges")
                 self.ti1_charges = RefitCharges( self.org_parm, self.timask1, self.scmask1, equivH=refith, equivQ=refitq )
 
 
@@ -6081,7 +6081,7 @@ class sctisetup(object):
             self.ti2_charges.append(q)
         if len(self.refit) > 0:
             if len(self.tisel2) - len(self.scsel2) > 0 and  len(self.scsel2) > 0:
-                print "refitting ti2_charges"
+                print("refitting ti2_charges")
                 self.ti2_charges = RefitCharges( self.org_parm, self.timask2, self.scmask2, equivH=refith, equivQ=refitq )        
             
                 #print "%6i <-> %6i"%(first,second)
@@ -6107,8 +6107,8 @@ class sctisetup(object):
                 "(%s)|(%s)"%(self.scti.merged_scmask1,self.scti.merged_scmask2) )
 
             ###
-            print "ti1_charges",self.ti1_charges
-            print "ti2_charges",self.ti2_charges
+            print("ti1_charges",self.ti1_charges)
+            print("ti2_charges",self.ti2_charges)
             ti_atoms = GetSelectedAtomIndices( self.scti.tiparm, self.scti.merged_timask1 )
             for iat in range(len(ti_atoms)):
                 a = ti_atoms[iat]
@@ -6481,7 +6481,7 @@ class sersctisetup(sctisetup):
             pass
         else:
             basename=self.pathway + "deq"
-            print "prepare_decharge"
+            print("prepare_decharge")
             self.prepare_decharge(lams,save=True,basename=basename)
             o = self.deqti
             crgmask = l2s( s2l( o.tiparm, o.merged_scmask1 ) + s2l( o.tiparm, o.merged_scmask2 ) )
@@ -6612,7 +6612,7 @@ class sersctisetup(sctisetup):
 
         if len(self.scsel2) > 0:
             basename=self.pathway + "req"
-            print "prepare_recharge"
+            print("prepare_recharge")
             self.prepare_recharge(lams,save=True,basename=basename)
             o = self.reqti
             crgmask = l2s( s2l( o.tiparm, o.merged_scmask1 ) + s2l( o.tiparm, o.merged_scmask2 ) )
@@ -7097,12 +7097,12 @@ class altsctisetup(sctisetup):
                                 idx.delete()
                                 tiobj.tiparm.dihedrals.remove(idx)
                     else:
-                        print "FAILED TO DELETE %s %s"%(mstr,str(d.type))
-                        print "Looking for quartet %s"%(mstr)
+                        print("FAILED TO DELETE %s %s"%(mstr,str(d.type)))
+                        print("Looking for quartet %s"%(mstr))
                         for d in tiobj.tiparm.dihedrals:
                             #astr = AtmStr( [d.atom1,d.atom2,d.atom3,d.atom4] )
                             if d.same_atoms( msel ):
-                                print "ONLY FOUND %s"%(str(d.type))
+                                print("ONLY FOUND %s"%(str(d.type)))
                 if zero_phi_k:
                     idx.type.phi_k = 0.
 
@@ -7288,9 +7288,9 @@ class altsctisetup(sctisetup):
                 if oatm.modified_index is not None:
                     # this atom was not deleted from this ti transformation
                     matm = self.scti.tiparm.atoms[ oatm.modified_index ] 
-                    print "CopyQ from %5i:%4s:%-4s (%7.4f) to %5i:%4s:%-4s (%7.4f)"% \
+                    print("CopyQ from %5i:%4s:%-4s (%7.4f) to %5i:%4s:%-4s (%7.4f)"% \
                         (catm.idx,catm.residue.name,catm.name,catm.charge,\
-                         matm.idx,matm.residue.name,matm.name,matm.charge)
+                         matm.idx,matm.residue.name,matm.name,matm.charge))
                     matm.charge = catm.charge
                     self.scti.tiparm.parm_data["CHARGE"][matm.idx] = catm.charge
         else:
@@ -7309,13 +7309,13 @@ class altsctisetup(sctisetup):
                           raise Exception("PMEMD does not support residues consisting solely of an H atom")
                        pres = ti.tiparm.residues[jres]
                        if jres < ires:
-                          print "merging :%i into :%i"%(res.idx+1,pres.idx+1)
+                          print("merging :%i into :%i"%(res.idx+1,pres.idx+1))
                           pres.atoms.append( atm )
                           for a in pres.atoms:
                                 a.residue = pres
                           res.atoms = []
                        else:
-                          print "merging :%i into :%i"%(pres.idx+1,res.idx+1)
+                          print("merging :%i into :%i"%(pres.idx+1,res.idx+1))
                           res.atoms.extend( pres.atoms )
                           for a in res.atoms:
                                 a.residue = res
@@ -7381,13 +7381,13 @@ class altsctisetup(sctisetup):
                           raise Exception("PMEMD does not support residues consisting solely of an H atom")
                        pres = ti.tiparm.residues[jres]
                        if jres < ires:
-                          print "merging :%i into :%i"%(res.idx+1,pres.idx+1)
+                          print("merging :%i into :%i"%(res.idx+1,pres.idx+1))
                           pres.atoms.append( atm )
                           for a in pres.atoms:
                                 a.residue = pres
                           res.atoms = []
                        else:
-                          print "merging :%i into :%i"%(pres.idx+1,res.idx+1)
+                          print("merging :%i into :%i"%(pres.idx+1,res.idx+1))
                           res.atoms.extend( pres.atoms )
                           for a in res.atoms:
                                 a.residue = res
@@ -7511,13 +7511,13 @@ class altsctisetup(sctisetup):
                           raise Exception("PMEMD does not support residues consisting solely of an H atom")
                        pres = ti.tiparm.residues[jres]
                        if jres < ires:
-                          print "merging :%i into :%i"%(res.idx+1,pres.idx+1)
+                          print("merging :%i into :%i"%(res.idx+1,pres.idx+1))
                           pres.atoms.append( atm )
                           for a in pres.atoms:
                                 a.residue = pres
                           res.atoms = []
                        else:
-                          print "merging :%i into :%i"%(pres.idx+1,res.idx+1)
+                          print("merging :%i into :%i"%(pres.idx+1,res.idx+1))
                           res.atoms.extend( pres.atoms )
                           for a in res.atoms:
                                 a.residue = res
@@ -7588,7 +7588,7 @@ class pisctisetup(altsctisetup):
         from collections import defaultdict as ddict
         import copy
 
-        print "PISCTI DEQ SETUP"
+        print("PISCTI DEQ SETUP")
         sctisetup.prepare_decharge(self,lams,save=False,basename=basename)
         self.deqti.basename=basename
         self.deq_parms = ddict(int)
@@ -7601,7 +7601,7 @@ class pisctisetup(altsctisetup):
             parm0 = None
             parm1 = None
             for lam in [0,1]:
-                print "PISCTI DEQ ENDPOINT LAM %.8f"%(lam)
+                print("PISCTI DEQ ENDPOINT LAM %.8f"%(lam))
                 tiobj = copy.deepcopy( self.deqti )
                 tiobj.tiparm = CopyParm( self.deqti.tiparm )
                 tiobj.org_parm = self.deqti.org_parm
@@ -7618,7 +7618,7 @@ class pisctisetup(altsctisetup):
                 else:
                     parm1 = tiobj.tiparm
             for lam in lams:
-                print "PISCTI DEQ INTERPOLATING LAM %.8f"%(lam)
+                print("PISCTI DEQ INTERPOLATING LAM %.8f"%(lam))
                 if lam == 0.0:
                     self.deq_parms[lam] = parm0
                 elif lam == 1.0:
@@ -7643,7 +7643,7 @@ class pisctisetup(altsctisetup):
             
     def prepare_softcore(self,lams,save=True,basename="pisc"):
         from collections import defaultdict as ddict
-        print "PICSTI SC  SETUP"
+        print("PICSTI SC  SETUP")
         super(pisctisetup,self).prepare_softcore(lams,save=False,basename=basename)
         self.scti.basename=basename
 
@@ -7651,7 +7651,7 @@ class pisctisetup(altsctisetup):
         
         if True:
             for ilam,lam in enumerate(lams):
-                print "PISCTI SC  INTERPOLATING LAM %.8f"%(lam)
+                print("PISCTI SC  INTERPOLATING LAM %.8f"%(lam))
                 parm = softcore_interpolation(\
                         self.scti.tiparm, self.scti.merged_timask1, self.scti.merged_timask2, lam )
                 self.sc_parms[lam] = parm
@@ -7672,7 +7672,7 @@ class pisctisetup(altsctisetup):
                 
     def prepare_recharge(self,lams,save=True,basename="pireq"):
         from collections import defaultdict as ddict
-        print "PISCTI REQ SETUP"
+        print("PISCTI REQ SETUP")
         super(pisctisetup,self).prepare_recharge(lams,save=False,basename=basename)
         self.reqti.basename=basename
 
@@ -7708,7 +7708,7 @@ class pisctisetup(altsctisetup):
         else:
             ats = GetSelectedAtomIndices(self.org_parm, self.scmask2)
             for lam in lams:
-                print "PISCTI REQ INTERPOLATING LAM %.8f"%(lam)
+                print("PISCTI REQ INTERPOLATING LAM %.8f"%(lam))
                 parm = CopyParm( self.org_parm )
                 for a in ats:
                     parm.atoms[a].charge *= lam
@@ -7822,7 +7822,7 @@ class unitisetup(sctisetup):
             if sclams is None:
                 sclams = lams
             basename=self.pathway + "sc"
-            print "prepare_softcore"
+            print("prepare_softcore")
             self.prepare_softcore(sclams,save=True,basename=basename)
             o = self.scti
             c1 = s2l( o.tiparm, o.merged_scmask1 )
