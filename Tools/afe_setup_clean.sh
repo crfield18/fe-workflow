@@ -1243,6 +1243,11 @@ EOF
 						if [ "${hmr}" == "true" ]; then
 							sed -i '/dt.*.=.*.*/c\dt              = 0.004' ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/inputs/*_ti.mdin
 						fi
+						# if repex=false, alter input files and slurm files
+						if [ "${repex}" == "false" ]; then
+							sed -i -e '/numexchg/d' -e '/gremd_acyc/d' ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/inputs/*_ti.mdin
+							sed -i -e 's/ -rem 3//g' -e 's/running replica ti/running regular ti/g' ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/prod.slurm
+						fi
 						mkdir -p ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run
 						rm -rf ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run/current ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run/inputs
 						cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/run
@@ -1256,7 +1261,7 @@ EOF
 								mkdir -p t${t}
 								cp current/*_init.rst7 t${t}/
 								sed "s/current/t${t}/g" inputs/heat.groupfile  > inputs/t${t}_heat.groupfile
-                        					sed "s/current/t${t}/g" inputs/npt.groupfile > inputs/t${t}_npt.groupfile
+                        					sed "s/current/t${t}/g" inputs/npt.groupfile   > inputs/t${t}_npt.groupfile
                         					sed "s/current/t${t}/g" inputs/ti.groupfile    > inputs/t${t}_ti.groupfile
 
 								sed 	-e "s/current/t${t}/g" \
