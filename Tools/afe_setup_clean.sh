@@ -102,21 +102,6 @@ EOFN
         # check if parmed is present
         if ! command -v parmed &> /dev/null;  then echo "parmed is missing." && exit 0; fi
 
-        # check if input directories and files are present
-        if [ ! -d ${path_to_input}/${system}/${dir1} ] || [ ! -d ${path_to_input}/${system}/${dir2} ];
-                then echo "${path_to_input}/${system}/${dir1} or ${path_to_input}/${system}/${dir2} folder(s) missing" && exit 0
-        else
-                for s in ${dir1} ${dir2}; do
-                        cd ${path_to_input}/${system}/$s
-                                for i in "${!translist[@]}";do
-                                        stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-                                        if [ ! -f ${stA}_${s}.parm7 ] || [ ! -f ${stA}_${s}.rst7 ] || [ ! -f ${stB}_${s}.parm7 ] || [ ! -f ${stB}_${s}.rst7 ]; then
-                                                echo "one or more of ${stA}/${stB} parm/rst files are missing in ${path_to_input}/${system}/${s}"
-                                        fi
-                                done
-                        cd $path
-                done
-        fi
 
         # check input file parameters
         if [ "${protocol}" != "unified" ]; then echo "Script currently supports only \"unified\" protocol" && exit 0; fi
@@ -140,8 +125,10 @@ EOFN
         if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then echo "Should be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" " && exit 0; fi
 	if [ "${ticalc}" == "rbfe" ]; then dir1=com; dir2=aq; else dir1=aq; dir2=vac; fi
 
-
-
+        # check if input directories are present
+        if [ ! -d ${path_to_input}/${system}/${dir1} ] || [ ! -d ${path_to_input}/${system}/${dir2} ];
+                then echo "${path_to_input}/${system}/${dir1} or ${path_to_input}/${system}/${dir2} folder(s) missing" && exit 0
+	fi
 }
 
 ##########################################
@@ -1186,6 +1173,7 @@ EOF
 		sleep 1
 		for s in ${dir1} ${dir2}; do
 			if [ "${mapping}" != "checked" ]; then
+				if [ ! -f ${path_to_input}/${system}/$s/${stA}_${s}.parm7 ] || [ ! -f ${path_to_input}/${system}/$s/${stA}_${s}.rst7 ];then echo "${stA}_${s} parm/rst file(s) missing in ${path_to_input}/${system}/$s. Skipping..." && continue; fi
 				python3 parmutils-timutate.py -p ${path_to_input}/${system}/$s/${stA}_${s}.parm7 -c ${path_to_input}/${system}/$s/${stA}_${s}.rst7 --target ":L1" --mol2 ${stB}.mol2 --uniti --nlambda ${nlambda} >> output 2>&1
 				sleep 1
 				mkdir -p        ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build
