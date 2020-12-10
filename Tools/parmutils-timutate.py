@@ -997,7 +997,7 @@ EOF
    rm leap.log
    rm %s.lib.inp
 fi
-"""%(lib2,base,source,water,res2,mol22,res2,lib2,base,base))
+"""%(lib2,base,source,water,"TMP",mol22,"TMP",lib2,base,base))
 
     mol0seq = GetResSeq( mol0parm )
     mol1seq = GetResSeq( mol1parm )
@@ -1013,6 +1013,24 @@ fi
     mol1str = "\n".join(mol1chunks)
 
     
+#     fh.write("""
+# cat << 'EOF' > %s.sh.cmds
+# source leaprc.protein.ff14SB
+# source leaprc.RNA.OL3
+# source %s
+# source %s
+# loadOff %s.lib
+# loadAmberParams %s.frcmod
+# loadOff %s
+# loadAmberParams %s
+
+# mol0 = loadPdbUsingSeq %s.mol0.pdb { %s }
+# mol1 = loadPdbUsingSeq %s.mol1.pdb { %s }
+
+# """%(base,source,water,base,base,lib2,frcmod2,base,mol0str,base,mol1str))
+
+
+
     fh.write("""
 cat << 'EOF' > %s.sh.cmds
 source leaprc.protein.ff14SB
@@ -1024,11 +1042,15 @@ loadAmberParams %s.frcmod
 loadOff %s
 loadAmberParams %s
 
-mol0 = loadPdbUsingSeq %s.mol0.pdb { %s }
-mol1 = loadPdbUsingSeq %s.mol1.pdb { %s }
+mol0 = loadPdb %s.mol0.pdb
+mol1 = loadPdb %s.mol1.pdb 
 
-"""%(base,source,water,base,base,lib2,frcmod2,base,mol0str,base,mol1str))
-   
+"""%(base,source,water,base,base,lib2,frcmod2,base,base))
+
+
+    
+
+    
     tparm = CopyParm( p )
     tparm.strip( "(%s)|:WAT"%( AtomListToSelection(p,molsele) ) )
     nonwat_len = len(tparm.atoms)
