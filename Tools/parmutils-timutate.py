@@ -996,8 +996,9 @@ EOF
    tleap -s -f %s.lib.inp
    rm leap.log
    rm %s.lib.inp
+   sed -i 's/ZTQ/%s/g' %s
 fi
-"""%(lib2,base,source,water,"TMP",mol22,"TMP",lib2,base,base))
+"""%(lib2,base,source,water,"ZTQ",mol22,"ZTQ",lib2,base,base,res2,lib2))
 
     mol0seq = GetResSeq( mol0parm )
     mol1seq = GetResSeq( mol1parm )
