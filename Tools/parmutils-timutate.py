@@ -981,8 +981,16 @@ fi
     if args is not None:
         if args.tip3p:
             water="leaprc.water.tip3p"
-    
-    fh.write("""
+
+    def isanint(s):
+        try: 
+            int(s)
+            return True
+        except ValueError:
+            return False
+
+    if isanint(res2):
+        fh.write("""
 if [ ! -e "%s" ]; then
    cat <<EOF > %s.lib.inp
 source leaprc.protein.ff14SB
@@ -999,7 +1007,27 @@ EOF
    sed -i 's/ZTQ/%s/g' %s
 fi
 """%(lib2,base,source,water,"ZTQ",mol22,"ZTQ",lib2,base,base,res2,lib2))
+    
+    else:
+        fh.write("""
+if [ ! -e "%s" ]; then
+   cat <<EOF > %s.lib.inp
+source leaprc.protein.ff14SB
+source leaprc.RNA.OL3
+source %s
+source %s
+%s = loadmol2 %s
+saveoff %s %s
+quit
+EOF
+   tleap -s -f %s.lib.inp
+   rm leap.log
+   rm %s.lib.inp
+fi
+"""%(lib2,base,source,water,res2,mol22,res2,lib2,base,base))
+        
 
+        
     mol0seq = GetResSeq( mol0parm )
     mol1seq = GetResSeq( mol1parm )
 
@@ -1030,12 +1058,6 @@ fi
 
 # """%(base,source,water,base,base,lib2,frcmod2,base,mol0str,base,mol1str))
 
-    def isanint(s):
-        try: 
-            int(s)
-            return True
-        except ValueError:
-            return False
 
     fh.write("""
 cat << 'EOF' > %s.sh.cmds
