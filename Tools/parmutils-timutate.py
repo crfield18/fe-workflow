@@ -1030,7 +1030,12 @@ fi
 
 # """%(base,source,water,base,base,lib2,frcmod2,base,mol0str,base,mol1str))
 
-
+    def isanint(s):
+        try: 
+            int(s)
+            return True
+        except ValueError:
+            return False
 
     fh.write("""
 cat << 'EOF' > %s.sh.cmds
@@ -1042,11 +1047,18 @@ loadOff %s.lib
 loadAmberParams %s.frcmod
 loadOff %s
 loadAmberParams %s
+"""%(base,source,water,base,base,lib2,frcmod2))
 
-mol0 = loadPdb %s.mol0.pdb
-mol1 = loadPdb %s.mol1.pdb 
+    if isanint(mol0str):
+        fh.write("\nmol0 = loadPdb %s.mol0.pdb\n"%(base))
+    else:
+        fh.write("\nmol0 = loadPdbUsingSeq %s.mol0.pdb { %s }\n"%(base,mol0str))
 
-"""%(base,source,water,base,base,lib2,frcmod2,base,base))
+
+    if isanint(mol1str):
+        fh.write("mol1 = loadPdb %s.mol1.pdb\n\n"%(base))
+    else:
+        fh.write("mol1 = loadPdbUsingSeq %s.mol1.pdb { %s }\n\n"%(base,mol1str))
 
 
     
