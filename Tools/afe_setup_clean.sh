@@ -1160,6 +1160,19 @@ if [ "${protocol}" == "unified" ]; then
 	for i in "${!translist[@]}";do
 		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
 		# generate stateB mol2 file
+
+		if [ ! -d "${path_to_input}" ]; then
+		    echo Missing directory ${path_to_input}
+		elif [ ! -d "${path_to_input}/${system}" ]; then
+		    echo Missing directory ${path_to_input}/${system}
+		elif [ ! -d "${path_to_input}/${system}/aq" ]; then
+		    echo Missing directory ${path_to_input}/${system}/aq
+		elif [ ! -e "${path_to_input}/${system}/aq/${stB}_aq.parm7" ]; then
+		    echo Missing file ${path_to_input}/${system}/aq/${stB}_aq.parm7
+		elif [ ! -e "${path_to_input}/${system}/aq/${stB}_aq.rst7" ]; then
+		    echo Missing file ${path_to_input}/${system}/aq/${stB}_aq.rst7
+		fi
+		
 		cat << EOF > genmol2.in
 parm ${path_to_input}/${system}/aq/${stB}_aq.parm7
 trajin ${path_to_input}/${system}/aq/${stB}_aq.rst7
@@ -1174,11 +1187,17 @@ EOF
 		for s in ${dir1} ${dir2}; do
 			if [ "${mapping}" != "checked" ]; then
 				if [ ! -f ${path_to_input}/${system}/$s/${stA}_${s}.parm7 ] || [ ! -f ${path_to_input}/${system}/$s/${stA}_${s}.rst7 ];then echo "${stA}_${s} parm/rst file(s) missing in ${path_to_input}/${system}/$s. Skipping..." && continue; fi
-				python3 parmutils-timutate.py -p ${path_to_input}/${system}/$s/${stA}_${s}.parm7 -c ${path_to_input}/${system}/$s/${stA}_${s}.rst7 --target ":L1" --mol2 ${stB}.mol2 --uniti --nlambda ${nlambda} >> output 2>&1
+				parmutils-timutate.py -p ${path_to_input}/${system}/$s/${stA}_${s}.parm7 -c ${path_to_input}/${system}/$s/${stA}_${s}.rst7 --target ":L1" --mol2 ${stB}.mol2 --uniti --nlambda ${nlambda} >> output 2>&1
 				sleep 1
 				mkdir -p        ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build
-                                mv ticopy.*     ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/
-                                cp ${stB}.mol2  ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/
+				for ticopyfile in ticopy.*; do
+				    if [ -e "${ticopyfile}" ]; then
+					mv ${ticopyfile} ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/
+				    fi
+				done
+				if [ -e "${stB}.mol2" ]; then
+                                    cp ${stB}.mol2  ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build/
+				fi
 
 			fi
 
@@ -1196,7 +1215,7 @@ EOF
 			       		continue	       
 				else
 					cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build
-						sed -i "s,parmutils-tigen.py,python3 ${path}/parmutils-tigen.py,g" ticopy.sh
+						#sed -i "s,parmutils-tigen.py,python3 ${path}/parmutils-tigen.py,g" ticopy.sh
 						sh ticopy.sh >> output 2>&1
 						sleep 1
 
