@@ -1184,10 +1184,12 @@ quit
 EOF
 		cpptraj < genmol2.in > output
 		sleep 1
+		parmutils-ExtractParams.py -p ${path_to_input}/${system}/aq/${stB}_aq.parm7 -c ${path_to_input}/${system}/aq/${stB}_aq.rst7 -m ":L1,${stB}" -f ${stB}.frcmod -l ${stB}.lib
+		
 		for s in ${dir1} ${dir2}; do
 			if [ "${mapping}" != "checked" ]; then
 				if [ ! -f ${path_to_input}/${system}/$s/${stA}_${s}.parm7 ] || [ ! -f ${path_to_input}/${system}/$s/${stA}_${s}.rst7 ];then echo "${stA}_${s} parm/rst file(s) missing in ${path_to_input}/${system}/$s. Skipping..." && continue; fi
-				parmutils-timutate.py -p ${path_to_input}/${system}/$s/${stA}_${s}.parm7 -c ${path_to_input}/${system}/$s/${stA}_${s}.rst7 --target ":L1" --mol2 ${stB}.mol2 --uniti --nlambda ${nlambda} >> output 2>&1
+				parmutils-timutate.py -p ${path_to_input}/${system}/$s/${stA}_${s}.parm7 -c ${path_to_input}/${system}/$s/${stA}_${s}.rst7 --target ":L1,${stA}" --mol2 ${stB}.mol2 --lib ${stB}.lib --frcmod ${stB}.frcmod --uniti --nlambda ${nlambda} >> output 2>&1
 				sleep 1
 				mkdir -p        ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build
 				for ticopyfile in ticopy.*; do
@@ -1211,11 +1213,9 @@ EOF
 				continue
 			else
 				if [ ! -d ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build ]; then
-					echo "${path}/${system}/${protocol}/${stA}~${stB}/${s}/build does not exist"
-			       		continue	       
+					echo "${path}/${system}/${protocol}/${stA}~${stB}/${s}/build does not exist" && continue
 				else
 					cd ${path}/${system}/${protocol}/${stA}~${stB}/${s}/build
-						#sed -i "s,parmutils-tigen.py,python3 ${path}/parmutils-tigen.py,g" ticopy.sh
 						sh ticopy.sh >> output 2>&1
 						sleep 1
 
