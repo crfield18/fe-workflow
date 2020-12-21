@@ -294,6 +294,11 @@ if __name__ == "__main__":
                         type=str,
                         required=False)
 
+    parser.add_argument("-n","--name",
+                        help="Rename all selected residues to this name",
+                        type=str,
+                        required=False)
+
     args = parser.parse_args()
 
     if len(args.frcmod) > 0 or len(args.lib) > 0: 
@@ -301,6 +306,12 @@ if __name__ == "__main__":
         sres = GetSelectedResidueIndices(p,args.mask)
         resmask = ":%s"%( ",".join( [ "%i"%(res+1) for res in sres ] ) )
         q    = Extract(p,resmask)
+        if len(args.name) > 0:
+            name = args.name
+            if len(name) > 3:
+                name = name[0:3]
+            for res in q.residues:
+                res.name = name
 
     if len(args.frcmod) > 0:
         ExtractFrcmod(q,"@*",args.frcmod)
