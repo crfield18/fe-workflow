@@ -64,7 +64,7 @@ scbeta=1.0                      # scbeta
 gti_add_sc=5                         # gti_add_sc
 gti_scale_beta=1                       # gti_scale_beta
 gti_cut=1			# gti_cut
-gti_cut_sc_on=6                       # gti_cut_sc_on
+gti_cut_sc_on=8                       # gti_cut_sc_on
 gti_cut_sc_off=8                      # gti_cut_sc_off
 gti_lam_sch=1                     # gti_lam_sch
 gti_ele_sc=1                      # gti_ele_sc
@@ -122,7 +122,7 @@ EOFN
         if [ "${gti_cut_sc}" -eq 1 ] || [ "${gti_cut_sc}" -eq 2 ]; then
                 if [ -z "${gti_cut_sc_on}" ] || [ -z "${gti_cut_sc_off}" ]; then echo "if \"gti_cut_sc_on\" is set to 1 or 2, gti_cut_sc_on and gti_cut_sc_off must be defined." && exit 0; fi
         fi
-        if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then echo "Should be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" " && exit 0; fi
+        if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then echo "Should be \"cutoff\" >= \"gti_cut_sc_off\" >= \"gti_cut_sc_on\" " && exit 0; fi
 	if [ "${ticalc}" == "rbfe" ]; then dir1=com; dir2=aq; else dir1=aq; dir2=vac; fi
 
         # check if input directories are present
