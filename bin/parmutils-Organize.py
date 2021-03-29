@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 def OpenParm( fname, xyz=None ):
     import parmed
     from parmed.constants import IFBOX
@@ -44,6 +43,40 @@ def Strip( parm, mask ):
 
 def Extract( parm, mask ):
     return Strip( parm, "!(%s)"%(mask) )
+
+
+def SaveParmRst( param, fname ):
+    from parmed.constants import IFBOX
+    for a in param.atoms:
+        param.parm_data["CHARGE"][ a.idx ] = a.charge
+    if param.box is not None:
+       if abs(param.box[3]-109.471219)<1.e-4 and \
+          abs(param.box[4]-109.471219)<1.e-4 and \
+          abs(param.box[5]-109.471219)<1.e-4:
+           param.parm_data["POINTERS"][IFBOX]=2
+           param.pointers["IFBOX"]=2
+    try:
+        param.save( "{}.parm7".format(fname), overwrite=True )
+        #param.save( fname, overwrite=True )
+    except:
+        param.save( "{}.parm7".format(fname) )
+        #param.save( fname )
+    rst = parmed.amber.Rst7(natom=len(param.atoms),title="BLAH")
+    rst.coordinates = param.coordinates
+    rst.box = [param.box[0], param.box[1], param.box[2], param.box[3], param.box[4], param.box[5]]
+    rst.write( "{}.rst7".format(fname) )
+
+
+def GetResSeq( parm ):
+    rtc=parmed.modeller.residue.ResidueTemplateContainer.from_structure( parm )
+    return [r.name for r in rtc]
+
+def divide_chunks_generator(l,n):
+    for i in range(0,len(l),n):
+        yield l[i:i+n]
+
+def divide_chunks(l,n):
+    return list(divide_chunks_generator(l,n))
 
 
 def GetSelectedAtomIndices(param,maskstr):
@@ -263,6 +296,8 @@ if __name__ == "__main__":
     
     import argparse
     import parmed
+    import re
+    import sys
 
     parser = argparse.ArgumentParser \
     ( formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -279,10 +314,41 @@ if __name__ == "__main__":
                         required=True)
 
     parser.add_argument("-m","--mask",
-                        help="Amber selection mask. Only the parameters from the residues within this mask will be extracted",
+                        help="Amber selection mask. Only residues within this mask will be renamed",
                         type=str,
                         default="@*",
-                        required="False" )
+                        required=False )
+
+    parser.add_argument("-n","--name",
+                        help="Rename all selected residues to this name",
+                        type=str,
+                        required=False)
+
+    parser.add_argument("-e1","--extract1",
+                        help="Amber selection mask. Only the parameters from the residues within this mask will be extracted",
+                        type=str,
+                        required=False)
+
+    parser.add_argument("-e2","--extract2",
+                        help="Amber selection mask. Only the parameters from the residues within this mask will be extracted",
+                        type=str,
+                        required=False)
+
+    parser.add_argument("-o","--output",
+                        help="Output file basename if -n/--name is specified",
+                        type=str,
+                        required=False)
+
+
+    parser.add_argument("-o1","--output1",
+                        help="Output file basename if -e1/--extract1 is specified",
+                        type=str,
+                        required=False)
+
+    parser.add_argument("-o2","--output2",
+                        help="Output file basename if -e2/--extract2 is specified",
+                        type=str,
+                        required=False)
 
     parser.add_argument("-f","--frcmod",
                         help="Output frcmod file",
@@ -294,18 +360,69 @@ if __name__ == "__main__":
                         type=str,
                         required=False)
 
+
+
     args = parser.parse_args()
 
-    if len(args.frcmod) > 0 or len(args.lib) > 0: 
-        p    = OpenParm(args.parm,xyz=args.crd)
-        sres = GetSelectedResidueIndices(p,args.mask)
-        resmask = ":%s"%( ",".join( [ "%i"%(res+1) for res in sres ] ) )
-        q    = Extract(p,resmask)
+    p    = OpenParm(args.parm,xyz=args.crd)
 
-    if len(args.frcmod) > 0:
-        ExtractFrcmod(q,"@*",args.frcmod)
-        
-    if len(args.lib) > 0:
-        parmed.tools.writeOFF(q,args.lib).execute()
+    sres = GetSelectedResidueIndices(p,args.mask)
+    resmask = ":%s"%( ",".join( [ "%i"%(res+1) for res in sres ] ) )
+    if args.name is not None:
+        if len(args.name) > 0:
+            name = args.name
+            if len(name) > 3:
+                name = name[0:3]
+            for i in parmed.amber.mask.AmberMask( p, args.mask ).Selected():
+                p.atoms[i].residue.name = name
+            SaveParmRst(p, args.output)
+            fh = open("%s.seq"%(args.output),"w")
+            seq = GetResSeq( p )
+            seqchunks=[]
+            for chunk in divide_chunks(seq,10):
+                seqchunks.append( " ".join(chunk) )
+                seqstr = "\n".join(seqchunks)
+            fh.write(seqstr)
 
-    
+
+    if args.extract1 is not None:
+        if len(args.extract1) > 0:
+            p1 = CopyParm (p)
+            sres1 = GetSelectedResidueIndices(p1,args.extract1)
+            resmask1 = ":%s"%( ",".join( [ "%i"%(res+1) for res in sres1 ] ) )
+            q1    = Extract(p1,resmask1)
+            parmed.formats.Mol2File.write(q1, "{}.mol2".format(args.output1))
+            parmed.formats.PDBFile.write(q1,"{}.pdb".format(args.output1))
+
+            fh = open("%s.seq"%(args.output1),"w")
+            seq = GetResSeq( q1 )
+            seqchunks=[]
+            for chunk in divide_chunks(seq,10):
+                seqchunks.append( " ".join(chunk) )
+                seqstr = "\n".join(seqchunks)
+            fh.write(seqstr)
+
+            ExtractFrcmod(q1,"@*","{}.frcmod".format(args.output1))
+            parmed.tools.writeOFF(q1,"{}.lib".format(args.output1)).execute()
+
+
+    if args.extract2 is not None:
+        if len(args.extract2) > 0:
+            p2       = CopyParm (p)
+            sres2    = GetSelectedResidueIndices(p2,args.extract2)
+            resmask2 = ":%s"%( ",".join( [ "%i"%(res+1) for res in sres2 ] ) )
+            q2    = Extract(p2,resmask2)
+            parmed.formats.Mol2File.write(q2, "{}.mol2".format(args.output2))
+            parmed.formats.PDBFile.write(q2,"{}.pdb".format(args.output2))
+
+            fh = open("%s.seq"%(args.output2),"w")
+            seq = GetResSeq( q2 )
+            seqchunks=[]
+            for chunk in divide_chunks(seq,10):
+                seqchunks.append( " ".join(chunk) )
+                seqstr = "\n".join(seqchunks)
+            fh.write(seqstr)
+
+            ExtractFrcmod(q2,"@*","{}.frcmod".format(args.output2))
+            parmed.tools.writeOFF(q2,"{}.lib".format(args.output2)).execute()
+ 
