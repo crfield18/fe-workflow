@@ -288,7 +288,7 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass	= 0
 /
 EOF
-        cat<<EOF>inputs/\${eqNTP4}.mdin
+        cat<<EOF>inputs/\${eqNTP4}.mdin.template
 &cntrl
 imin            = 0
 nstlim          = 500000
@@ -1258,7 +1258,7 @@ EOF2
 
                 	a=\\\$(printf "%8.7f" \\\$a); b=\\\$(printf "%8.7f" \\\$b); c=\\\$(printf "%8.7f" \\\$c)
                 	for lam in \\\${endstates[@]};do
-                        	sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" \\\${lam}_eqNTP4.mdin.template > \\\${lam}_eqNTP4.mdin
+                        	sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" inputs/\\\${lam}_eqNTP4.mdin.template > inputs/\\\${lam}_eqNTP4.mdin
                 	done
                 	sleep 1
 
@@ -1812,7 +1812,7 @@ EOF2
 
 		a=\\\$(printf "%8.7f" \\\$a); b=\\\$(printf "%8.7f" \\\$b); c=\\\$(printf "%8.7f" \\\$c)
                 for lam in \\\${endstates[@]};do
-                        sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" \\\${lam}_eqNTP4.mdin.template > \\\${lam}_eqNTP4.mdin
+                        sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" inputs/\\\${lam}_eqNTP4.mdin.template > inputs/\\\${lam}_eqNTP4.mdin
                 done
                 sleep 1
 
@@ -2461,7 +2461,7 @@ EOF2
 
                 	a=\\\$(printf "%8.7f" \\\$a); b=\\\$(printf "%8.7f" \\\$b); c=\\\$(printf "%8.7f" \\\$c)
                 	for lam in \\\${endstates[@]};do
-                        	sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" \\\${lam}_eqNTP4.mdin.template > \\\${lam}_eqNTP4.mdin
+                        	sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" inputs/\\\${lam}_eqNTP4.mdin.template > inputs/\\\${lam}_eqNTP4.mdin
                 	done
                 	sleep 1
         	fi
@@ -3104,7 +3104,7 @@ EOF2
 
         	a=\\\$(printf "%8.7f" \\\$a); b=\\\$(printf "%8.7f" \\\$b); c=\\\$(printf "%8.7f" \\\$c)
                 for lam in \\\${endstates[@]};do
-                        sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" \\\${lam}_eqNTP4.mdin.template > \\\${lam}_eqNTP4.mdin
+                        sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" inputs/\\\${lam}_eqNTP4.mdin.template > inputs/\\\${lam}_eqNTP4.mdin
                 done
                 sleep 1
         fi
