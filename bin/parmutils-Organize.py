@@ -63,7 +63,8 @@ def SaveParmRst( param, fname ):
         #param.save( fname )
     rst = parmed.amber.Rst7(natom=len(param.atoms),title="BLAH")
     rst.coordinates = param.coordinates
-    rst.box = [param.box[0], param.box[1], param.box[2], param.box[3], param.box[4], param.box[5]]
+    if param.box is not None:
+        rst.box = [param.box[0], param.box[1], param.box[2], param.box[3], param.box[4], param.box[5]]
     rst.write( "{}.rst7".format(fname) )
 
 
