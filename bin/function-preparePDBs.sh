@@ -53,6 +53,68 @@ EOF
 	rm -rf renameinpdb.py
 }
 
+
+function get_pdb_seq {
+	local pdbfile=$1
+	local outfile=$2
+	
+	cat << EOF > get_pdb_seq.py
+#!/usr/bin/env python3
+
+def GetResSeq( parm ):
+    rtc=parmed.modeller.residue.ResidueTemplateContainer.from_structure( parm )
+    return [r.name for r in rtc]
+
+def divide_chunks_generator(l,n):
+    for i in range(0,len(l),n):
+        yield l[i:i+n]
+
+def divide_chunks(l,n):
+    return list(divide_chunks_generator(l,n))
+
+
+
+
+if __name__ == "__main__":
+
+    import argparse
+    import parmed
+    import re
+    import sys
+
+    parser = argparse.ArgumentParser     ( formatter_class=argparse.RawDescriptionHelpFormatter,
+      description="Rename residue name in PDB file" )
+
+    parser.add_argument("-p","--pdb",
+                        help="PDB file",
+                        type=str,
+                        required=True)
+
+    parser.add_argument("-o","--output",
+                        help="Output file basename" ,
+                        type=str,
+                        default="Renamed",
+                        required=False)
+
+
+    args = parser.parse_args()
+
+    p = parmed.load_file(args.pdb)
+
+    fh = open("%s.seq"%(args.output),"w")
+    seq = GetResSeq( p )
+    seqchunks=[]
+    for chunk in divide_chunks(seq,10):
+        seqchunks.append( " ".join(chunk) )
+        seqstr = "\n".join(seqchunks)
+    fh.write(seqstr)
+EOF
+	chmod a+x get_pdb_seq.py
+	./get_pdb_seq.py -p ${pdbfile} -o ${outfile}
+	rm -rf get_pdb_seq.py
+}
+
+
 function mol2_atomname_fix {
 	# in some mol2 files, antechamber changes names of atoms even with -an set to no. 
 	# renaming mol2 atom names to pdb atom names for consistency
@@ -126,23 +188,49 @@ function preparePDBs {
 		ligname=$(printf "L%02d\n" $i)
 		ligcharge=${uniquechgs[$i]}
 		ligid=$(grep "${molname}\|L1" ${path}/${molname}.pdb  | awk -F " " '{print $5}'|sort --unique); ligid=$((ligid-1))
+
 		rename_in_pdb "${molname}" "${path}" "${ligname}" "${ligid}"
 		if ! command -v pdb4amber &> /dev/null; then printf "\n\n pdb4amber not present in path. pdb4amber is required for setup using inputformat=pdb" && exit 0; fi
 		pdb4amber -i ${molname}.pdb -o ${molname}_com_dry.pdb -d >> output 2>&1
 		mv ${molname}_com_dry_nonprot.pdb ${molname}_lig_dry.pdb
+		get_pdb_seq "${molname}_com_dry.pdb" "${molname}_com_dry"
+		get_pdb_seq "${molname}_lig_dry.pdb" "${molname}_lig_dry"
 
-		if ! command -v antechamber &> /dev/null; then printf "\n\n antechamber not present in path. antechamber is required for setup using inputformat=pdb" && exit 0; fi
-		antechamber -i ${molname}_lig_dry.pdb -fi pdb -o ${molname}_lig_dry.mol2 -fo mol2 -at "gaff" -pf y -an n -c bcc -nc ${ligcharge} -rn ${ligname} >> output 2>&1; sleep 1
+		# check if ligand mol2 file is already present in the initial directory
+		if [ -f ${path}/${molname}.mol2 ]; then
+			printf "\n\n ${molname}.mol2 present in ${path} \n"
+			cp ${path}/${molname}.mol2 ${molname}_lig_dry.mol2
 
-		if grep -Fq 'Please check the total charge (-nc flag) and spin multiplicity (-m flag)' output; then
-			printf "\n\n Check the charge provided in chargelist corresponding to ligand in pdb file ${path_to_input}/${system}/${molname}.pdb\n\n" && exit 0
-                fi
+		else
+
+			if ! command -v antechamber &> /dev/null; then printf "\n\n antechamber not present in path. antechamber is required for setup using inputformat=pdb" && exit 0; fi
+			antechamber -i ${molname}_lig_dry.pdb -fi pdb -o ${molname}_lig_dry.mol2 -fo mol2 -at "gaff" -pf y -an n -c bcc -nc ${ligcharge} -rn ${ligname} >> output 2>&1; sleep 1
+
+			if grep -Fq 'Please check the total charge (-nc flag) and spin multiplicity (-m flag)' output; then
+				printf "\n\n Check the charge provided in chargelist corresponding to ligand in pdb file ${path_to_input}/${system}/${molname}.pdb\n\n" && exit 0
+                	fi
+		fi
 		mol2_atomname_fix "${molname}_lig_dry"
 
-		if ! command -v parmchk2 &> /dev/null; then printf "\n\n parmchk2 not present in path. parmchk2 is required for setup using inputformat=pdb" && exit 0; fi
-                parmchk2 -i ${molname}_lig_dry.mol2 -o ${molname}_lig_dry.frcmod -f mol2 -s 1
+		# check if ligand frcmod file is already present in the initial directory
+		if [ -f ${path}/${molname}.frcmod ]; then
+			printf "\n\n ${molname}.frcmod present in ${path} \n"
+			cp ${path}/${molname}.frcmod ${molname}_lig_dry.frcmod
 
-		cat <<EOF > tleap.in
+		else
+
+			if ! command -v parmchk2 &> /dev/null; then printf "\n\n parmchk2 not present in path. parmchk2 is required for setup using inputformat=pdb" && exit 0; fi
+                	parmchk2 -i ${molname}_lig_dry.mol2 -o ${molname}_lig_dry.frcmod -f mol2 -s 1
+
+		fi
+
+		if [ -f ${path}/${molname}.lib ]; then
+			printf "\n\n ${molname}.lib present in ${path} \n"
+			cp ${path}/${molname}.lib ${molname}_lig_dry.lib
+
+		else
+
+			cat <<EOF > tleap.in
 
 source leaprc.constph
 set default PBradii mbondi3
@@ -157,8 +245,9 @@ saveoff ${ligname} ${molname}_lig_dry.lib
 quit
 
 EOF
-		if ! command -v tleap &> /dev/null; then printf "\n\n tleap not present in path. tleap is required for setup using inputformat=pdb" && exit 0; fi
-		tleap -s -f tleap.in >> output 2>&1; sleep 1
+			if ! command -v tleap &> /dev/null; then printf "\n\n tleap not present in path. tleap is required for setup using inputformat=pdb" && exit 0; fi
+			tleap -s -f tleap.in >> output 2>&1; sleep 1
+		fi
 
 		cp ${molname}_lig_dry.frcmod ${molname}_com_dry.frcmod
 		cp ${molname}_lig_dry.lib    ${molname}_com_dry.lib
