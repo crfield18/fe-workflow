@@ -3,6 +3,7 @@
 ##########################################
 path=`pwd`
 pathTObin=${path}/bin			  		  	# path to bin folder
+export PATH="$PATH:${pathTObin}"
 ###########################################
 
 ##########################################
@@ -60,6 +61,11 @@ if [ "$stage" == "setup" ]; then
 	fi
 	# END of setupmode=0
 
+	# setup mode 1 correspond to end-point ACES setup
+	if [ "${setupmode}" == 1 ]; then
+		source ${pathTObin}/section-setupmodeone.sh	
+	fi
+	# END of setupmode=0
 #################################
 ##END STAGE=setup
 fi

@@ -377,6 +377,8 @@ if __name__ == "__main__":
             for i in parmed.amber.mask.AmberMask( p, args.mask ).Selected():
                 p.atoms[i].residue.name = name
             SaveParmRst(p, args.output)
+            parmed.formats.Mol2File.write(p, "{}.mol2".format(args.output))
+            parmed.formats.PDBFile.write(p,"{}.pdb".format(args.output))
             fh = open("%s.seq"%(args.output),"w")
             seq = GetResSeq( p )
             seqchunks=[]
@@ -384,6 +386,9 @@ if __name__ == "__main__":
                 seqchunks.append( " ".join(chunk) )
                 seqstr = "\n".join(seqchunks)
             fh.write(seqstr)
+
+            ExtractFrcmod(p,"@*","{}.frcmod".format(args.output))
+            parmed.tools.writeOFF(p,"{}.lib".format(args.output)).execute()
 
 
     if args.extract1 is not None:

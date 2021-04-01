@@ -986,7 +986,7 @@ EOF2
 	done
 
 	cat << EOFP > extract.py
-#!/usr/bin/env python3
+#!/usr/bin/env python2.7
 
 def OpenParm( fname, xyz=None ):
     import parmed
@@ -1097,7 +1097,7 @@ EOFP
 
 	mkdir -p ../vac/t\\\${trial} ../vac/inputs
 	for lam in \\\${lams[@]};do
-        	extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
+        	./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
         	sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = ${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
         	sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp.*/d' -e '/pres0.*/d' -e '/taup.*/d' -e '/numexchg/d' -e '/gremd_acyc/d' -e 's/nstlim.*/nstlim          = 1000000/g' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
@@ -1112,7 +1112,6 @@ EOFP
         	stage=preTI; laststage=init
         	EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         	LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-		source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
         	for lam in \\\${lams[@]};do
                 	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
         	done
@@ -1203,7 +1202,6 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
         	if [ \\\${alllams} -eq 0 ];then
 
                 	for lam in \\\${endstates[@]};do
-                        	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                         	# check if pmemd.cuda is present
                         	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
                         	echo "Running \\\$stage for lambda \\\${lam}..."
@@ -1393,7 +1391,6 @@ EOFP
         	stage=preTI; laststage=init
         	EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         	LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-		source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
         	for lam in \\\${lams[@]};do
                 	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
         	done
@@ -1653,7 +1650,6 @@ cd ../vac
 	stage=preTI; laststage=init
 	EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 	LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
 	for lam in \\\${lams[@]};do
 		\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c current/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o current/\\\${lam}_\\\${stage}.mdout -r current/\\\${lam}_\\\${stage}.rst7 -ref current/\\\${lam}_\\\${laststage}.rst7 &
 	done
@@ -1757,7 +1753,6 @@ for stage in \\\${eqstage[@]}; do
 	if [ \\\${alllams} -eq 0 ];then
 
 		for lam in \\\${endstates[@]};do
-			source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                         # check if pmemd.cuda is present
                         if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
         		echo "Running \\\$stage for lambda \\\${lam}..."
@@ -1947,7 +1942,6 @@ cd ../vac
         stage=preTI; laststage=init
         EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
         for lam in \\\${lams[@]};do
                 \\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c current/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o current/\\\${lam}_\\\${stage}.mdout -r current/\\\${lam}_\\\${stage}.rst7 -ref current/\\\${lam}_\\\${laststage}.rst7 &
         done
@@ -2050,7 +2044,6 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
         	if [ \\\${alllams} -eq 0 ];then
 
-                	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 	# check if pmemd.cuda is present
                 	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
@@ -2068,7 +2061,6 @@ trajout t\\\${trials}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                 	# check if cpptraj is present
                 	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                 	cpptraj < center.in
@@ -2077,7 +2069,6 @@ EOF2
 
         	elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
                 	laststage="init2"
-                	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 	# check if pmemd.cuda is present
                 	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
                 	export LAUNCH="srun"
@@ -2093,14 +2084,12 @@ trajout t\\\${trials}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                         	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                          	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                          	cpptraj < center.in
                          	sleep 1
                          	mv t\\\${trials}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trials}/\\\${lam}_\\\${stage}.rst7
                 	done
         	else
-                	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 	# check if pmemd.cuda.MPI is present
                 	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
@@ -2118,7 +2107,6 @@ trajout t\\\${trials}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                        	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                         	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         	cpptraj < center.in
                         	sleep 1
@@ -2256,7 +2244,6 @@ EOFP
         	stage=preTI; laststage=init
         	EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         	LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-		source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
         	for lam in \\\${lams[@]};do
                 	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trials}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trials}/\\\${lam}_\\\${stage}.mdout -r t\\\${trials}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trials}/\\\${lam}_\\\${laststage}.rst7 &
         	done
@@ -2341,7 +2328,6 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
         	if [ \\\${alllams} -eq 0 ];then
 
                 	if [ "\\\$stage" == "min1" ] || [ "\\\$stage" == "min2" ] || [ "\\\$stage" == "minProt2" ] || [ "\\\$stage" == "minProt1" ] || [ "\\\$stage" == "minProt05" ] || [ "\\\$stage" == "minProt025" ] || [ "\\\$stage" == "minProt01" ]; then
-                        	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                         	# check if pmemd.cuda is present
                         	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
@@ -2359,7 +2345,6 @@ trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                                	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                                 	# check if cpptraj is present
                                 	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                                 	cpptraj < center.in
@@ -2368,7 +2353,6 @@ EOF2
                         	done
 
                 	else
-                        	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                         	# check if pmemd.cuda.MPI is present
                         	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
@@ -2386,7 +2370,6 @@ trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                                	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                                 	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                                 	cpptraj < center.in
                                 	sleep 1
@@ -2396,7 +2379,6 @@ EOF2
 
         	elif [ "\\\${alllams}" == 1 ] && [ "\\\$stage" == "minTI" ]; then
 
-                	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 	# check if pmemd.cuda is present
                 	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
                 	export LAUNCH="srun"
@@ -2413,7 +2395,6 @@ trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst8
 go
 quit
 EOF2
-                        	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                         	# check if cpptraj is present
                         	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         	cpptraj < center.in
@@ -2421,7 +2402,6 @@ EOF2
                         	mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
                 	done
         	else
-                	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 	# check if pmemd.cuda.MPI is present
                 	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
@@ -2439,7 +2419,6 @@ trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                        	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                         	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         	cpptraj < center.in
                         	sleep 1
@@ -2597,7 +2576,6 @@ done
         	stage=preTI; laststage=init
         	EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         	LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-		source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
         	for lam in \\\${lams[@]};do
                 	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
         	done
@@ -2680,7 +2658,6 @@ for stage in \\\${eqstage[@]}; do
 
 	if [ \\\${alllams} -eq 0 ];then
 
-        	source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
         	# check if pmemd.cuda is present
         	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
@@ -2698,7 +2675,6 @@ trajout current/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                 # check if cpptraj is present
                 if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                 cpptraj < center.in
@@ -2707,7 +2683,6 @@ EOF2
 
 	elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
                 laststage="init2"
-		source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 # check if pmemd.cuda is present
                 if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
                 export LAUNCH="srun"
@@ -2723,14 +2698,12 @@ trajout current/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                         source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                          if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                          cpptraj < center.in
                          sleep 1
                          mv current/\\\${lam}_\\\${stage}_centered.rst7 current/\\\${lam}_\\\${stage}.rst7
                 done
         else
-                source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                	# check if pmemd.cuda.MPI is present
                 if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
@@ -2748,7 +2721,6 @@ trajout current/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                        source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                         if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         cpptraj < center.in
                         sleep 1
@@ -2886,7 +2858,6 @@ cd ../vac
         stage=preTI; laststage=init
         EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
         for lam in \\\${lams[@]};do
                 \\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c current/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o current/\\\${lam}_\\\${stage}.mdout -r current/\\\${lam}_\\\${stage}.rst7 -ref current/\\\${lam}_\\\${laststage}.rst7 &
         done
@@ -2984,7 +2955,6 @@ for stage in \\\${eqstage[@]}; do
 	if [ \\\${alllams} -eq 0 ];then
 
 		if [ "\\\$stage" == "min1" ] || [ "\\\$stage" == "min2" ] || [ "\\\$stage" == "minProt2" ] || [ "\\\$stage" == "minProt1" ] || [ "\\\$stage" == "minProt05" ] || [ "\\\$stage" == "minProt025" ] || [ "\\\$stage" == "minProt01" ]; then
-			source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 	# check if pmemd.cuda is present
                 	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
@@ -3002,7 +2972,6 @@ trajout current/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-				source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                 		# check if cpptraj is present
                 		if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                 		cpptraj < center.in
@@ -3011,7 +2980,6 @@ EOF2
         		done
 
 		else
-			source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
                 	# check if pmemd.cuda.MPI is present
                 	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
@@ -3029,7 +2997,6 @@ trajout current/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-				source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                			if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                 		cpptraj < center.in
                 		sleep 1
@@ -3039,7 +3006,6 @@ EOF2
 
 	elif [ "\\\${alllams}" == 1 ] && [ "\\\$stage" == "minTI" ]; then
 
-		source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
 		# check if pmemd.cuda is present
 		if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 		export LAUNCH="srun"
@@ -3056,7 +3022,6 @@ trajout current/\\\${lam}_\\\${stage}_centered.rst8
 go
 quit
 EOF2
-			source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
 			# check if cpptraj is present
                         if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
 			cpptraj < center.in
@@ -3064,7 +3029,6 @@ EOF2
 			mv current/\\\${lam}_\\\${stage}_centered.rst7 current/\\\${lam}_\\\${stage}.rst7
 		done
 	else
-		source /scratch/01969/abirg/Yorkgroup/Gitlab/bashrc_amberDD_gitlab_02-25-2021
 		# check if pmemd.cuda.MPI is present
                 if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
@@ -3082,7 +3046,6 @@ trajout current/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
-                        source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
                         if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         cpptraj < center.in
                         sleep 1
@@ -3240,7 +3203,6 @@ cd ../vac
         stage=preTI; laststage=init
         EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-	source /scratch/01969/abirg/Yorkgroup/bashrc_lbsr_dev
         for lam in \\\${lams[@]};do
                 \\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c current/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o current/\\\${lam}_\\\${stage}.mdout -r current/\\\${lam}_\\\${stage}.rst7 -ref current/\\\${lam}_\\\${laststage}.rst7 &
         done
