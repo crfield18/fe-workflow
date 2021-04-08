@@ -1311,7 +1311,13 @@ icfe            = 1
 ifmbar          = 1
 bar_intervall   = 1
 mbar_states     = \${#lams[@]}
-mbar_lambda     = \${lams[@]}
+EOF
+ilam=0
+for l in \${lams[@]}; do
+     ilam=\$(( \${ilam} + 1 ))
+     echo "mbar_lambda(\${ilam})     = \${l}" >> inputs/\${ti}.mdin
+done
+        cat<< EOF >> inputs/\${ti}.mdin
 
 noshakemask     = ${NOSHAKEMASK}
 
@@ -1376,7 +1382,13 @@ icfe            = 1
 ifmbar          = 1
 bar_intervall   = 1
 mbar_states     = \${#lams[@]}
-mbar_lambda     = \${lams[@]}
+EOF
+ilam=0
+for l in \${lams[@]}; do
+     ilam=\$(( \${ilam} + 1 ))
+     echo "mbar_lambda(\${ilam})    = \${l}" >> inputs/\${lam}_analyze.mdin
+done
+        cat<< EOF >> inputs/\${lam}_analyze.mdin
 
 noshakemask     = ${NOSHAKEMASK}
 
