@@ -306,7 +306,7 @@ def MutateMap(mol2file1,mol2file2):
     import copy
     
     if isinstance(mol2file1,str):
-        mol1 = parmed.load_file(mol2file1,structure=False)
+        mol1 = parmed.load_file(mol2file1,structure=True)
     elif isinstance(mol2file1,parmed.modeller.residue.ResidueTemplate):
         mol1 = copy.deepcopy(mol2file1)
 
@@ -321,7 +321,7 @@ def MutateMap(mol2file1,mol2file2):
 
     
     if isinstance(mol2file2,str):
-        mol2 = parmed.load_file(mol2file2,structure=False)
+        mol2 = parmed.load_file(mol2file2,structure=True)
     elif isinstance(mol2file2,parmed.modeller.residue.ResidueTemplate):
     #else:
         mol2 = copy.deepcopy(mol2file2)

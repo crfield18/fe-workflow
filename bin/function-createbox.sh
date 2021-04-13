@@ -237,6 +237,8 @@ quit
 EOF
 	tleap -s -f tleap.in > output
 
+
+	
 	mv ${list[0]}-solv.parm7 ${out[0]}_${s}.parm7; mv ${list[0]}-solv.rst7  ${out[0]}_${s}.rst7
 
 	nwat=$(calcwaterinparm ${out[0]}_${s}.parm7)
@@ -377,8 +379,18 @@ saveamberparm complex ${list[$i]}-solv.parm7 ${list[$i]}-solv.rst7
 
 quit
 EOF
- 	       tleap -s -f tleap.in > output
+ 		tleap -s -f tleap.in > output
+		
 
+		if [ ! -e "${list[$i]}-solv.parm7" ]; then
+		    echo "tleap failed to write ${list[$i]}-solv.parm7"
+		    exit 1
+		fi
+		if [ ! -e "${list[$i]}-solv.rst7" ]; then
+		    echo "tleap failed to write ${list[$i]}-solv.rst7"
+		    exit 1
+		fi
+		
         	mv ${list[$i]}-solv.parm7 ${out[$i]}_${s}.parm7; mv ${list[$i]}-solv.rst7  ${out[$i]}_${s}.rst7
 	done
 	rm -rf get_req_water_in_MDbox.py
