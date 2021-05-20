@@ -33,12 +33,9 @@ if [ "$stage" == "setup" ]; then
 
 	for i in "${!translist[@]}";do
 		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-		chgA=$(basename ${chargelist[$i]}); chgB="${chgA##*~}"; chgA="${chgA%~*}"
 		listA+=("${stA}"); listB+=("${stB}")
-		listchgA+=("${chgA}"); listchgB+=("${chgB}")
 	done
 	listligs+=(${listA[@]} ${listB[@]})
-	listchgs+=(${listchgA[@]} ${listchgB[@]})
 	uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 	for i in "${!uniqueligs[@]}";do
         	for j in "${!listligs[@]}";do
@@ -60,7 +57,7 @@ if [ "$stage" == "setup" ]; then
 		source ${pathTObin}/section-setupmodezero.sh	
 	fi
 	# END of setupmode=0
-
+exit 0
 	# setup mode 1 correspond to end-point ACES setup
 	if [ "${setupmode}" == 1 ]; then
 		source ${pathTObin}/section-setupmodeone.sh	

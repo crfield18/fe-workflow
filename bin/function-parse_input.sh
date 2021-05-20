@@ -5,31 +5,45 @@ function parse_input {
                         cat << EOFN > input.template
 system=Tyk2                     # system
 translist=(ejm42~ejm54 ejm42~ejm55 ejm55~ejm54) 	# list of transformations
-chargelist=(0~0 0~0 0~0)				# formal charge on ligands in the respective transformations. chargelist should correspond to translist
 
 path_to_input=../initial        # path to folder containing input configuration files 
-inputformat=parm		# parm/pdb
 nlambda=4                       # number of lambda windows
 protocol=unified                # unified protocol for TI
 
-mapmethod=0                     # 0 --> MCSS/ 1 --> MCSS-E
-mapinspect=0                    # 0 --> auto/ 1 --> mapinspect=true/ 2 --> mapinspect=checked
+# mapmethod =
+# 0 --> MCSS
+# 1 --> MCSS-E
+mapmethod=0                     
+
+# mapinspect =
+# 0 --> auto
+# 1 --> mapinspect=true
+# 2 --> mapinspect=checked
+mapinspect=0                    
+
 mapnetwork=true                 # generate network-wide consistent sc maps
 
-boxbuild=1			# 0 --> dont build boxes for complexes/ 1 --> build boxes/ 2 --> build boxes with same number of water and ions
-boxbufcom=15
-boxbufaq=20
-ionconc=0.15
+# boxbuild =
+# skip --> skip building of boxes
+# 0    --> dont build boxes for complexes
+# 1    --> build boxes with for complex and aqueous systems
+# 2    --> build boxes with same number of water and ions
+boxbuild=1	
 
-ntrials=3
+# MD box details
+boxbufcom=16	    	  	# buffer of MD box for complex systems
+boxbufaq=20           		# buffer of MD box for aqueous systems
+ionconc=0.15   			# ion concentration
+pff=ff14SB			# protein forcefield
+lff=gaff2	                # ligand forcefield
+wm=tip4pew  	  		# water model
+mdboxshape=cubic   	 	# shape of MD box
 
+# Free energy simulation details
 cutoff=10                       # non-bonded cutoff
-mincyc=2000                     # max minimization cycles in lambda window equilibration
-nstlimnvt=298000                # length of 0->298K NVT heating of lambda windows
-nstlimnpt=500000                # length of NPT equilibration of lambda windows. Ingored if ticalc is set to 'abfe'
 repex=true                      # true/false corresponding to use of replica exchange in TI simulations
-nstlimti=5000                   # length of TI simulations
-numexchgti=1000                 # number of exchanges in replica exchange TI simulations. if repex=false, numexchgti is ignored
+nstlimti=500                    # length of TI simulations
+numexchgti=10000                # number of exchanges in replica exchange TI simulations. if repex=false, numexchgti is ignored
 hmr=false                       # "true/false" If hmr=true, dt (timestep) is set to 4fs
 scalpha=0.5                     # scalpha
 scbeta=1.0                      # scbeta
@@ -44,6 +58,9 @@ gti_vdw_sc=1                    # gti_vdw_sc
 gti_cut_sc=2                    # gti_cut_sc
 gti_ele_exp=2                   # gti_ele_exp
 gti_vdw_exp=2                   # gti_vdw_exp
+
+
+ntrials=3     			# number of independent trials
 
 twostate=true                   # enables the two state model for generation of initial lambda window configurations.
 
@@ -80,12 +97,6 @@ EOFN
         # check input file parameters
         if [ "${protocol}" != "unified" ]; then printf "\n\nScript currently supports only \"unified\" protocol\n\n" && exit 0; fi
 
-	if [ "${inputformat}" != "parm" ] && [ "${inputformat}" != "pdb" ]; then printf "\n\n\"inputformat\" should be set to \"parm\" or \"pdb\"\n\n" && exit 0; fi
-
-	if [ "${inputformat}" == "pdb" ]; then
-		if [ "${#chargelist[@]}" -ne ${#translist[@]} ]; then printf "\n\n\"if inputformat is set to pdb, chargelist, a list containing molecular charges of the ligands involved in the transformations listed in translist, should also be provided. For example, an entry A~B in translist should have a corresponding entry CA~CB in chargelist, where CA, CB are net charges of the ligands in A and B, respectively. The lengths of the lists translist and chargelist should be equal." && exit 0; fi   
-	fi
-
 	if [ "${mapmethod}" -lt 0 ] && [ "${mapmethod}" -gt 2 ]; then printf "\n\n\"mapmethod\" should be set to 0 for \"MCSS\", 1 for \"MCSS-E\" algorithm for atom-mapping\n\n, 2 for \"MCSS-E\" variant applicable to linear transformations that involve change in mass of atoms" && exit 0; fi
 
 	if [ "${mapinspect}" -lt 0 ] || [ "${mapinspect}" -gt 3 ]; then printf "\n\n\"mapinspect\" should be set to 0 (for creating file infrastructure WITHOUT map manual inspection), 1 (for interrupting setup to allow for map manual inspection), or 2 (for continuing setup assuming map manual inspection has been completed)" && exit 0; fi
@@ -97,6 +108,8 @@ EOFN
         if [ "${repex}" != "true" ] && [ "${repex}" != "false" ]; then printf "\n\n\"repex\" should be set to \"true\" or \"false\"\n\n" && exit 0; fi
 
         if [ "${hmr}" != "true" ] && [ "${hmr}" != "false" ]; then printf "\n\n\"hmr\" should be set to \"true\" or \"false\"\n\n"   && exit 0; fi
+
+        if [ "${notrajectory}" != "true" ] && [ "${notrajectory}" != "false" ]; then printf "\n\n\"notrajectory\" should be set to \"true\" or \"false\"\n\n"   && exit 0; fi
 
         if [ "${gti_add_sc}" -lt 1 ] || [ "${gti_add_sc}" -gt 5 ]; then printf "\n\nAcceptable values for \"gti_add_sc\" are 1, 2(Recommended), 3, 4, and 5\n\n" && exit 0; fi
 
@@ -122,11 +135,15 @@ EOFN
 
         if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then print "\n\nShould be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" \n\n" && exit 0; fi
 
-	if [ "${ticalc}" == "rbfe" ]; then slist=(com aq); else slist=(aq); fi
+	if [ "${ticalc}" != "rbfe" ] && [ "${ticalc}" != "rsfe" ]; then printf "\n\n\"ticalc\" should be set to either \"rbfe\" or \"rsfe\" \n\n" && exit 0; fi
+	if [ "${ticalc}" == "rsfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=rsfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
+	
 
         # ensure path_to_input is absolute and check if input directories are present
         if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
 
+	########################
+	########################
 	# check input files
 	for i in "${!translist[@]}";do
                 stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
@@ -134,29 +151,90 @@ EOFN
         done
         listligs+=(${listA[@]} ${listB[@]})
         uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-	if [ "${inputformat}" == "parm" ]; then
-		parmmissing=0
+
+	if [ "${ticalc}" == "rbfe" ]; then
+		pdbmissing=0; ligmissing=0; slist=(com aq)
 		for i in "${!uniqueligs[@]}";do
-			molname=${uniqueligs[$i]}
-			if [ ! -f ${path_to_input}/${system}/${molname}.parm7 ] ||  [ ! -f ${path_to_input}/${system}/${molname}.rst7 ]; then
-				printf "\n\ninputformat is set to parm. ${molname}.parm7 or ${molname}.rst7 is missing\n\n"
-				parmmissing=1
+                	molname=${uniqueligs[$i]}
+                	if [ ! -f ${path_to_input}/${system}/${molname}.pdb ]; then
+				printf "\n\n!!!! ERROR !!!!\n\n"
+                        	printf "\n\n ${molname}.pdb is missing\n\n"
+                        	pdbmissing=1
+                	elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}.pdb; then
+				printf "\n\n!!!! ERROR !!!!\n\n"
+				printf "\n\n ${molname}.pdb does not contain residue named "LIG". The ligand molecule in ${molname}.pdb must be named "LIG" \n\n"
+                        	pdbmissing=1
 			fi
-		done
-		if [ "${parmmissing}" -eq 1 ]; then exit 0; fi
-	else
-		pdbmissing=0
-		for i in "${!uniqueligs[@]}";do
+
+                	if [ ! -f ${path_to_input}/${system}/${molname}_0.mol2 ] || [ ! -f ${path_to_input}/${system}/${molname}_0.frcmod ] || [ ! -f ${path_to_input}/${system}/${molname}_0.lib ]; then
+				printf "\n\n!!!! ERROR !!!!\n\n"
+                        	printf "\n\n One or more of ligand parameter files present in ${molname}.pdb is missing. \n"
+				printf "Parameter files of the ligand present in ${molname}.pdb must be provided as ${molname}_0.mol2, ${molname}_0.frcmod, ${molname}_0.lib. \n"
+				printf "If ${molname}.pdb contain additional nonstandard residues, paramater files associated with these nonstandard residues must also be provided as \n"
+				printf "${molname}_1.frcmod/${molname}_1.lib, ${molname}_2.frcmod/${molname}_2.lib etc \n\n"
+                        	ligmissing=1
+			elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
+				printf "\n\n!!!! ERROR !!!!\n\n"
+		        	printf "\n\n mol2 file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+				ligmissing=1
+			elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
+				printf "\n\n!!!! ERROR !!!!\n\n"
+		        	printf "\n\n lib file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+				ligmissing=1
+                	fi
+
+			frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
+			libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)
+		
+			if [ "${frcmods}" -ne "${libs}" ]; then 
+				printf "\n\n!!!! ERROR !!!!\n\n"
+				printf "\n\n Each ${molname}_?.lib file should have a corresponding ${molname}_?.frcmod file \n\n"
+				exit 0
+			else
+				frcmodlist+=($frcmods)
+				liblist+=($libs)
+			fi
+        	done
+        	if [ "${pdbmissing}" -eq 1 ] || [ "${ligmissing}" -eq 1 ]; then exit 0; fi
+	fi
+
+        if [ "${ticalc}" == "rsfe" ]; then
+                pdbmissing=0; ligmissing=0; slist=(aq)
+                for i in "${!uniqueligs[@]}";do
                         molname=${uniqueligs[$i]}
-                        if [ ! -f ${path_to_input}/${system}/${molname}.pdb ]; then
-                                printf "\n\ninputformat is set to pdb. ${molname}.pdb is missing\n\n"
-                                pdbmissing=1
+                        if [ ! -f ${path_to_input}/${system}/${molname}_0.mol2 ] || [ ! -f ${path_to_input}/${system}/${molname}_0.frcmod ] || [ ! -f ${path_to_input}/${system}/${molname}_0.lib ]; then
+                                printf "\n\n!!!! ERROR !!!!\n\n"
+                                printf "\n\n One or more of ligand parameter files present in ${molname}.pdb is missing. \n"
+                                printf "Parameter files of the ligand present in ${molname}.pdb must be provided as ${molname}_0.mol2, ${molname}_0.frcmod, ${molname}_0.lib. \n"
+                                printf "If ${molname}.pdb contain additional nonstandard residues, paramater files associated with these nonstandard residues must also be provided as \n"
+                                printf "${molname}_1.frcmod/${molname}_1.lib, ${molname}_2.frcmod/${molname}_2.lib etc \n\n"
+                                ligmissing=1
+                        elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
+                                printf "\n\n!!!! ERROR !!!!\n\n"
+                                printf "\n\n mol2 file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+                                ligmissing=1
+                        elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
+                                printf "\n\n!!!! ERROR !!!!\n\n"
+                                printf "\n\n lib file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+                                ligmissing=1
+                        fi
+
+                        frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
+                        libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)
+
+                        if [ "${frcmods}" -ne "${libs}" ]; then
+                                printf "\n\n!!!! ERROR !!!!\n\n"
+                                printf "\n\n Each ${molname}_?.lib file should have a corresponding ${molname}_?.frcmod file \n\n"
+                                exit 0
+                        else
+                                frcmodlist+=($frcmods)
+                                liblist+=($libs)
                         fi
                 done
-                if [ "${pdbmissing}" -eq 1 ]; then exit 0; fi
+	fi
+	############################
+	############################
 
-
-	fi	
 }
 
 

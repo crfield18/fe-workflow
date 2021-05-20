@@ -320,8 +320,9 @@ def MutateMap(mol2file1,mol2file2):
     mol1.save(mol2str_1,format="MOL2")
     mol2str_1 = mol2str_1.getvalue()
 
+    
     if isinstance(mol2file2,str):
-        mol2 = parmed.load_file(mol2file2,structure=True)
+        mol2 = parmed.load_file(mol2file2,structure=False)
     elif isinstance(mol2file2,parmed.modeller.residue.ResidueTemplate):
     #else:
         mol2 = copy.deepcopy(mol2file2)
@@ -616,10 +617,10 @@ if __name__ == "__main__":
 
     if args.graph is not None:
         if args.lig1 is not None or args.lig2 is not None or args.map is not None:
-            raise Exception("If --graph is not used, then --lig1, --lig2, and --map must all be used")
+            raise Exception("If --graph is used, then --lig1, --lig2, and --map must all be used")
     else:
         if args.lig1 is None or args.lig2 is None or args.map is None:
-            raise Exception("If --graph is used, then none of --lig1, --lig2, nor --map can be used")
+            raise Exception("If --graph is not used, then none of --lig1, --lig2, nor --map can be used")
 
     if args.graph is None:
         if args.method == 0:

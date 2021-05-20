@@ -13,26 +13,26 @@ if [ "${mapinspect}" -ne 2 ]; then
                         l1uniques=($(echo "${listl1[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
                         truncate -s0 map-network
                         for l1 in "${!l1uniques[@]}";do
-                                echo -n "${l1uniques[$l1]}_lig_dry.mol2" >> map-network
+                                echo -n "${l1uniques[$l1]}_0.mol2" >> map-network
                                 for j in "${!translist[@]}";do
                                         l11=$(basename ${translist[$j]}); l22="${l11##*~}"; l11="${l11%~*}"
                                         if [ "${l1uniques[$l1]}" == "${l11}" ]; then
-                                                echo -n " ${l22}_lig_dry.mol2 " >> map-network
+                                                echo -n " ${l22}_0.mol2 " >> map-network
                                         fi
                                 done
                                 echo "" >> map-network
                         done
                         cat map-network |column -t > tmp && mv tmp map-network
-                        parmutils-scmapper.py --graph map-network -t ${mapmethod}
+                        parmutils-scmapper.py --graph map-network -t ${mapmethod} >> output 2>&1
 
                         for map in *map.txt; do
-                                mv -f ${map} $(echo ${map}|awk -F "_lig_dry"  '{print $1$2$3}')
+                                mv -f ${map} $(echo ${map}|awk -F "_0"  '{print $1$2$3}')
                         done
 
                 else
                         for i in ${!listA[@]};do
                                 l1=${listA[$i]}; l2=${listB[$i]}
-                                parmutils-scmapper.py -a ${l1}_lig_dry.mol2 -b ${l2}_lig_dry.mol2 -o ${l1}~${l2}.map.txt -t ${mapmethod}
+                                parmutils-scmapper.py -a ${l1}_0.mol2 -b ${l2}_0.mol2 -o ${l1}~${l2}.map.txt -t ${mapmethod} >> output 2>&1
                         done
 
                 fi

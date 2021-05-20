@@ -1,0 +1,73 @@
+# CWD
+#path_to_input=/home/giese/devel/projects/jacs/CDK2/ligands
+path_to_input=initial
+
+# subdir containing parm7/rst7 files
+system=p38
+
+translist=(2AA~2Z 2AA~3FW 2V~2BB 2V~2Y 2V~3FY 3FY~3FH 2V~3FH 2V~3FK 2Y~2Z 2Z~3FK 2Z~3FQ 2Z~3FW) 
+#translist=(2AA~2Z 2AA~3FW 2V~2BB 2V~2Y 2V~3FY 3FY~3FH)   # hpcc
+#translist=(2V~3FH 2V~3FK 2Y~2Z 2Z~3FK 2Z~3FQ 2Z~3FW)      # lh
+#translist=(2V~3FK)
+
+#translist=(1h1q~1h1r)
+#translist=(2AA~2BB 2AA~2Z 2AA~3FW 2V~2BB 2V~2X 2V~2Y 2V~3FH 2V~3FK 2V~3FY 2Y~2Z 2Z~3FK 2Z~3FQ 2Z~3FW 3FY~2X 3FY~3FH 3FY~3FQ)
+#translist=(1h1q~1h1r 1oiu~1h1r 1oi9~1oiy)
+#translist=(1h1q~1h1r 1h1q~1h1s 1h1q~1oiu 1h1q~1oiy 1h1q~1oi9 1oiu~1h1r 1oi9~1h1s 1oi9~1oiy 17~20 21~22 26~28 29~30 31~32)
+
+nlambda=11                      # number of lambda windows
+protocol=unified                # unified protocol for TI
+
+mapmethod=1
+mapinspect=0                    # 0 --> auto/ 1 --> mapinspect=true/ 2 --> mapinspect=checked
+mapnetwork=true
+
+# "skip" --> skip box building 
+# 0 --> dont build boxes for complexes/
+# 1 --> build boxes/
+# 2 --> build boxes with same number of water and ions
+boxbuild=1
+boxbufcom=16
+boxbufaq=20
+ionconc=0.15
+pff=ff14SB
+lff=gaff2
+wm=tip4pew
+mdboxshape=cubic
+
+
+ntrials=3
+
+cutoff=10                       # non-bonded cutoff
+repex=true
+nstlimti=5000                   # length of TI simulations
+numexchgti=1000                 # number of exchanges in replica exchange TI simulations. if repex=true
+hmr=false
+notrajectory=true		# when true, no output trajectories are generated
+scalpha=0.5                     # scalpha
+scbeta=1.0                      # scbeta
+gti_add_sc=5                    # gti_add_sc
+gti_scale_beta=1                # gti_scale_beta
+gti_cut=1                       # gti_cut
+gti_cut_sc_on=8                 # gti_cut_sc_on
+gti_cut_sc_off=10               # gti_cut_sc_off
+gti_lam_sch=1                   # gti_lam_sch
+gti_ele_sc=1                    # gti_ele_sc
+gti_vdw_sc=1                    # gti_vdw_sc
+gti_cut_sc=2                    # gti_cut_sc
+gti_ele_exp=2                   # gti_ele_exp
+gti_vdw_exp=2                   # gti_vdw_exp
+
+twostate=true
+
+ticalc=rbfe                     # "rbfe -> relative binding free energy/rsfe -> relative solvation free energy"
+stage=setup                     # "setup/run-equil/check-equil/run-TI/check-TI"
+setupmode=0                     # 0 --> regular TI/ 1 --> end-point ACES/ 2 --> TI from end-point ACES
+
+# job submission related
+partition=general-long-gpu      # name of specific partition on HPC. Use "null" is not relevant
+nnodes=1                        # number of nodes to be used for each transformation
+ngpus=8                         # number of gpus/node to be used for each transformation
+wallclock=3-00:00:00              # wallclock for individual jobs
+
+
