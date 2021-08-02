@@ -493,6 +493,96 @@ def ModifiedMCSSModel1(mol1file,mol2file,mapfile):
 
 
 
+
+def ModifiedMCSSModel2(mol1file,mol2file,mapfile):
+    import parmed
+    import sys
+    from collections import defaultdict as ddict
+
+    mol1 = parmed.load_file(mol1file,structure=True)
+    mol2 = parmed.load_file(mol2file,structure=True)
+
+    m1tom2,m2tom1 = MutateMap(mol1file,mol2file)
+    i1toi2 = m1tom2 #NameMapToIdxMap(mol1,mol2,m1tom2)
+    i2toi1 = m2tom1 #NameMapToIdxMap(mol2,mol1,m2tom1)
+
+#    for a in mol1.atoms:
+#        sys.stdout.write("%4s :"%(a.name))
+#        for b in a.bond_partners:
+#            sys.stdout.write(" %4s"%(b.name))
+#        sys.stdout.write("\n")
+#    sys.stdout.write("\n")
+
+    sc1 = []
+    for a in mol1.atoms:
+        if a.idx not in i1toi2:
+            sc1.append( a.idx )
+    sc2 = []
+    for a in mol2.atoms:
+        if a.idx not in i2toi1:
+            sc2.append( a.idx )
+
+            
+    for i1 in i1toi2:
+        i2 = i1toi2[i1]
+        a1 = mol1.atoms[i1]
+        a2 = mol2.atoms[i2]
+        hybrid1 = len( a1.bond_partners )
+        hybrid2 = len( a2.bond_partners )
+        z1 = a1.atomic_number
+        z2 = a2.atomic_number
+        if z1 != z2:
+            sc1.extend( ChooseSCAtoms(mol1,m1tom2,i1) )
+            sc2.extend( ChooseSCAtoms(mol2,m2tom1,i2) )
+            sc1.append( i1 )
+            sc2.append( i2 )
+        elif (hybrid1 != hybrid2):
+            sc1.extend( ChooseSCAtoms(mol1,m1tom2,i1) )
+            sc2.extend( ChooseSCAtoms(mol2,m2tom1,i2) )
+        
+            
+    for i1 in i1toi2:
+        i2 = i1toi2[i1]
+        z1 = mol1.atoms[i1].atomic_number
+        z2 = mol2.atoms[i2].atomic_number
+        if (z1 == 1 or z2 == 1) and z1 + z2 > 2:
+            if z1 == 1:
+                base1 = mol1.atoms[i1].bond_partners[0].idx
+                base2 = i1toi2[base1]
+            else:
+                base2 = mol2.atoms[i2].bond_partners[0].idx
+                base1 = i2toi1[base2]
+            sc1.extend( AtomsBeyondBond(mol1,base1,i1) )
+            sc2.extend( AtomsBeyondBond(mol2,base2,i2) )
+
+            
+    sc1 = list(set(sc1))
+    sc2 = list(set(sc2))
+    #print([mol1.atoms[a].name for a in sc1])
+    #print([mol2.atoms[a].name for a in sc2])
+        
+    #ats = AtomsBeyondBond(mol1,FindIdxByName(mol1,"C1"),FindIdxByName(mol1,"C3"))
+
+    for sc in sc1:
+        if sc in i1toi2:
+            del i1toi2[sc]
+    for sc in sc2:
+        if sc in i2toi1:
+            del i2toi1[sc]
+
+    if mapfile is not None: 
+        fh=open(mapfile,"w")
+        for i1 in i1toi2:
+            i2 = i1toi2[i1]
+            n1 = mol1.atoms[i1].name
+            n2 = mol2.atoms[i2].name
+            fh.write("%4s => %4s\n"%(n1,n2))
+        fh.close()
+        
+    return i1toi2,i2toi1
+
+
+
 def MCSSModel(mol1file,mol2file,mapfile):
     import parmed
     import sys
@@ -574,13 +664,16 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser \
     ( formatter_class=argparse.RawDescriptionHelpFormatter,
-      description="""Writes a alchemical transformation map file""")
+      description="""Writes a alchemical transformation map file.
+Mapping method 0: MCSS
+Mapping method 1: Extends MCSS to include chains from atoms changing hybridization into SC region
+Mapping method 2: Like (1), but also includes atoms that change atomic number (and chains connected to them)""")
 
     parser.add_argument \
         ("-t","--method",
-         help="Mapping method. 0=MCSS, 1=Model 1",
+         help="Mapping method. 0=MCSS, 1=MCSS+dHyb, 2=MCSS+Hyb+dZ",
          type=int,
-         default=1,
+         default=2,
          required=False )
 
     parser.add_argument \
@@ -627,11 +720,15 @@ if __name__ == "__main__":
             MCSSModel(args.lig1,args.lig2,args.map)
         elif args.method == 1:
             ModifiedMCSSModel1(args.lig1,args.lig2,args.map)
+        elif args.method == 2:
+            ModifiedMCSSModel2(args.lig1,args.lig2,args.map)
     else:
         if args.method == 0:
             method = lambda lig1,lig2 : MCSSModel(lig1,lig2,None)
         elif args.method == 1:
             method = lambda lig1,lig2 : ModifiedMCSSModel1(lig1,lig2,None)
+        elif args.method == 2:
+            method = lambda lig1,lig2 : ModifiedMCSSModel2(lig1,lig2,None)
             
         GraphMCSS(method,args.graph)
 

@@ -20,8 +20,8 @@ if [ "${ticalc}" == "rbfe" ]; then
 fi
 
 # Organization of initial files organization
-# RSFE calculations
-if [ "${ticalc}" == "rsfe" ]; then
+# RSFE or ASFE calculations
+if [ "${ticalc}" == "rsfe" ] || [ "${ticalc}" == "asfe" ]; then
         cd ${system}/setup
                 if [[ -f molname-ligname.mapping && $(cat molname-ligname.mapping | wc -l) -eq "${#uniqueligs[@]}"  ]]; then
                         printf "\n\n\"molname-ligname.mapping\" present in working directory. Skipping initial organization of input files."

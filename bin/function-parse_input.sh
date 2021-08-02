@@ -3,51 +3,99 @@ function parse_input {
         if [ ! -z "$1" ]; then
                 if [ "$1" == "-h" ] || [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ] ; then
                         cat << EOFN > input.template
-system=Tyk2                     # system
-translist=(ejm42~ejm54 ejm42~ejm55 ejm55~ejm54) 	# list of transformations
+# Directory that contains within it a subdirectory "system"
+# containing initial structure/parameter files.
+# For example, a single folder "initial" may contain multiple
+# subdirectories containing initial files for different systems
+path_to_input=initial
 
-path_to_input=../initial        # path to folder containing input configuration files 
-nlambda=4                       # number of lambda windows
+
+# Subdirectory containing initial structure/parameter files
+# of "system"
+# For example,
+# system=CDK2
+system=smallMols
+
+
+
+# List of desired transformations or edges
+# For example, RBFE or RSFE calculations should have a list
+# in which each entry consists of two molnames separated by the
+# character "~". Initial structure/parameter files of these
+# molnames should be provided in ${path_to_input}/${system}
+# For RBFE calculations, the PDB file of protein-ligand complex
+# and mol2,lib,frcmod files of ligand are expected.
+# For RSFE calculations, mol2,lib,frcmod files of ligand are expected.
+# example,
+# translist=(1h1q~1h1r 1h1q~1h1s)
+#
+# For ASFE calculations, "translist" should contain a list of
+# molnames.
+# mol2,lib,frcmod files of these molnames are expected in
+# ${path_to_input}/${system}
+# example,
+# translist=(mobley_1527293 mobley_3034976)
+translist=(1h1q~1h1r 1h1q~1h1s)
+
+
+nlambda=11                      # number of lambda windows
 protocol=unified                # unified protocol for TI
 
-# mapmethod =
-# 0 --> MCSS
-# 1 --> MCSS-E
-mapmethod=0                     
+# mapmethod determines the algorithm using which cc and sc regions
+# will be determined.
+# mapmethod=0 --> MCSS
+# mapmethod=1 --> MCSS-E
+# mapmethod=2 --> MCSS-E2
+mapmethod=2
 
-# mapinspect =
-# 0 --> auto
-# 1 --> mapinspect=true
-# 2 --> mapinspect=checked
-mapinspect=0                    
+# mapinspect determines if there is need of manual inspection of the
+# atom maps
+# mapinspect=0 --> no-inspection. generate the atom maps using
+# algorithm specified by "mapmethod", and then proceed to generate
+# file infrastructure
+# mapinspect=1 --> manual inspection. stop after generating the
+# atom maps.
+# mapinspect=2 --> resume generation of file infrastructure assuming
+# map inspection has been completed.
+# mapinspect=2 expects necessary atom map files to be present in the "setup" folder
+mapinspect=0
 
-mapnetwork=true                 # generate network-wide consistent sc maps
 
-# boxbuild =
-# skip --> skip building of boxes
-# 0    --> dont build boxes for complexes
-# 1    --> build boxes with for complex and aqueous systems
-# 2    --> build boxes with same number of water and ions
-boxbuild=1	
+# mapnetwork determines whether network-wide consistent cc and sc regions
+# will be generated.
+# mapnetwork=true ensures that in a given network of transformations, cc and sc
+# regions of each ligand is identical in every transformation in which is participates
+mapnetwork=false
 
-# MD box details
-boxbufcom=16	    	  	# buffer of MD box for complex systems
-boxbufaq=20           		# buffer of MD box for aqueous systems
-ionconc=0.15   			# ion concentration
-pff=ff14SB			# protein forcefield
-lff=gaff2	                # ligand forcefield
-wm=tip4pew  	  		# water model
-mdboxshape=cubic   	 	# shape of MD box
+# boxbuild determines if and how MD boxes will be built
+# "skip" --> skip box building
+# 0      --> for RBFE calculations, do not build boxes for "complex" state, only for "aqueous"
+#            state.
+# 1 --> build boxes for both "complex" and "aqueous" states
+# for RSFE and ASFE calculations, boxbuild=0 and boxbuild=1 are identical.
+# 2 --> build boxes for both "complex" and "aqueous" states with same number
+# of water and ions
+boxbuild=2
+boxbufcom=16                    # MD box buffer for "complex" states
+boxbufaq=20                     # MD box buffer for "aqueous" states
+ionconc=0.15                    # Ion concentration in MD box
+pff=ff14SB                      # Protein force field
+lff=gaff2                       # Ligand forcefield
+wm=tip4pew                      # Water model
+mdboxshape=cubic                # Shape of MD box
 
-# Free energy simulation details
+
+ntrials=3                       # Number of independent trials
+
 cutoff=10                       # non-bonded cutoff
-repex=true                      # true/false corresponding to use of replica exchange in TI simulations
-nstlimti=500                    # length of TI simulations
-numexchgti=10000                # number of exchanges in replica exchange TI simulations. if repex=false, numexchgti is ignored
-hmr=false                       # "true/false" If hmr=true, dt (timestep) is set to 4fs
+repex=true
+nstlimti=5000                   # length of TI simulations
+numexchgti=1000                 # number of exchanges in replica exchange TI simulations. if repex=true
+hmr=false
+notrajectory=true               # when true, no output trajectories are generated
 scalpha=0.5                     # scalpha
 scbeta=1.0                      # scbeta
-gti_add_sc=5                    # gti_add_sc
+gti_add_sc=5
 gti_scale_beta=1                # gti_scale_beta
 gti_cut=1                       # gti_cut
 gti_cut_sc_on=8                 # gti_cut_sc_on
@@ -59,20 +107,35 @@ gti_cut_sc=2                    # gti_cut_sc
 gti_ele_exp=2                   # gti_ele_exp
 gti_vdw_exp=2                   # gti_vdw_exp
 
+# twostate determines the protocol to be used for equilibration of protein-ligand complex systems.
+# twostate=false directs script to setup the equilibration file infrastructure
+# in an "1-state" way in which for a given transformation P:A --> P:B, only the P:A structure is
+# considered and the ligand B is superimposed on ligand A.
+# twostate=true directs script to setup the equilibration file infrastructure
+# in a "2-state" way in which for a given transformation P:A --> P:B, both P:A and P:B structures
+# considered and represents the two end states.
+twostate=false
 
-ntrials=3     			# number of independent trials
 
-twostate=true                   # enables the two state model for generation of initial lambda window configurations.
-
+# ticalc determines the calculation.
+# ticalc=rbfe --> relative binding free energy
+# ticalc=rsfe --> relative solvation free energy
+# ticalc=asfe --> absolute solvation free energy
 ticalc=rbfe                     # "rbfe -> relative binding free energy/rsfe -> relative solvation free energy"
+
+# stage controls the action of the script
+# stage=setup --> sets up TI calculations
+# stage=run-equil --> run equil simulations
+# stage=run-TI --> run TI simulations
+# stage=check-TI --> check TI simulations
 stage=setup                     # "setup/run-equil/check-equil/run-TI/check-TI"
 setupmode=0                     # 0 --> regular TI/ 1 --> end-point ACES/ 2 --> TI from end-point ACES
 
 # job submission related
-partition=v100                  # name of specific partition on HPC. Use "null" is not relevant
+partition=general-long-gpu      # name of specific partition on HPC. Use "null" is not relevant
 nnodes=1                        # number of nodes to be used for each transformation
-ngpus=4                         # number of gpus/node to be used for each transformation
-wallclock=24:00:00              # wallclock for individual jobs
+ngpus=8                         # number of gpus/node to be used for each transformation
+wallclock=3-00:00:00              # wallclock for individual jobs
 
 
 EOFN
@@ -135,8 +198,9 @@ EOFN
 
         if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then print "\n\nShould be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" \n\n" && exit 0; fi
 
-	if [ "${ticalc}" != "rbfe" ] && [ "${ticalc}" != "rsfe" ]; then printf "\n\n\"ticalc\" should be set to either \"rbfe\" or \"rsfe\" \n\n" && exit 0; fi
+	if [ "${ticalc}" != "rbfe" ] && [ "${ticalc}" != "rsfe" ]  && [ "${ticalc}" != "asfe" ]; then printf "\n\n\"ticalc\" should be set to either \"rbfe\" or \"rsfe\" or \"asfe\"\n\n" && exit 0; fi
 	if [ "${ticalc}" == "rsfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=rsfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
+	if [ "${ticalc}" == "asfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=asfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
 	
 
         # ensure path_to_input is absolute and check if input directories are present
@@ -145,12 +209,21 @@ EOFN
 	########################
 	########################
 	# check input files
-	for i in "${!translist[@]}";do
-                stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-                listA+=("${stA}"); listB+=("${stB}")
-        done
-        listligs+=(${listA[@]} ${listB[@]})
-        uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+	if [ "${ticalc}" == "rbfe" ] || [ "${ticalc}" == "rsfe" ]; then
+		for i in "${!translist[@]}";do
+                	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
+                	listA+=("${stA}"); listB+=("${stB}")
+        	done
+        	listligs+=(${listA[@]} ${listB[@]})
+        	uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+	else
+		for i in "${!translist[@]}";do
+			if grep -q '~' <<< "${translist[$i]}"; then printf "\n\n The character '~' is present is ${translist[$i]}. For \"ticalc\"=asfe, translist should contain a list of ligand molecules.\n\n" && exit 0; fi
+			listligs+=("${translist[$i]}")
+        		uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+		done
+	fi
+	########################
 
 	if [ "${ticalc}" == "rbfe" ]; then
 		pdbmissing=0; ligmissing=0; slist=(com aq)
@@ -175,13 +248,15 @@ EOFN
                         	ligmissing=1
 			elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
 				printf "\n\n!!!! ERROR !!!!\n\n"
-		        	printf "\n\n mol2 file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+				printf "\n\n resname of the ligand in ${molname}_0.mol2 must be \"LIG\" \n\n"
 				ligmissing=1
 			elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
 				printf "\n\n!!!! ERROR !!!!\n\n"
-		        	printf "\n\n lib file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+		        	printf "\n\n resname 0of the ligand in ${molname}_0.lib must be \"LIG\" \n\n"
 				ligmissing=1
                 	fi
+
+			if [ "${ligmissing}" -eq 1 ]; then exit 0; fi
 
 			frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
 			libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)
@@ -198,7 +273,7 @@ EOFN
         	if [ "${pdbmissing}" -eq 1 ] || [ "${ligmissing}" -eq 1 ]; then exit 0; fi
 	fi
 
-        if [ "${ticalc}" == "rsfe" ]; then
+        if [ "${ticalc}" == "rsfe" ] || [ "${ticalc}" == "asfe" ]; then
                 pdbmissing=0; ligmissing=0; slist=(aq)
                 for i in "${!uniqueligs[@]}";do
                         molname=${uniqueligs[$i]}
@@ -211,13 +286,15 @@ EOFN
                                 ligmissing=1
                         elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
                                 printf "\n\n!!!! ERROR !!!!\n\n"
-                                printf "\n\n mol2 file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+                                printf "\n\n resname of the ligand in ${molname}_0.mol2 must be \"LIG\" \n\n"
                                 ligmissing=1
                         elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
                                 printf "\n\n!!!! ERROR !!!!\n\n"
-                                printf "\n\n lib file of the ligand in ${molname}.pdb must have resname \"LIG\" \n\n"
+                                printf "\n\n resname of the ligand in ${molname}_0.lib must be \"LIG\" \n\n"
                                 ligmissing=1
                         fi
+
+			if [ "${ligmissing}" -eq 1 ]; then exit 0; fi
 
                         frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
                         libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)

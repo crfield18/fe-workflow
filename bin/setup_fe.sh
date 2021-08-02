@@ -18,6 +18,19 @@ source ${pathTObin}/function-preparePDBs.sh
 
 
 ###########################################
+# top level exit function
+trap "exit 1" TERM
+export TOP_PID=$$
+
+function killit()
+{
+   echo "Goodbye"
+   kill -s TERM $TOP_PID
+}
+
+
+
+###########################################
 # Main program 
 
 #read and parse input data
@@ -31,17 +44,17 @@ if [ "$stage" == "setup" ]; then
 
 	mkdir -p ${system}/setup
 
-	for i in "${!translist[@]}";do
-		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-		listA+=("${stA}"); listB+=("${stB}")
-	done
-	listligs+=(${listA[@]} ${listB[@]})
-	uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-	for i in "${!uniqueligs[@]}";do
-        	for j in "${!listligs[@]}";do
-                	if [ "${uniqueligs[$i]}" == "${listligs[$j]}" ]; then uniquechgs[$i]="${listchgs[$j]}" && break; fi
-        	done
-        done
+###for i in "${!translist[@]}";do
+###	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
+###	listA+=("${stA}"); listB+=("${stB}")
+###done
+###listligs+=(${listA[@]} ${listB[@]})
+###uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+###for i in "${!uniqueligs[@]}";do
+###	for j in "${!listligs[@]}";do
+###        	if [ "${uniqueligs[$i]}" == "${listligs[$j]}" ]; then uniquechgs[$i]="${listchgs[$j]}" && break; fi
+###	done
+###done
 
 	# File Organization
 	source ${pathTObin}/section-FileOrganization.sh

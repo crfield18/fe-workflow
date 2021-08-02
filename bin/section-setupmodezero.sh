@@ -169,50 +169,80 @@ EOF
 
 if [ "${setupmode}" == 0 ]; then
 
-        #UNIFIED protocol
         if [ "${protocol}" == "unified" ]; then
                 cd $path/$system/setup
-                        for i in "${!translist[@]}";do
-                                stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-                                for s in ${slist[@]}; do
-                                        mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}
-					if [ "${s}" == "aq" ] || [ "${twostate}" == "false" ]; then
-						cp ${stA}~${stB}_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
-						cp ${stA}~${stB}_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
-					else
-                                        	cp ${stA}~${stB}-1_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
-                                        	cp ${stA}~${stB}-1_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
-                                        	cp ${stA}~${stB}-2_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateB.rst7
-					fi
+			if [ "${ticalc}" != "asfe" ]; then
+                        	for i in "${!translist[@]}";do
+                                	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
+                                	for s in ${slist[@]}; do
+                                        	mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}
+						if [ "${s}" == "aq" ] || [ "${twostate}" == "false" ]; then
+							cp ${stA}~${stB}_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
+							cp ${stA}~${stB}_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
+						else
+                                        		cp ${stA}~${stB}-1_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
+                                        		cp ${stA}~${stB}-1_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
+                                        		cp ${stA}~${stB}-2_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateB.rst7
+						fi
 
-					scmask1=$(cat "${stA}~${stB}".scmask1)
-					scmask2=$(cat "${stA}~${stB}".scmask2)
-					timask1=$(cat "${stA}~${stB}".timask1)
-					timask2=$(cat "${stA}~${stB}".timask2)
-					noshakemask="${timask1},${timask2:1:${#timask2}}"
-					# get succint ambermasks
-					if [ "${scmask1}" != '""' ]; then
-						scmask1=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${scmask1}")
-						scmask1="'${scmask1}'"
-					fi
-					if [ "${scmask2}" != '""' ]; then
-						scmask2=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${scmask2}")
-						scmask2="'${scmask2}'"
-					fi
-					timask1=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${timask1}"); timask1="'${timask1}'"
-					timask2=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${timask2}"); timask2="'${timask2}'"
-					noshakemask=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${noshakemask}"); noshakemask="'${noshakemask}'"
+						scmask1=$(cat "${stA}~${stB}".scmask1)
+						scmask2=$(cat "${stA}~${stB}".scmask2)
+						timask1=$(cat "${stA}~${stB}".timask1)
+						timask2=$(cat "${stA}~${stB}".timask2)
+						noshakemask="${timask1},${timask2:1:${#timask2}}"
+						#printf "\n ${timask1} ${timask2} ${scmask1} ${scmask2} ${noshakemask} \n"
+						# get succint ambermasks
+						if [ "${scmask1}" != '""' ]; then
+							scmask1=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${scmask1}")
+							scmask1="'${scmask1}'"
+						fi
+						if [ "${scmask2}" != '""' ]; then
+							scmask2=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${scmask2}")
+							scmask2="'${scmask2}'"
+						fi
+						timask1=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${timask1}"); timask1="'${timask1}'"
+						timask2=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${timask2}"); timask2="'${timask2}'"
+						noshakemask=$(getambermask "${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7" "${noshakemask}"); noshakemask="'${noshakemask}'"
 
-					#printf "\n ${timask1} ${timask2} ${scmask1} ${scmask2} ${noshakemask} \n"
+						#printf "\n ${timask1} ${timask2} ${scmask1} ${scmask2} ${noshakemask} \n"
 
-                                        cd ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}
-                                                if [ "${ticalc}" == "rbfe" ]; then
-                                                        writetemplate_rbfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp $stA $stB $s ${twostate}
-                                                else
-                                                        writetemplate_rsfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp $stA $stB ${twostate}
-                                                fi
+                                        	cd ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}
+                                                	if [ "${ticalc}" == "rbfe" ]; then
+                                                        	writetemplate_rbfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
+                                                	else
+                                                        	writetemplate_rsfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]}
+                                                	fi
 
-						sh TEMPLATE.sh; sleep 1
+							sh TEMPLATE.sh; sleep 1
+						cd $path/${system}/setup
+					done
+				done
+			else
+				for i in "${!translist[@]}";do
+					for s in ${slist[@]}; do
+						mkdir -p ${path}/${system}/${protocol}/run/${translist[$i]}/${s}
+						cp ${translist[$i]}_${s}.parm7 ${path}/${system}/${protocol}/run/${translist[$i]}/${s}/unisc.parm7
+						cp ${translist[$i]}_${s}.rst7  ${path}/${system}/${protocol}/run/${translist[$i]}/${s}/stateA.rst7
+
+						scmask1="':1'"
+						scmask2="''"
+						timask1="':1'"
+						timask2="''"
+						noshakemask="':1'"
+
+						cd ${path}/${system}/${protocol}/run/${translist[$i]}/${s}
+							 writetemplate_rsfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]}
+							 sh TEMPLATE.sh; sleep 1
+						cd $path/${system}/setup
+					done
+				done
+			fi
+
+
+
+			for i in "${!translist[@]}";do
+				for s in ${slist[@]}; do
+					cd ${path}/${system}/${protocol}/run/${translist[$i]}/${s}
 
                                 		# if hmr=true set timestep to 4fs
                                 		if [ "${hmr}" == "true" ]; then
@@ -230,7 +260,6 @@ if [ "${setupmode}" == 0 ]; then
                                         		sed -i -e 's/ -rem 3//g' -e 's/running replica ti/running regular ti/g' run_alltrials.slurm
                                 		fi
 
-						truncate -s0 sub-eq.sh sub-ti.sh sub-all.sh
 						for(( t=1;t<=${ntrials};t++));do
 						        mkdir -p t${t}
 						        cp current/*_init.rst7 t${t}/
@@ -260,7 +289,7 @@ if [ "${setupmode}" == 0 ]; then
 
                                         cd $path/${system}/setup
                                 done
-				printf "Done with ${stA}~${stB}...\n"
+				printf "Done with ${translist[$i]}...\n"
                         done
                 cd ${path}
 

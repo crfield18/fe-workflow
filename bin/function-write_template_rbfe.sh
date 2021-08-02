@@ -5,7 +5,7 @@ function writetemplate_rbfe
 {
         #echo "$#"
         local args=$*; args=($args)
-        local varlist=(nlambda CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW stA stB s twostate)
+        local varlist=(nlambda CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
         local i=0
         for a in "${varlist[@]}"; do
                 declare -n arr="$a"
@@ -43,6 +43,7 @@ rstbase=(${rstbase[*]})
 endstates=(${endstates[*]})
 twostate=${twostate}
 lams=(${lams[@]})
+env=${s}
 
 #generate initial configurations for lambda windows
 mkdir -p current inputs
@@ -161,7 +162,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -221,7 +222,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -281,7 +282,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1 
+ntc             = 2 
 ntf             = 1 
 ntwx            = 10000
 ntwr            = 5000
@@ -341,7 +342,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -405,7 +406,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -465,7 +466,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1 
+ntc             = 2 
 ntf             = 1 
 ntwx            = 10000
 ntwr            = 5000
@@ -526,7 +527,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1 
+ntc             = 2 
 ntf             = 1 
 ntwx            = 10000
 ntwr            = 5000
@@ -595,7 +596,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -683,7 +684,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -771,7 +772,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -859,7 +860,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -947,7 +948,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1035,7 +1036,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1211,7 +1212,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1267,7 +1268,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1323,7 +1324,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1379,7 +1380,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1445,7 +1446,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1502,7 +1503,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1564,7 +1565,7 @@ gremd_acyc      = 1
  /
 EOF
 
-        cat<< EOF >inputs/\${lam}_analyze.mdin
+        cat<< EOF >inputs/\${anal}.mdin
 &cntrl
 imin            = 6
 nstlim          = ${NSTLIMTI}
@@ -1573,7 +1574,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 0
 ntwr            = 0
@@ -1601,9 +1602,9 @@ EOF
 ilam=0
 for l in \${lams[@]}; do
      ilam=\$(( \${ilam} + 1 ))
-     echo "mbar_lambda(\${ilam})     = \${l}" >> inputs/\${ti}.mdin
+     echo "mbar_lambda(\${ilam})     = \${l}" >> inputs/\${anal}.mdin
 done
-        cat<< EOF >> inputs/\${ti}.mdin
+        cat<< EOF >> inputs/\${anal}.mdin
 
 noshakemask     = ${NOSHAKEMASK}
 
@@ -1667,13 +1668,13 @@ done
 # slurm to submit all trials together
 ##########
 ##########
-if [ "\${twostate}" != true ]; then
+if [ "\${twostate}" != true ] || [ "\${env}" == "aq" ]; then
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm
 #!/bin/bash
-#SBATCH --job-name="eq_${stA}~${stB}.slurm"
-#SBATCH --output="eq_${stA}~${stB}.slurm.slurmout"
-#SBATCH --error="eq_${stA}~${stB}.slurm.slurmerr"
+#SBATCH --job-name="eq_${trans}.slurm"
+#SBATCH --output="eq_${trans}.slurm.slurmout"
+#SBATCH --error="eq_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${ntrials}
 #SBATCH --ntasks-per-node=\${#lams[@]}
@@ -1808,14 +1809,14 @@ done
 EOF
 
 
-else
+elif [ "\${twostate}" == true ] && [ "\${env}" == "com" ]; then
 
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm
 #!/bin/bash
-#SBATCH --job-name="eq_${stA}~${stB}.slurm"
-#SBATCH --output="eq_${stA}~${stB}.slurm.slurmout"
-#SBATCH --error="eq_${stA}~${stB}.slurm.slurmerr"
+#SBATCH --job-name="eq_${trans}.slurm"
+#SBATCH --output="eq_${trans}.slurm.slurmout"
+#SBATCH --error="eq_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${ntrials}
 #SBATCH --ntasks-per-node=\${#lams[@]}
@@ -2023,9 +2024,9 @@ fi
 truncate -s0 prod.slurm
 cat<<EOF > prod.slurm
 #!/bin/bash
-#SBATCH --job-name="pr_${stA}~${stB}.slurm"
-#SBATCH --output="pr_${stA}~${stB}.slurm.slurmout"
-#SBATCH --error="pr_${stA}~${stB}.slurm.slurmerr"
+#SBATCH --job-name="pr_${trans}.slurm"
+#SBATCH --output="pr_${trans}.slurm.slurmout"
+#SBATCH --error="pr_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${nnodes}
 #SBATCH --ntasks-per-node=\${#lams[@]}

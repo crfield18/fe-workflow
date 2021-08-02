@@ -81,7 +81,7 @@ fi
 
 
 
-# generation of MD boxes
+# generation of MD boxes for RSFE calculations
 ##########################
 ##########################
 ##########################
@@ -118,8 +118,47 @@ if [ "${ticalc}" == "rsfe" ]; then
 
                 # two-state setup
                 if [ "${twostate}" == "true" ]; then
-                	printf "\n\n\"twostate\" = true is not compatible with \"ticalc\" = rsfe\n\n"
+                	printf "\n\n\"twostate\" = true is not compatible with \"ticalc\" = rsfe \n\n"
                 fi
+
+        cd ${path}
+fi
+##########################
+##########################
+##########################
+
+
+# generation of MD boxes for ASFE calculations
+##########################
+##########################
+##########################
+if [ "${ticalc}" == "asfe" ]; then
+        cd $system/setup
+        	printf "\n\n setting up files in \"1-state\" mode... \n\n"
+        	if [ "${boxbuild}" == "skip" ]; then
+        	        flag=0
+        	        for i in "${!translist[@]}"; do
+        	                if [ ! -f "${translist[$i]}_aq.parm7" ] || [ ! -f "${translist[$i]}_aq.rst7" ] || [ ! -f "${translist[$i]}.scmask1" ] || [ ! -f "${translist[$i]}.scmask2" ] || [ ! -f "${translist[$i]}.timask1" ] || [ ! -f "${translist[$i]}.timask2" ]; then
+        	                        printf "\n\n One of the following files are missing from $system/setup...\n"
+        	                        printf "${translist[$i]}_aq.parm7, ${translist[$i]}_aq.rst7, ${translist[$i]}.scmask1 ${translist[$i]}.scmask2 ${translist[$i]}.timask1 ${translist[$i]}.timask2 \n"
+        	                        flag=1
+        	                fi
+        	        done
+        	        if [ "${flag}" -eq 1 ]; then exit 0; fi
+        	else
+
+        	        if [ "${boxbuild}" == "0" ]; then
+        	                printf "\n\nFor asfe calclulations, Boxbuild=0 and Boxbuild=1 are equivalent. water and Ions will be added to \"aq\" systems.\n\n"
+        	        elif [ "${boxbuild}" == "1" ]; then
+        	                printf "\n\nFor asfe calclulations, Boxbuild=0 and Boxbuild=1 are equivalent. water and Ions will be added to \"aq\" systems.\n\n"
+        	        elif [ "${boxbuild}" == "2" ]; then
+        	                printf "\n\nFor all transformations identical number of water and ions will be added to \"aq\" systems.\n\n"
+        	        fi
+
+        	        printf "\n\nBuilding topology+parameter files for \"aq\" systems. Water and Ions being added...\n\n"
+        	        create_box_asfe "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${boxbufaq}" "${ionconc}" "molname-ligname.mapping" "aq" "${ticalc}" "${translist[@]}"
+        	        printf "\n\nDone...\n\n"
+        	fi
 
         cd ${path}
 fi

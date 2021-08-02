@@ -386,6 +386,240 @@ function fix_solvent {
 }
 
 
+##################################################
+## ASFE related
+function write_tleap_asfe {
+        local pff=$1; shift
+        local lff=$1; shift
+        local wm=$1; shift
+        local inpfile=$1; shift
+        local mdboxshape=$1; shift
+        local rbuf=$1; shift
+        local load=$1; shift
+        local addions=$1; shift
+        local boxbuild=$1; shift
+        local s=$1; shift
+
+        truncate -s0 tleap.in
+
+        # assign protein forcefield
+        if [ "${pff}" == "ff14SB" ]; then
+                printf "source leaprc.protein.ff14SB\n" >> tleap.in
+                printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
+        fi
+
+        # assign ligand forcefield
+        if [ "${lff}" == "gaff2" ]; then
+                printf "source leaprc.gaff2\n" >> tleap.in
+        elif [ "${lff}" == "gaff" ]; then
+                printf "source leaprc.gaff\n" >> tleap.in
+        fi
+
+        # assign water model
+        if [ "${wm}" == "tip4pew" ]; then
+                printf "source leaprc.water.tip4pew\n" >> tleap.in
+                printf "loadamberparams frcmod.tip4pew\n" >> tleap.in
+                printf "loadAmberParams frcmod.ionsjc_tip4pew\n" >> tleap.in
+                printf "loadoff tip4pewbox.off\n" >> tleap.in
+                boxkey="TIP4PEWBOX"
+        elif [ "${wm}" == "tip3p" ]; then
+                printf "source leaprc.water.tip3p\n" >> tleap.in
+                printf "loadamberparams frcmod.tip3p\n" >> tleap.in
+                boxkey="TIP3PBOX"
+        fi
+
+
+
+        # assign MD box
+        if [ "${mdboxshape}" == "cubic" ]; then
+                boxcmd="solvateBox"
+        elif [ "${mdboxshape}" == "oct" ]; then
+                boxcmd="solvateOct"
+        fi
+
+        # load pdb, pdb with sequence, or mol2
+	printf "x = loadmol2  ${inpfile}_0.mol2\n" >> tleap.in
+
+        # load ligand parameter files
+        printf "loadamberparams ${inpfile}_0.frcmod\n" >> tleap.in
+        printf "loadoff ${inpfile}_0.lib\n" >> tleap.in
+
+
+        # build box and neutralize with Na+ Cl-
+        printf "${boxcmd} x ${boxkey} ${rbuf}\n" >> tleap.in
+        printf "addions x Na+ 0\n" >> tleap.in
+        printf "addions x Cl- 0\n" >> tleap.in
+
+        # add additional Na+ Cl- if needed
+        if [ "${addions}" != "0" ]; then
+                printf "addions x Na+ ${addions}\n" >> tleap.in
+                printf "addions x Cl- ${addions}\n" >> tleap.in
+        fi
+
+        # save parm and rst with -solv suffix
+        printf "saveamberparm x merged.parm7 merged.rst7\n\n" >> tleap.in
+        printf "quit\n" >> tleap.in
+}
+
+
+
+
+function write_tleap_head_asfe {
+        local pff=$1; shift
+        local lff=$1; shift
+        local wm=$1; shift
+        local inpfile=$1; shift
+        local mdboxshape=$1; shift
+        local rbuf=$1; shift
+        local load=$1; shift
+        local nna=$1; shift
+        local nch=$1; shift
+        local boxbuild=$1; shift
+        local s=$1; shift
+
+        truncate -s0 tleap.in
+
+        # assign protein forcefield
+        if [ "${pff}" == "ff14SB" ]; then
+                printf "source leaprc.protein.ff14SB\n" >> tleap.in
+                printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
+        fi
+
+
+        # assign ligand forcefield
+        if [ "${lff}" == "gaff2" ]; then
+                printf "source leaprc.gaff2\n" >> tleap.in
+        elif [ "${lff}" == "gaff" ]; then
+                printf "source leaprc.gaff\n" >> tleap.in
+        fi
+
+        # assign water model
+        if [ "${wm}" == "tip4pew" ]; then
+                printf "source leaprc.water.tip4pew\n" >> tleap.in
+                printf "loadamberparams frcmod.tip4pew\n" >> tleap.in
+                printf "loadAmberParams frcmod.ionsjc_tip4pew\n" >> tleap.in
+                printf "loadoff tip4pewbox.off\n" >> tleap.in
+                boxkey="TIP4PEWBOX"
+        elif [ "${wm}" == "tip3p" ]; then
+                printf "source leaprc.water.tip3p\n" >> tleap.in
+                boxkey="TIP3PBOX"
+        fi
+
+
+        # assign MD box
+        if [ "${mdboxshape}" == "cubic" ]; then
+                boxcmd="solvateBox"
+        elif [ "${mdboxshape}" == "oct" ]; then
+                boxcmd="solvateOct"
+        fi
+
+	printf "x = loadmol2  ${inpfile}_0.mol2\n" >> tleap.in
+
+        # load ligand parameter files
+        printf "loadamberparams ${inpfile}_0.frcmod\n" >> tleap.in
+        printf "loadoff ${inpfile}_0.lib\n" >> tleap.in
+
+
+
+        # build box and neutralize with Na+ Cl-
+        printf "${boxcmd} x ${boxkey} ${rbuf}\n" >> tleap.in
+
+        # add additional Na+ Cl- if needed
+        if [ "${nna}" != "0" ]; then
+                printf "addions x Na+ ${nna}\n" >> tleap.in
+        fi
+        if [ "${nch}" != "0" ]; then
+                printf "addions x Cl- ${nch}\n" >> tleap.in
+        fi
+
+}
+
+function RunTLEAP_asfe
+{
+
+        local pff=$1; shift
+        local lff=$1; shift
+        local wm=$1; shift
+        local inpfile=$1; shift
+        local mdboxshape=$1; shift
+        local rbuf=$1; shift
+        local load=$1; shift
+        local ns=$1; shift
+        local nc=$1; shift
+        local boxbuild=$1; shift
+        local s=$1; shift
+
+        if ! [ -z ${1+x} ]; then local fdel=${1}; fi
+        if ! [ -z ${2+x} ]; then local ldel=${2}; fi
+
+        write_tleap_head_asfe "${pff}" "${lff}" "${wm}" "${inpfile}" "${mdboxshape}" "${rbuf}" "${load}" "${ns}" "${nc}" "${boxbuild}" "${s}"
+        cat <<EOF >> tleap.in
+
+savepdb x tmp.pdb
+m = loadpdb tmp.pdb
+setbox m centers
+EOF
+
+        if [ ! -z "${fdel}" -a ! -z "${ldel}" ]; then
+                for res in $(seq ${ldel} -1 ${fdel}); do
+                        echo "remove m m.${res}" >> tleap.in
+                done
+        fi
+        unset fdel ; unset ldel
+
+        cat <<EOF >> tleap.in
+saveamberparm m out.parm7 out.rst7
+quit
+EOF
+        tleap -s -f tleap.in >> log
+}
+
+function fix_solvent_asfe {
+
+        local pff=$1; shift
+        local lff=$1; shift
+        local wm=$1; shift
+        local inpfile=$1; shift
+        local mdboxshape=$1; shift
+        local rbuf=$1; shift
+        local load=$1; shift
+        local nsod=$1; shift
+        local ncl=$1; shift
+        local nwat=$1; shift
+        local boxbuild=$1; shift
+        local s=$1; shift
+
+
+
+        for iter in $(seq 100); do
+                RunTLEAP_asfe "${pff}" "${lff}" "${wm}" "${inpfile}" "${mdboxshape}" "${rbuf}" "${load}" "${nsod}" "${ncl}" "${boxbuild}" "${s}"
+                current_nwat=$(calcwaterinparm "out.parm7")
+                current_totres=$(calctotalresinparm "out.parm7")
+                current_sodiums=$(calcsodiuminparm "out.parm7"); #current_nions=$((current_nions*2))
+                current_chlorides=$(calcchlorideinparm "out.parm7"); #current_nions=$((current_nions*2))
+                current_nonwater=$(calcnonwaterinparm "out.parm7")
+
+                excess_waters=$(bc -l <<< "${current_nwat} - ${nwat}")
+                if [ "${excess_waters}" -ge 0 ]; then
+                        break
+                else
+                        rbuf=$(bc -l <<< "${rbuf} + 1.")
+                fi
+        done
+        if [ ${excess_waters} -gt 0 ]; then
+                lastdel=$(calctotalresinparm "out.parm7")
+                firstdel=$(( ${lastdel} - ${excess_waters} + 1 ))
+                RunTLEAP_asfe "${pff}" "${lff}" "${wm}" "${inpfile}" "${mdboxshape}" "${rbuf}" "${load}" "${nsod}" "${ncl}" "${boxbuild}" "${s}" "${firstdel}" "${lastdel}"
+        fi
+
+        current_nwat=$(calcwaterinparm "out.parm7")
+        #echo "There are ${current_nwat} waters in out.parm7 built from ${inpfile}"
+}
+
+
+
+##################################################
+
 function calcMDions {
 
 	local nwat=$1
@@ -1305,6 +1539,9 @@ function create_box_rsfe {
         # calculate water and ions in final parm file for first system. Remaining systems will be built with these number of water and ions.
         nwat=$(calcwaterinparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
         nions=$(calcionsinparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
+        nsodium=$(calcsodiuminparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
+        nchloride=$(calcchlorideinparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
+
         #echo "final number of water and ions in ${translist[0]}_${s} : $nwat $nions"
 
         if [ "${#mergedpdbs[@]}" -gt 1 ]; then
@@ -1323,8 +1560,120 @@ function create_box_rsfe {
 
                         # build all parm files with nions and nwaters
                         for m in "${!mergedpdbs[@]}";do
-                                fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" "1" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${nwat}" "${boxbuild}" "${s}"
+                                fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" "1" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nsodium}" "${nchloride}" "${nwat}" "${boxbuild}" "${s}"
                                 mv out.parm7 ${lig1s[$m]}~${lig2s[$m]}_${s}.parm7; mv out.rst7 ${lig1s[$m]}~${lig2s[$m]}_${s}.rst7
+                        done
+
+                fi
+        fi
+
+        ##########################################
+        # setup H-mass repartitioning
+        for m in "${!translist[@]}";do
+                mol="${translist[$m]}_${s}"
+                if [ "${hmr}" == "true" ]; then
+                        if [ -f hmr.parm7 ] || [ -f hmr.rst7 ]; then rm -rf hmr.parm7 hmr.rst7; fi
+                        cat <<EOF > hmr.in
+HMassRepartition
+outparm hmr.parm7 hmr.rst7
+EOF
+                        parmed -i hmr.in -p ${mol}.parm7 -c ${mol}.rst7 >> output 2>&1
+                        sleep 1
+                        mv hmr.parm7 ${mol}.parm7
+                        mv hmr.rst7  ${mol}.rst7
+                        rm -rf hmr.in
+                fi
+        done
+        ##########################################
+
+
+        ##########################################
+        # double check prepared systems
+        for m in "${!translist[@]}";do
+                mol="${translist[$m]}_${s}"
+                nwat=$(calcwaterinparm ${mol}.parm7)
+                nsod=$(calcsodiuminparm ${mol}.parm7)
+		ncl=$(calcchlorideinparm ${mol}.parm7)
+
+                printf "\n${mol} has ${nwat} waters, ${nsod} Na+ ions, and ${ncl} Cl- ions"
+        done
+        ##########################################
+
+}
+
+
+function create_box_asfe {
+
+        local pff=$1; shift
+        local lff=$1; shift
+        local wm=$1; shift
+        local boxbuild=$1; shift
+        local mdboxshape=$1; shift
+        local rbuf=$1; shift
+        local ionconc=$1; shift
+        local mapfile=$1; shift
+        local s=$1; shift
+        local ticalc=$1; shift
+        local translist=("$@")
+
+        local mollist=(); local liglist=()
+        while read line; do
+                IFS=' ' read -ra args <<< $line
+                mollist+=(${args[0]}); liglist+=(${args[1]})
+        done < ${mapfile}
+
+        # unnecessary now but may be needed later.
+        if [ "${s}" == "com" ]; then load=loadmol2; else load=loadmol2; fi
+
+        ###
+        ligs=()
+        for i in "${!translist[@]}";do
+		ind=$(get_index "${translist[$i]}" "${mollist[@]}")
+		lig=${liglist[${ind}]}
+		sed -i "s/LIG/${lig}/g" ${mollist[$i]}_0.mol2 ${mollist[$i]}_0.lib
+               	ligs+=(${lig})
+        done
+        ###
+        # write and run tleap to generate initial parm file
+        write_tleap_asfe "${pff}" "${lff}" "${wm}" "${mollist[0]}" "${mdboxshape}" "${rbuf}" "${load}" "0" "${boxbuild}" "${s}"
+        tleap -s -f tleap.in > output; rm -rf leap.log
+
+        # calculate water and number of ions necessary to reach desired ion conc
+        nwat=$(calcwaterinparm merged.parm7)
+        nions=$(calcMDions "$nwat" "${ionconc}")
+        #echo "No. of water and ions required in ${list[0]} : $nwat $nions"
+
+        # generate parm file with calculated number of ions
+        write_tleap_asfe "${pff}" "${lff}" "${wm}" "${mollist[0]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
+        tleap -s -f tleap.in > output; rm -rf leap.log
+        mv merged.parm7 "${mollist[0]}_${s}".parm7; mv merged.rst7 "${mollist[0]}_${s}".rst7
+
+        # calculate water and ions in final parm file for first system. Remaining systems will be built with these number of water and ions.
+        nwat=$(calcwaterinparm ${mollist[0]}_${s}.parm7)
+        nions=$(calcionsinparm ${mollist[0]}_${s}.parm7)
+	nsodium=$(calcsodiuminparm ${mollist[0]}_${s}.parm7)
+        nchloride=$(calcchlorideinparm ${mollist[0]}_${s}.parm7)
+
+        #echo "final number of water and ions in ${translist[0]}_${s} : $nwat $nions"
+
+        if [ "${#mollist[@]}" -gt 1 ]; then
+                mollist=(${mollist[@]:1}); ligs=(${ligs[@]:1})
+
+                if [ "${boxbuild}" != 2 ]; then
+
+                        # build all parm files with nions. each will have different number of water molecules.
+                        for m in "${!mollist[@]}";do
+                                write_tleap_asfe "${pff}" "${lff}" "${wm}" "${mollist[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
+                                tleap -s -f tleap.in > output
+                                mv merged.parm7 "${mollist[$m]}_${s}".parm7; mv merged.rst7 "${mollist[$m]}_${s}".rst7
+                        done
+
+                else
+
+                        # build all parm files with nions and nwaters
+                        for m in "${!mollist[@]}";do
+                                fix_solvent_asfe "${pff}" "${lff}" "${wm}" "${mollist[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nsodium}" "${nchloride}" "${nwat}" "${boxbuild}" "${s}"
+                                mv out.parm7 ${mollist[$m]}_${s}.parm7; mv out.rst7 ${mollist[$m]}_${s}.rst7
                         done
 
                 fi
@@ -1361,5 +1710,4 @@ EOF
         ##########################################
 
 }
-
 

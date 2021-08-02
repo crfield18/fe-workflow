@@ -5,7 +5,7 @@ function writetemplate_rsfe
 {
         #echo "$#"
         local args=$*; args=($args)
-        local varlist=(nlambda CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW stA stB twostate)
+        local varlist=(nlambda CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans)
         local i=0
         for a in "${varlist[@]}"; do
                 declare -n arr="$a"
@@ -28,7 +28,6 @@ top=\`pwd\`
 parmbase=${parmbase}
 rstbase=(${rstbase[*]})
 endstates=(${endstates[*]})
-twostate=${twostate}
 lams=(${lams[@]})
 
 #generate initial configurations for lambda windows
@@ -111,7 +110,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -170,7 +169,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -230,7 +229,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1 
+ntc             = 2 
 ntf             = 1 
 ntwx            = 10000
 ntwr            = 5000
@@ -290,7 +289,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -354,7 +353,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -414,7 +413,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1 
+ntc             = 2 
 ntf             = 1 
 ntwx            = 10000
 ntwr            = 5000
@@ -475,7 +474,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1 
+ntc             = 2 
 ntf             = 1 
 ntwx            = 10000
 ntwr            = 5000
@@ -539,47 +538,6 @@ EOF
 count=\$((\$count+1))
 done
 
-if [ \${twostate} == true ]; then
-
-	truncate -s0 inputs/eqpre1P0.groupfile inputs/eqpre2P0.groupfile inputs/eqP0.groupfile inputs/eqNTP4.groupfile inputs/eqV.groupfile inputs/eqP.groupfile inputs/eqA.groupfile inputs/eqProt2.groupfile inputs/eqProt1.groupfile inputs/eqProt05.groupfile inputs/eqProt025.groupfile inputs/eqProt01.groupfile inputs/eqProt0.groupfile
-	for lam in \${endstates[@]};do
-
-        	init=\${lam}_init
-        	min1=\${lam}_min1
-        	min2=\${lam}_min2
-		eqpre1P0=\${lam}_eqpre1P0
-		eqpre2P0=\${lam}_eqpre2P0
-        	eqP0=\${lam}_eqP0
-        	eqNTP4=\${lam}_eqNTP4
-        	eqV=\${lam}_eqV
-        	eqP=\${lam}_eqP
-        	eqA=\${lam}_eqA
-
-                cat<<EOF>> inputs/eqpre1P0.groupfile
--O -p unisc.parm7 -c current/\${min2}.rst7 -i inputs/\${eqpre1P0}.mdin -o current/\${eqpre1P0}.mdout -r current/\${eqpre1P0}.rst7 -x current/\${eqpre1P0}.nc -ref current/\${min2}.rst7
-EOF
-                cat<<EOF>> inputs/eqpre2P0.groupfile
--O -p unisc.parm7 -c current/\${eqpre1P0}.rst7 -i inputs/\${eqpre2P0}.mdin -o current/\${eqpre2P0}.mdout -r current/\${eqpre2P0}.rst7 -x current/\${eqpre2P0}.nc -ref current/\${eqpre1P0}.rst7
-EOF
-        	cat<<EOF>> inputs/eqP0.groupfile
--O -p unisc.parm7 -c current/\${min2}.rst7 -i inputs/\${eqP0}.mdin -o current/\${eqP0}.mdout -r current/\${eqP0}.rst7 -x current/\${eqP0}.nc -ref current/\${min2}.rst7
-EOF
-        	cat<<EOF>> inputs/eqNTP4.groupfile
--O -p unisc.parm7 -c current/\${eqP0}.rst7 -i inputs/\${eqNTP4}.mdin -o current/\${eqNTP4}.mdout -r current/\${eqNTP4}.rst7 -x current/\${eqNTP4}.nc -ref current/\${eqP0}.rst7
-EOF
-        	cat<<EOF>> inputs/eqV.groupfile
--O -p unisc.parm7 -c current/\${eqNTP4}.rst7 -i inputs/\${eqV}.mdin -o current/\${eqV}.mdout -r current/\${eqV}.rst7 -x current/\${eqV}.nc -ref current/\${eqNTP4}.rst7
-EOF
-        	cat<<EOF>> inputs/eqP.groupfile
--O -p unisc.parm7 -c current/\${eqV}.rst7 -i inputs/\${eqP}.mdin -o current/\${eqP}.mdout -r current/\${eqP}.rst7 -x current/\${eqP}.nc -ref current/\${eqV}.rst7
-EOF
-        	cat<<EOF>> inputs/eqA.groupfile
--O -p unisc.parm7 -c current/\${eqP}.rst7 -i inputs/\${eqA}.mdin -o current/\${eqA}.mdout -r current/\${eqA}.rst7 -x current/\${eqA}.nc -ref current/\${eqP}.rst7
-EOF
-
-	done
-fi
-
 
 for lam in \${lams[@]}; do
 
@@ -640,7 +598,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -696,7 +654,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -752,7 +710,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -808,7 +766,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -874,7 +832,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -931,7 +889,7 @@ dt              = 0.001
 irest           = 0
 ntx             = 1
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 10000
 ntwr            = 5000
@@ -1002,7 +960,7 @@ dt              = 0.001
 irest           = 1
 ntx             = 5
 ntxo            = 1
-ntc             = 1
+ntc             = 2
 ntf             = 1
 ntwx            = 0
 ntwr            = 0
@@ -1093,24 +1051,23 @@ done
 
 cat<<EOF > run_alltrials.slurm
 #!/bin/bash
-#SBATCH --job-name="eq_${stA}~${stB}.slurm"
-#SBATCH --output="eq_${stA}~${stB}.slurm.slurmout"
-#SBATCH --error="eq_${stA}~${stB}.slurm.slurmerr"
+#SBATCH --job-name="eq_${trans}.slurm"
+#SBATCH --output="eq_${trans}.slurm.slurmout"
+#SBATCH --error="eq_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${ntrials}
 #SBATCH --ntasks-per-node=\${#lams[@]}
 #SBATCH --gres=gpu:${ngpus}
-#SBATCH --share
 #SBATCH --gres-flags=enforce-binding
 #SBATCH --export=ALL
 #SBATCH --time=${wallclock}
 
+top=\\\${PWD}
 endstates=(\${endstates[@]})
 lams=(\${lams[@]})
-twostate=\${twostate}
 eqstage=(${eqstagelist[*]})
 
-top=\\\${PWD}
+
 # check if AMBERHOME is set
 if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 # check if cpptraj is present
@@ -1119,6 +1076,8 @@ if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0;
 EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 
 for trial in \\\$(seq 1 1 ${ntrials}); do
+	
+	if [ ! -d t\\\${trial} ];then mkdir t\\\${trial}; fi
 
 	count=-1; alllams=0
 	for stage in \\\${eqstage[@]}; do
@@ -1127,17 +1086,17 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 		if [ "\\\${stage}" == "init" ] || [ "\\\${stage}" == "eqpre1P0TI" ] || [ "\\\${stage}" == "eqpre2P0TI" ] || [ "\\\${stage}" == "eqP0TI" ]; then continue; fi
         	laststage=\\\${eqstage[\\\${lastcount}]}
 
+		if [ "\\\${stage}" == "minTI" ];then alllams=1; fi
 
-        	if [ "\\\${stage}" == "minTI" ];then
-                	for lam in \\\${lams[@]}; do
-                        	cp t\\\${trial}/\\\${endstates[0]}_\\\${laststage}.rst7 t\\\${trial}/\\\${lam}_init2.rst7
-                	done
-                	laststage="init2"
-                	alllams=1
-        	fi
-
-
+		
         	if [ \\\${alllams} -eq 0 ];then
+
+
+			# check if pmemd.cuda is present
+                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
+			export LAUNCH="srun"
+			export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+
                 	lam=\${endstates[0]}
                 	echo "Running \\\$stage for lambda \\\${lam}..."
                 	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
@@ -1155,16 +1114,61 @@ EOF2
                 	sleep 1
                 	mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
 
-		else
-			if [ "\\\${stage}" == "minTI" ];then laststage="init2"; fi
+		elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
 			# check if pmemd.cuda is present
 			if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 			export LAUNCH="srun"
 			export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
-			for lam in \\\${lams[@]}; do
+			for i in \\\${!lams[@]}; do
+				lam=\\\${lams[\\\$i]}
+				if [ "\\\${i}" -eq 0 ]; then
+					init=\\\${endstates[0]}_eqA.rst7
+ 				else
+					init=\\\${lams[\\\$((\\\$i-1))]}_eqP0TI.rst7
+				fi			
+
 				echo "Running \\\$stage for lambda \\\${lam}..."
+
+				stage=minTI
+                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}
+                                sleep 1
+
+                                laststage=minTI; stage=eqpre1P0TI
                                 \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                                 sleep 1
+
+                                laststage=eqpre1P0TI; stage=eqpre2P0TI
+                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                                sleep 1
+
+                                laststage=eqpre2P0TI; stage=eqP0TI
+                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                                sleep 1
+
+                                cat <<EOF2 > center.in
+parm \\\${top}/unisc.parm7
+trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+autoimage
+trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+go
+quit
+EOF2
+                                if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+                                cpptraj < center.in
+                                sleep 1
+                                mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+                        done
+                        laststage=eqP0TI
+		else
+                        # check if pmemd.cuda.MPI is present
+                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
+
+                        export LAUNCH="mpirun -np \\\${#lams[@]}"
+                        export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+                        export MV2_ENABLE_AFFINITY=0
+                        \\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
+
+			for lam in \\\${lams[@]};do
 				cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
@@ -1178,10 +1182,14 @@ EOF2
                                 sleep 1
                                 mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
                         done
-
-        	fi
-
+		fi
 	done
+
+        # run production
+        EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+        echo "running replica ti"
+        mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+
 
 	cat << EOFP > extract.py
 #!/usr/bin/env python2.7

@@ -1,42 +1,87 @@
 # CWD
-#path_to_input=/home/giese/devel/projects/jacs/CDK2/ligands
+# Directory that contains within it a subdirectory "system" 
+# containing initial structure/parameter files.
+# For example, a single folder "initial" may contain multiple
+# subdirectories containing initial files for different systems
 path_to_input=initial
 
-# subdir containing parm7/rst7 files
-system=p38
 
-translist=(2AA~2Z 2AA~3FW 2V~2BB 2V~2Y 2V~3FY 3FY~3FH 2V~3FH 2V~3FK 2Y~2Z 2Z~3FK 2Z~3FQ 2Z~3FW) 
-#translist=(2AA~2Z 2AA~3FW 2V~2BB 2V~2Y 2V~3FY 3FY~3FH)   # hpcc
-#translist=(2V~3FH 2V~3FK 2Y~2Z 2Z~3FK 2Z~3FQ 2Z~3FW)      # lh
-#translist=(2V~3FK)
+# Subdirectory containing initial structure/parameter files
+# of "system"
+# For example, 
+# system=CDK2
+system=smallMols
 
-#translist=(1h1q~1h1r)
-#translist=(2AA~2BB 2AA~2Z 2AA~3FW 2V~2BB 2V~2X 2V~2Y 2V~3FH 2V~3FK 2V~3FY 2Y~2Z 2Z~3FK 2Z~3FQ 2Z~3FW 3FY~2X 3FY~3FH 3FY~3FQ)
-#translist=(1h1q~1h1r 1oiu~1h1r 1oi9~1oiy)
-#translist=(1h1q~1h1r 1h1q~1h1s 1h1q~1oiu 1h1q~1oiy 1h1q~1oi9 1oiu~1h1r 1oi9~1h1s 1oi9~1oiy 17~20 21~22 26~28 29~30 31~32)
+
+
+# List of desired transformations or edges
+# For example, RBFE or RSFE calculations should have a list 
+# in which each entry consists of two molnames separated by the 
+# character "~". Initial structure/parameter files of these 
+# molnames should be provided in ${path_to_input}/${system}
+# For RBFE calculations, the PDB file of protein-ligand complex
+# and mol2,lib,frcmod files of ligand are expected. 
+# For RSFE calculations, mol2,lib,frcmod files of ligand are expected.
+# example,
+# translist=(1h1q~1h1r 1h1q~1h1s)
+#
+# For ASFE calculations, "translist" should contain a list of 
+# molnames.
+# mol2,lib,frcmod files of these molnames are expected in 
+# ${path_to_input}/${system}
+# example,
+# translist=(mobley_1527293 mobley_3034976)
+translist=(1h1q~1h1r 1h1q~1h1s)
+
 
 nlambda=11                      # number of lambda windows
 protocol=unified                # unified protocol for TI
 
-mapmethod=1
-mapinspect=0                    # 0 --> auto/ 1 --> mapinspect=true/ 2 --> mapinspect=checked
-mapnetwork=true
+# mapmethod determines the algorithm using which cc and sc regions
+# will be determined.
+# mapmethod=0 --> MCSS
+# mapmethod=1 --> MCSS-E
+# mapmethod=2 --> MCSS-E2 
+mapmethod=2
 
+# mapinspect determines if there is need of manual inspection of the 
+# atom maps
+# mapinspect=0 --> no-inspection. generate the atom maps using 
+# algorithm specified by "mapmethod", and then proceed to generate 
+# file infrastructure
+# mapinspect=1 --> manual inspection. stop after generating the 
+# atom maps.
+# mapinspect=2 --> resume generation of file infrastructure assuming 
+# map inspection has been completed. 
+# mapinspect=2 expects necessary atom map files to be present in the "setup" folder 
+mapinspect=0                    
+
+
+# mapnetwork determines whether network-wide consistent cc and sc regions 
+# will be generated.
+# mapnetwork=true ensures that in a given network of transformations, cc and sc 
+# regions of each ligand is identical in every transformation in which is participates 
+mapnetwork=false
+
+# boxbuild determines if and how MD boxes will be built
 # "skip" --> skip box building 
-# 0 --> dont build boxes for complexes/
-# 1 --> build boxes/
-# 2 --> build boxes with same number of water and ions
-boxbuild=1
-boxbufcom=16
-boxbufaq=20
-ionconc=0.15
-pff=ff14SB
-lff=gaff2
-wm=tip4pew
-mdboxshape=cubic
+# 0      --> for RBFE calculations, do not build boxes for "complex" state, only for "aqueous"
+#            state. 
+# 1 --> build boxes for both "complex" and "aqueous" states
+# for RSFE and ASFE calculations, boxbuild=0 and boxbuild=1 are identical. 
+# 2 --> build boxes for both "complex" and "aqueous" states with same number 
+# of water and ions
+boxbuild=2
+boxbufcom=16  			# MD box buffer for "complex" states
+boxbufaq=20			# MD box buffer for "aqueous" states
+ionconc=0.15			# Ion concentration in MD box
+pff=ff14SB			# Protein force field
+lff=gaff2			# Ligand forcefield
+wm=tip4pew			# Water model
+mdboxshape=cubic		# Shape of MD box
 
 
-ntrials=3
+ntrials=3			# Number of independent trials
 
 cutoff=10                       # non-bonded cutoff
 repex=true
@@ -46,7 +91,7 @@ hmr=false
 notrajectory=true		# when true, no output trajectories are generated
 scalpha=0.5                     # scalpha
 scbeta=1.0                      # scbeta
-gti_add_sc=5                    # gti_add_sc
+gti_add_sc=5
 gti_scale_beta=1                # gti_scale_beta
 gti_cut=1                       # gti_cut
 gti_cut_sc_on=8                 # gti_cut_sc_on
@@ -58,9 +103,27 @@ gti_cut_sc=2                    # gti_cut_sc
 gti_ele_exp=2                   # gti_ele_exp
 gti_vdw_exp=2                   # gti_vdw_exp
 
-twostate=true
+# twostate determines the protocol to be used for equilibration of protein-ligand complex systems.
+# twostate=false directs script to setup the equilibration file infrastructure
+# in an "1-state" way in which for a given transformation P:A --> P:B, only the P:A structure is 
+# considered and the ligand B is superimposed on ligand A.
+# twostate=true directs script to setup the equilibration file infrastructure
+# in a "2-state" way in which for a given transformation P:A --> P:B, both P:A and P:B structures
+# considered and represents the two end states.
+twostate=false
 
+
+# ticalc determines the calculation.
+# ticalc=rbfe --> relative binding free energy 
+# ticalc=rsfe --> relative solvation free energy
+# ticalc=asfe --> absolute solvation free energy
 ticalc=rbfe                     # "rbfe -> relative binding free energy/rsfe -> relative solvation free energy"
+
+# stage controls the action of the script
+# stage=setup --> sets up TI calculations
+# stage=run-equil --> run equil simulations
+# stage=run-TI --> run TI simulations
+# stage=check-TI --> check TI simulations
 stage=setup                     # "setup/run-equil/check-equil/run-TI/check-TI"
 setupmode=0                     # 0 --> regular TI/ 1 --> end-point ACES/ 2 --> TI from end-point ACES
 
