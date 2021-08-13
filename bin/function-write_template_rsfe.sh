@@ -1185,10 +1185,10 @@ EOF2
 		fi
 	done
 
-        # run production
-        EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
-        echo "running replica ti"
-        mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+        ### # run production
+        ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+        ### echo "running replica ti"
+        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 
 
 	cat << EOFP > extract.py
@@ -1308,6 +1308,7 @@ EOFP
         	sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp.*/d' -e '/pres0.*/d' -e '/taup.*/d' -e '/numexchg/d' -e '/gremd_acyc/d' -e 's/nstlim.*/nstlim          = 1000000/g' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
 	done
+	cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
 
 	cd ../vac
         	cd t\\\${trial}
@@ -1327,9 +1328,16 @@ EOFP
 	for dir in aq vac; do
 		cd \\\${dir}
 			stage=ti; laststage=preTI
-			for lam in \\\${lams[@]};do
-				\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
-			done
+
+        		# run production
+        		EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+        		echo "running replica ti"
+        		mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+
+
+			### for lam in \\\${lams[@]};do
+			### 		\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
+			### done
 		cd ../
 	done
 	wait
