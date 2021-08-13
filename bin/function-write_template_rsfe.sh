@@ -1192,7 +1192,7 @@ EOF2
 
 
 	cat << EOFP > extract.py
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 def OpenParm( fname, xyz=None ):
     import parmed

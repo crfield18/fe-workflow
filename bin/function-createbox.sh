@@ -1293,7 +1293,9 @@ function create_box_rbfe {
         # calculate water and ions in final parm file for first system. Remaining systems will be built with these number of water and ions.
         nwat=$(calcwaterinparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
         nions=$(calcionsinparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
-        #echo "final number of water and ions in ${list[0]}_${s} : $nwat $nions"
+        nsodium=$(calcsodiuminparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
+        nchloride=$(calcchlorideinparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
+        #echo "final number of water and ions in ${lig1s[0]}_${s} : $nwat $nions $nsodium $nchloride"
 
 	if [ "${#mergedpdbs[@]}" -gt 1 ]; then
         	mergedpdbs=(${mergedpdbs[@]:1}); lig1s=(${lig1s[@]:1}); lig2s=(${lig2s[@]:1}); nnstds=(${nnstds[@]:1})
@@ -1311,10 +1313,9 @@ function create_box_rbfe {
 			done
 
 		else
-
 			# build all parm files with nions and nwaters
 			for m in "${!mergedpdbs[@]}";do
-				fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" "${nnstds[$m]}" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${nwat}" "${boxbuild}" "${s}"
+				fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" "${nnstds[$m]}" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nsodium}" "${nchloride}" "${nwat}" "${boxbuild}" "${s}"
 				mv out.parm7 ${lig1s[$m]}~${lig2s[$m]}_${s}.parm7; mv out.rst7 ${lig1s[$m]}~${lig2s[$m]}_${s}.rst7
 			done
 
