@@ -345,6 +345,7 @@ EOFN
 	# if stage=analysis, 
 	# check related keywords
 	if [ "${stage}" == "analysis" ]; then
+		if [ "${ticalc}" == "rbfe" ]; then slist=(com aq); else slist=(aq); fi
 		if [ ! -d "${path_to_data}" ]; then 
 			printf "\n\n!!!! ERROR !!!!\n\n"
 			printf "\n\n!!!! ${path_to_data} does not exist \n\n"
