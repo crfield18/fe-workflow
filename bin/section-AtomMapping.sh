@@ -27,6 +27,9 @@ if [ "${ticalc}" != "asfe" ]; then
                         	cat map-network |column -t > tmp && mv tmp map-network
                         	parmutils-scmapper.py --graph map-network -t ${mapmethod} >> output 2>&1
 
+
+
+
                         	for map in *map.txt; do
                                 	mv -f ${map} $(echo ${map}|awk -F "_0"  '{print $1$2$3}')
                         	done
@@ -38,6 +41,13 @@ if [ "${ticalc}" != "asfe" ]; then
                         	done
 
                 	fi
+
+			if [ "${bidirection_aq}" == "true" ] || [ "${bidirection_com}" == "true" ]; then
+				for i in "${!translist[@]}";do
+					l1=$(basename ${translist[$i]}); l2="${l1##*~}"; l1="${l1%~*}"
+					cat ${l1}~${l2}.map.txt | awk -F ' ' '{print $3" => "$1}' |column -t > ${l2}~${l1}.map.txt
+				done
+			fi
         	cd ${path}
 	fi
 
@@ -47,11 +57,32 @@ if [ "${ticalc}" != "asfe" ]; then
 
 	if [ "${mapinspect}" -eq 2 ];then
         	cd ${system}/setup
-                	mapmissing=0
+                	mapmissing=0; mapmissingrev=0
                 	for i in "${!translist[@]}";do
-                        	if [ ! -f ${translist[$i]}.map.txt ]; then printf "\n\n${translist[$i]}.map.txt missing in working directory.\n\n" && mapmissing=1; fi
+				l1=$(basename ${translist[$i]}); l2="${l1##*~}"; l1="${l1%~*}"
+                        	if [ ! -f ${l1}~${l2}.map.txt ]; then printf "\n\n${l1}~${l2}.map.txt missing in working directory.\n\n" && mapmissing=1; fi
+
+
+				if [ "${bidirection_aq}" == "true" ] || [ "${bidirection_com}" == "true" ]; then
+					if [ ! -f ${l2}~${l1}.map.txt ]; then printf "\n\n${l2}~${l1}.map.txt missing in working directory.\n\n" && mapmissingrev=1; fi
+				fi
+
                 	done
-                	if [ "${mapmissing}" -eq 1 ]; then exit 0; fi
+
+
+
+                	if [ "${mapmissing}" -eq 1 ]; then 
+				printf "\n\n mapinspect is set to 2. All transformation maps must be present in ${system}/setup folder. Exiting... \n\n"
+				exit 0
+		       	fi
+			if [ "${bidirection_aq}" == "true" ] || [ "${bidirection_com}" == "true" ]; then
+				if [ "${mapmissingrev}" -eq 1 ]; then 
+					printf "\n\nmapinspect is set to 2 and bidirection_aq/com is set to \"true\"\n."
+				       	printf "All transformation maps in both directions must be present in ${system}/setup folder. Exiting... \n\n"
+					exit 0 
+				fi
+			fi
+
         	cd ${path}
 	fi
 else

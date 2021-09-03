@@ -8,17 +8,34 @@ if [ "${ticalc}" == "rbfe" ]; then
 		if [ "${twostate}" == "false" ]; then
 			printf "\n\n setting up files in \"1-state\" mode... \n\n"
 			if [ "${boxbuild}" == "skip" ]; then
-				flag=0
+				flag=0; flag2=0
 				for i in "${!translist[@]}"; do
 					for s in aq com; do
+						if [ "${s}" == "aq" ]; then bidirection=${bidirection_aq}; else bidirection=${bidirection_com}; fi
 						if [ ! -f "${translist[$i]}_${s}.parm7" ] || [ ! -f "${translist[$i]}_${s}.rst7" ] || [ ! -f "${translist[$i]}.scmask1" ] || [ ! -f "${translist[$i]}.scmask2" ] || [ ! -f "${translist[$i]}.timask1" ] || [ ! -f "${translist[$i]}.timask2" ]; then
 							printf "\n\n One of the following files are missing from $system/setup...\n"
 							printf "${translist[$i]}_${s}.parm7, ${translist[$i]}_${s}.rst7, ${translist[$i]}.scmask1 ${translist[$i]}.scmask2 ${translist[$i]}.timask1 ${translist[$i]}.timask2 \n"
 							flag=1
 						fi
+
+						if [ "${bidirection}" == "true" ]; then
+							if [ ! -f "${translistrev[$i]}_${s}.parm7" ] || [ ! -f "${translistrev[$i]}_${s}.rst7" ] || [ ! -f "${translistrev[$i]}.scmask1" ] || [ ! -f "${translistrev[$i]}.scmask2" ] || [ ! -f "${translistrev[$i]}.timask1" ] || [ ! -f "${translistrev[$i]}.timask2" ]; then
+								printf "\n\n One of the following files are missing from $system/setup...\n"
+								printf "${translistrev[$i]}_${s}.parm7, ${translistrev[$i]}_${s}.rst7, ${translistrev[$i]}.scmask1 ${translistrev[$i]}.scmask2 ${translistrev[$i]}.timask1 ${translistrev[$i]}.timask2 \n"
+								flag2=1
+							fi
+
+						fi
 					done
 				done
-				if [ "${flag}" -eq 1 ]; then exit 0; fi
+				if [ "${flag}" -eq 1 ]; then 
+					printf "\n\n ${boxbuild} was set to 0. Above files must be present in $system/setup folder. Exiting...\n"
+					exit 0 
+				fi
+				if [ "${flag2}" -eq 1 ]; then 
+					printf "\n\n ${boxbuild} was set to 0 and bidirection_aq/_com was set to \"true\". Above files must be present in $system/setup folder. Exiting...\n"
+					exit 0 
+				fi
 			else
 			
 				if [ "${boxbuild}" == "0" ]; then
@@ -29,9 +46,20 @@ if [ "${ticalc}" == "rbfe" ]; then
 					printf "\n\nFor all transformations identical number of water and ions will be added to both \"aq\" and \"com\" systems. In case of \"com\" systems, existing solvent configurations will be stripped before resolvating. \n\n"
 				fi
 				for s in aq com; do
+					if [ "${s}" == "aq" ]; then 
+						rbuf=${boxbufaq}
+						bidirection=${bidirection_aq}
+				       	else 
+						rbuf=${boxbufcom}
+						bidirection=${bidirection_com}
+				       	fi
 					printf "\n\nBuilding topology+parameter files for \"${s}\" systems. Water and Ions being added...\n\n"
-					if [ "${s}" == "aq" ]; then rbuf=${boxbufaq}; else rbuf=${boxbufcom}; fi
-					create_box_rbfe "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${rbuf}" "${ionconc}" "molname-ligname.mapping" "${s}" "${ticalc}" "${translist[@]}"
+					
+					if [ "${bidirection}" == "true" ]; then
+						printf "\n\nbidirection_${s} set to true. One state simulations for \"${s}\" systems will be setup for both directions... \n\n"
+					fi
+
+					create_box_rbfe "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${rbuf}" "${ionconc}" "molname-ligname.mapping" "${s}" "${ticalc}" "${bidirection}" "${translist[@]}"
 					printf "\n\nDone...\n\n"
 				done
 			fi
@@ -41,17 +69,34 @@ if [ "${ticalc}" == "rbfe" ]; then
 		if [ "${twostate}" == "true" ]; then
 			printf "\n\n setting up files in \"2-state\" mode... \n\n"
                         if [ "${boxbuild}" == "skip" ]; then
-                                flag=0
+                                flag=0; flag2=0
                                 for i in "${!translist[@]}"; do
-					for s in aq com; do
-                                        	if [ ! -f "${translist[$i]}_aq.parm7" ] || [ ! -f "${translist[$i]}_aq.rst7" ] || [ ! -f "${translist[$i]}-1_com.parm7" ] || [ ! -f "${translist[$i]}-2_com.parm7" ] || [ ! -f "${translist[$i]}-1_com.rst7" ] || [ ! -f "${translist[$i]}-2_com.rst7" ] || [ ! -f "${translist[$i]}.scmask1" ] || [ ! -f "${translist[$i]}.scmask2" ] || [ ! -f "${translist[$i]}.timask1" ] || [ ! -f "${translist[$i]}.timask2" ]; then
+                                        if [ ! -f "${translist[$i]}_aq.parm7" ] || [ ! -f "${translist[$i]}_aq.rst7" ] || [ ! -f "${translist[$i]}-1_com.parm7" ] || [ ! -f "${translist[$i]}-2_com.parm7" ] || [ ! -f "${translist[$i]}-1_com.rst7" ] || [ ! -f "${translist[$i]}-2_com.rst7" ] || [ ! -f "${translist[$i]}.scmask1" ] || [ ! -f "${translist[$i]}.scmask2" ] || [ ! -f "${translist[$i]}.timask1" ] || [ ! -f "${translist[$i]}.timask2" ]; then
+                                                printf "\n\n One of the following files are missing from $system/setup...\n"
+                                                printf "${translist[$i]}_aq.parm7, ${translist[$i]}_aq.rst7, ${translist[$i]}-1_com.parm7, ${translist[$i]}-2_com.parm7, ${translist[$i]}-1_com.rst7, ${translist[$i]}-2_com.rst7, ${translist[$i]}.scmask1 ${translist[$i]}.scmask2 ${translist[$i]}.timask1 ${translist[$i]}.timask2 \n"                
+                                                flag=1
+                                        fi
+						
+					if [ "${bidirection_aq}" == "true" ]; then
+                                        	if [ ! -f "${translistrev[$i]}_aq.parm7" ] || [ ! -f "${translistrev[$i]}_aq.rst7" ] || [ ! -f "${translistrev[$i]}.scmask1" ] || [ ! -f "${translistrev[$i]}.scmask2" ] || [ ! -f "${translistrev[$i]}.timask1" ] || [ ! -f "${translistrev[$i]}.timask2" ]; then
                                                 	printf "\n\n One of the following files are missing from $system/setup...\n"
-                                                	printf "${translist[$i]}-1.parm7, ${translist[$i]}-2.parm7, ${translist[$i]}-1.rst7, ${translist[$i]}-2.rst7, ${translist[$i]}.scmask1 ${translist[$i]}.scmask2 ${translist[$i]}.timask1 ${translist[$i]}.timask2 \n"                
-                                                	flag=1
+                                                	printf "${translistrev[$i]}_aq.parm7, ${translistrev[$i]}_aq.rst7, ${translistrev[$i]}.scmask1 ${translistrev[$i]}.scmask2 ${translistrev[$i]}.timask1 ${translistrev[$i]}.timask2 \n"                
+                                                	flag2=1
                                         	fi
-					done
+					fi
+
+					if [ "${bidirection_com}" == "true" ]; then
+						printf "\n\n bidirection_com=true will be ignored in \"2-state\" setup of \"com\" systems... \n\n"
+					fi	
                                 done 
-                                if [ "${flag}" -eq 1 ]; then exit 0; fi
+				if [ "${flag}" -eq 1 ]; then
+                                        printf "\n\n ${boxbuild} was set to 0. Above files must be present in $system/setup folder. Exiting...\n"
+                                        exit 0
+                                fi
+                                if [ "${flag2}" -eq 1 ]; then
+                                        printf "\n\n ${boxbuild} was set to 0 and bidirection_aq was set to \"true\". Above files must be present in $system/setup folder. Exiting...\n"
+                                        exit 0
+                                fi
                         else
                         
                                 if [ "${boxbuild}" == "0" ]; then
@@ -63,7 +108,12 @@ if [ "${ticalc}" == "rbfe" ]; then
                                 fi
                                 
 				printf "\n\nBuilding topology+parameter files for \"aq\" systems. Water and Ions being added...\n\n"
-				create_box_rbfe "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${boxbufaq}" "${ionconc}" "molname-ligname.mapping" "aq" "${ticalc}" "${translist[@]}"
+				if [ "${bidirection_aq}" == "true" ]; then
+					printf "\n\nbidirection_aq set to true. One state simulations for \"aq\" systems will be setup for both directions... \n\n"
+				fi
+
+
+				create_box_rbfe "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${boxbufaq}" "${ionconc}" "molname-ligname.mapping" "aq" "${ticalc}" "${bidirection_aq}" "${translist[@]}"
                                 printf "\n\nDone...\n\n"
 
 				printf "\n\nBuilding topology+parameter files for \"com\" systems. Water and Ions being added...\n\n"
@@ -91,15 +141,31 @@ if [ "${ticalc}" == "rsfe" ]; then
                 if [ "${twostate}" == "false" ]; then
                         printf "\n\n setting up files in \"1-state\" mode... \n\n"
                         if [ "${boxbuild}" == "skip" ]; then
-                                flag=0
+                                flag=0; flag2=0
                                 for i in "${!translist[@]}"; do
                                 	if [ ! -f "${translist[$i]}_aq.parm7" ] || [ ! -f "${translist[$i]}_aq.rst7" ] || [ ! -f "${translist[$i]}.scmask1" ] || [ ! -f "${translist[$i]}.scmask2" ] || [ ! -f "${translist[$i]}.timask1" ] || [ ! -f "${translist[$i]}.timask2" ]; then
                                 	        printf "\n\n One of the following files are missing from $system/setup...\n"
                                 	        printf "${translist[$i]}_aq.parm7, ${translist[$i]}_aq.rst7, ${translist[$i]}.scmask1 ${translist[$i]}.scmask2 ${translist[$i]}.timask1 ${translist[$i]}.timask2 \n"
                                 	        flag=1
                                 	fi
+					if [ "${bidirection_aq}" == "true" ]; then
+						if [ ! -f "${translistrev[$i]}_aq.parm7" ] || [ ! -f "${translistrev[$i]}_aq.rst7" ] || [ ! -f "${translistrev[$i]}.scmask1" ] || [ ! -f "${translistrev[$i]}.scmask2" ] || [ ! -f "${translistrev[$i]}.timask1" ] || [ ! -f "${translistrev[$i]}.timask2" ]; then
+							printf "\n\n One of the following files are missing from $system/setup...\n"
+							printf "${translistrev[$i]}_aq.parm7, ${translistrev[$i]}_aq.rst7, ${translistrev[$i]}.scmask1 ${translistrev[$i]}.scmask2 ${translistrev[$i]}.timask1 ${translistrev[$i]}.timask2 \n"
+							flag2=1
+						fi
+					fi
+
                                 done
-                                if [ "${flag}" -eq 1 ]; then exit 0; fi
+				if [ "${flag}" -eq 1 ]; then
+					printf "\n\n ${boxbuild} was set to 0. Above files must be present in $system/setup folder. Exiting...\n"
+					exit 0
+				fi
+				if [ "${flag2}" -eq 1 ]; then
+					printf "\n\n ${boxbuild} was set to 0 and bidirection_aq was set to \"true\". Above files must be present in $system/setup folder. Exiting...\n"
+					exit 0
+				fi
+
                         else
 
                                 if [ "${boxbuild}" == "0" ]; then
@@ -111,7 +177,11 @@ if [ "${ticalc}" == "rsfe" ]; then
                                 fi
 
                                 printf "\n\nBuilding topology+parameter files for \"aq\" systems. Water and Ions being added...\n\n"
-                                create_box_rsfe "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${boxbufaq}" "${ionconc}" "molname-ligname.mapping" "aq" "${ticalc}" "${translist[@]}"
+				if [ "${bidirection_aq}" == "true" ]; then
+					printf "\n\nbidirection_aq set to true. One state simulations for \"aq\" systems will be setup for both directions... \n\n"
+				fi
+
+                                create_box_rsfe "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${boxbufaq}" "${ionconc}" "molname-ligname.mapping" "aq" "${ticalc}" "${bidirection_aq}" "${translist[@]}" 
                                 printf "\n\nDone...\n\n"
                         fi
                 fi

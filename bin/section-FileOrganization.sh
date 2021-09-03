@@ -7,14 +7,6 @@ if [ "${ticalc}" == "rbfe" ]; then
                         printf "To enforce this step, delete \"molname-ligname.mapping\" from current directory and re-run script\n\n"
 		else
                         preparePDBs "${#uniqueligs[@]}" "${path_to_input}/${system}" "${boxbuild}" "${uniqueligs[@]}"
-
-
-                       #printf "\n\nBuilding boxes for both aq and com systems...\n\n"
-                       #create_box "aq" "${boxbufaq}" "${ionconc}" "${liglist[@]}"
-                       #printf "\n\nbox building for aq systems complete\n\n"
-                       #create_box "com" "${boxbufcom}" "${ionconc}" "${comlist[@]}"
-                       #printf "\n\nbox building for com systems complete\n\n"
-                       #if [ "${boxbuild}" -ne 2 ]; then boxbuild="skip"; fi
                 fi
         cd ${path}
 fi

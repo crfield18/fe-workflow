@@ -215,6 +215,46 @@ if [ "${setupmode}" == 0 ]; then
 
 							sh TEMPLATE.sh; sleep 1
 						cd $path/${system}/setup
+
+
+
+						if [ "${s}" == "aq" ]; then bidirection=${bidirection_aq}; else bidirection=${bidirection_com}; fi
+						if [ "${bidirection}" == "true" ]; then
+							mkdir -p ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}
+							if [ "${s}" == "aq" ] || [ "${twostate}" == "false" ]; then
+								cp ${stB}~${stA}_${s}.parm7  ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/unisc.parm7
+								cp ${stB}~${stA}_${s}.rst7   ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/stateA.rst7
+							fi
+							scmask1=$(cat "${stB}~${stA}".scmask1)
+							scmask2=$(cat "${stB}~${stA}".scmask2)
+							timask1=$(cat "${stB}~${stA}".timask1)
+							timask2=$(cat "${stB}~${stA}".timask2)
+							noshakemask="${timask1},${timask2:1:${#timask2}}"
+							# get succint ambermasks
+							if [ "${scmask1}" != '""' ]; then
+								scmask1=$(getambermask "${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/unisc.parm7" "${scmask1}")
+								scmask1="'${scmask1}'"
+							fi
+							if [ "${scmask2}" != '""' ]; then
+								scmask2=$(getambermask "${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/unisc.parm7" "${scmask2}")
+								scmask2="'${scmask2}'"
+							fi
+							timask1=$(getambermask "${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/unisc.parm7" "${timask1}"); timask1="'${timask1}'"
+							timask2=$(getambermask "${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/unisc.parm7" "${timask2}"); timask2="'${timask2}'"
+							noshakemask=$(getambermask "${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/unisc.parm7" "${noshakemask}"); noshakemask="'${noshakemask}'"
+
+							cd ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}
+                                                        	if [ "${ticalc}" == "rbfe" ]; then
+                                                                	writetemplate_rbfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
+                                                        	else
+                                                                	writetemplate_rsfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]}
+                                                        	fi
+
+                                                        	sh TEMPLATE.sh; sleep 1
+                                                	cd $path/${system}/setup
+
+
+						fi
 					done
 				done
 			else
@@ -241,55 +281,68 @@ if [ "${setupmode}" == 0 ]; then
 
 
 			for i in "${!translist[@]}";do
+                                stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
 				for s in ${slist[@]}; do
-					cd ${path}/${system}/${protocol}/run/${translist[$i]}/${s}
+					for dir in "${stA}~${stB}" "${stB}~${stA}"; do
+						if [ -d "${path}/${system}/${protocol}/run/${dir}/${s}" ]; then
+							cd ${path}/${system}/${protocol}/run/${dir}/${s}
 
-                                		# if hmr=true set timestep to 4fs
-                                		if [ "${hmr}" == "true" ]; then
-                                        		sed -i '/dt.*.=.*.*/c\dt              = 0.004' inputs/*_ti.mdin
-                                		fi
+                                				# if hmr=true set timestep to 4fs
+                                				if [ "${hmr}" == "true" ]; then
+                                        				sed -i '/dt.*.=.*.*/c\dt              = 0.004' inputs/*_ti.mdin
+                                				fi
 
-						# if notrajecory=true, set ntwx=0 in input files
-                                		if [ "${notrajectory}" == "true" ]; then
-							sed -i 's/ntwx.*/ntwx            = 0/' inputs/*.mdin
-                                		fi
+								# if notrajecory=true, set ntwx=0 in input files
+                                				if [ "${notrajectory}" == "true" ]; then
+									sed -i 's/ntwx.*/ntwx            = 0/' inputs/*.mdin
+                                				fi
 
-                                		# if repex=false, alter input files and slurm files
-                                		if [ "${repex}" == "false" ]; then
-                                        		sed -i -e '/numexchg/d' -e '/gremd_acyc/d' inputs/*_ti.mdin
-                                        		sed -i -e 's/ -rem 3//g' -e 's/running replica ti/running regular ti/g' run_alltrials.slurm
-                                		fi
+                                				# if repex=false, alter input files and slurm files
+                                				if [ "${repex}" == "false" ]; then
+                                        				sed -i -e '/numexchg/d' -e '/gremd_acyc/d' inputs/*_ti.mdin
+                                        				sed -i -e 's/ -rem 3//g' -e 's/running replica ti/running regular ti/g' run_alltrials.slurm
+                                				fi
 
-						for(( t=1;t<=${ntrials};t++));do
-						        mkdir -p t${t}
-						        cp current/*_init.rst7 t${t}/
-						        if [ "${twostate}" == "true" ]; then
-						                sed "s/current/t${t}/g" inputs/eqpre1P0.groupfile       > inputs/t${t}_eqpre1P0.groupfile
-						                sed "s/current/t${t}/g" inputs/eqpre2P0.groupfile       > inputs/t${t}_eqpre2P0.groupfile
-						                sed "s/current/t${t}/g" inputs/eqP0.groupfile           > inputs/t${t}_eqP0.groupfile
-						                sed "s/current/t${t}/g" inputs/eqNTP4.groupfile         > inputs/t${t}_eqNTP4.groupfile
-						                sed "s/current/t${t}/g" inputs/eqV.groupfile            > inputs/t${t}_eqV.groupfile
-						                sed "s/current/t${t}/g" inputs/eqP.groupfile            > inputs/t${t}_eqP.groupfile
-						                sed "s/current/t${t}/g" inputs/eqA.groupfile            > inputs/t${t}_eqA.groupfile
-						                if [ "${s}" == "com" ]; then
-						                        sed "s/current/t${t}/g" inputs/eqProt2.groupfile        > inputs/t${t}_eqProt2.groupfile
-						                        sed "s/current/t${t}/g" inputs/eqProt1.groupfile        > inputs/t${t}_eqProt1.groupfile
-						                        sed "s/current/t${t}/g" inputs/eqProt05.groupfile       > inputs/t${t}_eqProt05.groupfile
-						                        sed "s/current/t${t}/g" inputs/eqProt025.groupfile      > inputs/t${t}_eqProt025.groupfile
-						                        sed "s/current/t${t}/g" inputs/eqProt01.groupfile       > inputs/t${t}_eqProt01.groupfile
-						                        sed "s/current/t${t}/g" inputs/eqProt0.groupfile        > inputs/t${t}_eqProt0.groupfile
-						                fi
-						        fi
-						        sed "s/current/t${t}/g" inputs/eqATI.groupfile          > inputs/t${t}_eqATI.groupfile
-						        sed "s/current/t${t}/g" inputs/preTI.groupfile          > inputs/t${t}_preTI.groupfile
-						        sed "s/current/t${t}/g" inputs/ti.groupfile             > inputs/t${t}_ti.groupfile
-						
-						done
+								for(( t=1;t<=${ntrials};t++));do
+									mkdir -p t${t}
+									cp current/*_init.rst7 t${t}/
+									if [ "${twostate}" == "true" ]; then
+										sed "s/current/t${t}/g" inputs/eqpre1P0.groupfile       > inputs/t${t}_eqpre1P0.groupfile
+										sed "s/current/t${t}/g" inputs/eqpre2P0.groupfile       > inputs/t${t}_eqpre2P0.groupfile
+										sed "s/current/t${t}/g" inputs/eqP0.groupfile           > inputs/t${t}_eqP0.groupfile
+										sed "s/current/t${t}/g" inputs/eqNTP4.groupfile         > inputs/t${t}_eqNTP4.groupfile
+										sed "s/current/t${t}/g" inputs/eqV.groupfile            > inputs/t${t}_eqV.groupfile
+										sed "s/current/t${t}/g" inputs/eqP.groupfile            > inputs/t${t}_eqP.groupfile
+										sed "s/current/t${t}/g" inputs/eqA.groupfile            > inputs/t${t}_eqA.groupfile
+										if [ "${s}" == "com" ]; then
+										        sed "s/current/t${t}/g" inputs/eqProt2.groupfile        > inputs/t${t}_eqProt2.groupfile
+										        sed "s/current/t${t}/g" inputs/eqProt1.groupfile        > inputs/t${t}_eqProt1.groupfile
+										        sed "s/current/t${t}/g" inputs/eqProt05.groupfile       > inputs/t${t}_eqProt05.groupfile
+										        sed "s/current/t${t}/g" inputs/eqProt025.groupfile      > inputs/t${t}_eqProt025.groupfile
+										        sed "s/current/t${t}/g" inputs/eqProt01.groupfile       > inputs/t${t}_eqProt01.groupfile
+										        sed "s/current/t${t}/g" inputs/eqProt0.groupfile        > inputs/t${t}_eqProt0.groupfile
+										fi
+									fi
+									sed "s/current/t${t}/g" inputs/eqATI.groupfile          > inputs/t${t}_eqATI.groupfile
+									sed "s/current/t${t}/g" inputs/preTI.groupfile          > inputs/t${t}_preTI.groupfile
+									sed "s/current/t${t}/g" inputs/ti.groupfile             > inputs/t${t}_ti.groupfile
+								
+								done
 
 
-                                        cd $path/${system}/setup
-                                done
+                                        		cd $path/${system}/setup
+						fi
+                                	done
+					if [ -d ${path}/${system}/${protocol}/run/${stA}~${stB}/${s} ] && [ -d ${path}/${system}/${protocol}/run/${stB}~${stA}/${s} ]; then
+						mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/forward
+						mv ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/* ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/forward/ 2>/dev/null
+						mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/reverse
+						mv ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/* ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/reverse/ 2>/dev/null
+						rm -rf ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}
+					fi
+				done
 				printf "Done with ${translist[$i]}...\n"
+				if [ -d "${path}/${system}/${protocol}/run/${stB}~${stA}" ] && [ -z "$(ls -A ${path}/${system}/${protocol}/run/${stB}~${stA})" ]; then rm -rf ${path}/${system}/${protocol}/run/${stB}~${stA}; fi
                         done
                 cd ${path}
 

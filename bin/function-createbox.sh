@@ -1251,6 +1251,7 @@ function create_box_rbfe {
         local mapfile=$1; shift
         local s=$1; shift
 	local ticalc=$1; shift
+	local bidirection=$1; shift
 	local translist=("$@")
 
         local mollist=(); local liglist=(); local numnonstdlist=()
@@ -1263,7 +1264,7 @@ function create_box_rbfe {
         if [ "${s}" == "com" ]; then load=pdbseq; else load=pdbseq; fi
 
 	###
-	mergedpdbs=(); lig1s=(); lig2s=(); nnstds=()
+	mergedpdbs=(); lig1s=(); lig2s=(); nnstds=(); mergedpdbsrev=(); nnstdsrev=()
 	for i in "${!translist[@]}";do
 	       stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
 	       indA=$(get_index "${stA}" "${mollist[@]}"); indB=$(get_index "${stB}" "${mollist[@]}")
@@ -1274,6 +1275,12 @@ function create_box_rbfe {
 	       mergedpdbs+=(merged_${stA}~${stB})
 	       lig1s+=(${stA}); lig2s+=(${stB})
 	       nnstds+=(${nnstdA})
+
+	       if [ "${bidirection}" == "true" ]; then
+		       parse_pdb "${stB}.pdb" "${stB}~${stA}.map.txt" "${ligB}" "${ligA}" "${stB}_0.mol2" "${stA}_0.mol2" "$s" "${stB}~${stA}" "${ticalc}"
+		       mergedpdbsrev+=(merged_${stB}~${stA})
+		       nnstdsrev+=(${nnstdB})
+	       fi
 	done
 	###
         # write and run tleap to generate initial parm file
@@ -1298,7 +1305,7 @@ function create_box_rbfe {
         #echo "final number of water and ions in ${lig1s[0]}_${s} : $nwat $nions $nsodium $nchloride"
 
 	if [ "${#mergedpdbs[@]}" -gt 1 ]; then
-        	mergedpdbs=(${mergedpdbs[@]:1}); lig1s=(${lig1s[@]:1}); lig2s=(${lig2s[@]:1}); nnstds=(${nnstds[@]:1})
+        #	mergedpdbs=(${mergedpdbs[@]:1}); lig1s=(${lig1s[@]:1}); lig2s=(${lig2s[@]:1}); nnstds=(${nnstds[@]:1})
 
 		if [ "${boxbuild}" != 2 ]; then
 
@@ -1310,6 +1317,12 @@ function create_box_rbfe {
         			tleap -s -f tleap.in > output
         			mv merged.parm7 "${lig1s[$m]}~${lig2s[$m]}_${s}".parm7; mv merged.rst7 "${lig1s[$m]}~${lig2s[$m]}_${s}".rst7
 
+				if [ "${bidirection}" == "true" ]; then
+					write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbsrev[$m]}" "${lig2s[$m]}" "${nnstdsrev[$m]}" "${lig1s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
+        				tleap -s -f tleap.in > output
+        				mv merged.parm7 "${lig2s[$m]}~${lig1s[$m]}_${s}".parm7; mv merged.rst7 "${lig2s[$m]}~${lig1s[$m]}_${s}".rst7
+				fi
+
 			done
 
 		else
@@ -1317,6 +1330,11 @@ function create_box_rbfe {
 			for m in "${!mergedpdbs[@]}";do
 				fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" "${nnstds[$m]}" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nsodium}" "${nchloride}" "${nwat}" "${boxbuild}" "${s}"
 				mv out.parm7 ${lig1s[$m]}~${lig2s[$m]}_${s}.parm7; mv out.rst7 ${lig1s[$m]}~${lig2s[$m]}_${s}.rst7
+
+				if [ "${bidirection}" == "true" ]; then
+					fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbsrev[$m]}" "${lig2s[$m]}" "${nnstdsrev[$m]}" "${lig1s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nsodium}" "${nchloride}" "${nwat}" "${boxbuild}" "${s}"
+					mv out.parm7 ${lig2s[$m]}~${lig1s[$m]}_${s}.parm7; mv out.rst7 ${lig2s[$m]}~${lig1s[$m]}_${s}.rst7
+				fi
 			done
 
 		fi
@@ -1324,9 +1342,11 @@ function create_box_rbfe {
 
 	##########################################
         # setup H-mass repartitioning
-	for m in "${!translist[@]}";do
-		mol="${translist[$m]}_${s}"
-        	if [ "${hmr}" == "true" ]; then
+        if [ "${hmr}" == "true" ]; then
+		for m in "${!translist[@]}";do
+			#mol="${translist[$m]}_${s}"
+			mol="${lig1s[$m]}~${lig2s[$m]}_${s}"
+
                 	if [ -f hmr.parm7 ] || [ -f hmr.rst7 ]; then rm -rf hmr.parm7 hmr.rst7; fi
                 	cat <<EOF > hmr.in
 HMassRepartition
@@ -1337,17 +1357,40 @@ EOF
                 	mv hmr.parm7 ${mol}.parm7
                 	mv hmr.rst7  ${mol}.rst7
                 	rm -rf hmr.in
-		fi
-	done
+
+			if [ "${bidirection}" == "true" ]; then
+				#mol="${translistrev[$m]}_${s}"
+				mol="${lig2s[$m]}~${lig1s[$m]}_${s}"
+                        	cat <<EOF > hmr.in
+HMassRepartition
+outparm hmr.parm7 hmr.rst7
+EOF
+                        	parmed -i hmr.in -p ${mol}.parm7 -c ${mol}.rst7 >> output 2>&1
+                        	sleep 1
+                        	mv hmr.parm7 ${mol}.parm7
+                        	mv hmr.rst7  ${mol}.rst7
+                        	rm -rf hmr.in
+			fi
+		done
+    	fi
         ##########################################
 
 
 	##########################################
         # double check prepared systems
         for m in "${!translist[@]}";do
-                mol="${translist[$m]}_${s}"
+                #mol="${translist[$m]}_${s}"
+		mol="${lig1s[$m]}~${lig2s[$m]}_${s}"
                 nwat=$(calcwaterinparm ${mol}.parm7); nsod=$(calcsodiuminparm ${mol}.parm7); ncl=$(calcchlorideinparm ${mol}.parm7)
                 printf "\n${mol} has ${nwat} waters, ${nsod} Na+ ions, and ${ncl} Cl- ions\n"
+
+		if [ "${bidirection}" == "true" ]; then
+			#mol="${translistrev[$m]}_${s}"
+			mol="${lig2s[$m]}~${lig1s[$m]}_${s}"
+			nwat=$(calcwaterinparm ${mol}.parm7); nsod=$(calcsodiuminparm ${mol}.parm7); ncl=$(calcchlorideinparm ${mol}.parm7)
+			printf "\n${mol} has ${nwat} waters, ${nsod} Na+ ions, and ${ncl} Cl- ions\n"
+
+		fi
         done
         ##########################################
 
@@ -1500,6 +1543,7 @@ function create_box_rsfe {
         local mapfile=$1; shift
         local s=$1; shift
         local ticalc=$1; shift
+	local bidirection=$1; shift
         local translist=("$@")
 
 	local mollist=(); local liglist=()
@@ -1512,7 +1556,7 @@ function create_box_rsfe {
         if [ "${s}" == "com" ]; then load=pdbseq; else load=pdbseq; fi
 
         ###
-        mergedpdbs=(); lig1s=(); lig2s=()
+        mergedpdbs=(); lig1s=(); lig2s=(); mergedpdbsrev=()
         for i in "${!translist[@]}";do
                stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
                indA=$(get_index "${stA}" "${mollist[@]}"); indB=$(get_index "${stB}" "${mollist[@]}")
@@ -1521,6 +1565,11 @@ function create_box_rsfe {
                parse_pdb "${stA}_0.mol2" "${stA}~${stB}.map.txt" "${ligA}" "${ligB}" "${stA}_0.mol2" "${stB}_0.mol2" "$s" "${stA}~${stB}" "${ticalc}"
                mergedpdbs+=(merged_${stA}~${stB})
                lig1s+=(${stA}); lig2s+=(${stB})
+
+	       if [ "${bidirection}" == "true" ]; then
+		       parse_pdb "${stB}_0.mol2" "${stB}~${stA}.map.txt" "${ligB}" "${ligA}" "${stB}_0.mol2" "${stA}_0.mol2" "$s" "${stB}~${stA}" "${ticalc}"
+		       mergedpdbsrev+=(merged_${stB}~${stA})
+	       fi
         done
         ###
         # write and run tleap to generate initial parm file
@@ -1546,7 +1595,7 @@ function create_box_rsfe {
         #echo "final number of water and ions in ${translist[0]}_${s} : $nwat $nions"
 
         if [ "${#mergedpdbs[@]}" -gt 1 ]; then
-                mergedpdbs=(${mergedpdbs[@]:1}); lig1s=(${lig1s[@]:1}); lig2s=(${lig2s[@]:1}); nnstds=(${nnstds[@]:1})
+                #mergedpdbs=(${mergedpdbs[@]:1}); lig1s=(${lig1s[@]:1}); lig2s=(${lig2s[@]:1}); nnstds=(${nnstds[@]:1})
 
                 if [ "${boxbuild}" != 2 ]; then
 
@@ -1555,6 +1604,13 @@ function create_box_rsfe {
                                 write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" 1 "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
                                 tleap -s -f tleap.in > output
                                 mv merged.parm7 "${lig1s[$m]}~${lig2s[$m]}_${s}".parm7; mv merged.rst7 "${lig1s[$m]}~${lig2s[$m]}_${s}".rst7
+
+				
+				if [ "${bidirection}" == "true" ]; then
+					write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbsrev[$m]}" "${lig2s[$m]}" 1 "${lig1s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
+					tleap -s -f tleap.in > output
+					mv merged.parm7 "${lig2s[$m]}~${lig1s[$m]}_${s}".parm7; mv merged.rst7 "${lig2s[$m]}~${lig1s[$m]}_${s}".rst7
+				fi
                         done
 
                 else
@@ -1563,6 +1619,11 @@ function create_box_rsfe {
                         for m in "${!mergedpdbs[@]}";do
                                 fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" "1" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nsodium}" "${nchloride}" "${nwat}" "${boxbuild}" "${s}"
                                 mv out.parm7 ${lig1s[$m]}~${lig2s[$m]}_${s}.parm7; mv out.rst7 ${lig1s[$m]}~${lig2s[$m]}_${s}.rst7
+
+				if [ "${bidirection}" == "true" ]; then
+					fix_solvent "${pff}" "${lff}" "${wm}" "${mergedpdbsrev[$m]}" "${lig2s[$m]}" "1" "${lig1s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nsodium}" "${nchloride}" "${nwat}" "${boxbuild}" "${s}"
+					mv out.parm7 ${lig2s[$m]}~${lig1s[$m]}_${s}.parm7; mv out.rst7 ${lig2s[$m]}~${lig1s[$m]}_${s}.rst7
+				fi
                         done
 
                 fi
@@ -1570,9 +1631,10 @@ function create_box_rsfe {
 
         ##########################################
         # setup H-mass repartitioning
-        for m in "${!translist[@]}";do
-                mol="${translist[$m]}_${s}"
-                if [ "${hmr}" == "true" ]; then
+	if [ "${hmr}" == "true" ]; then
+        	for m in "${!translist[@]}";do
+                	#mol="${translist[$m]}_${s}"
+			mol="${lig1s[$m]}~${lig2s[$m]}_${s}"
                         if [ -f hmr.parm7 ] || [ -f hmr.rst7 ]; then rm -rf hmr.parm7 hmr.rst7; fi
                         cat <<EOF > hmr.in
 HMassRepartition
@@ -1583,20 +1645,42 @@ EOF
                         mv hmr.parm7 ${mol}.parm7
                         mv hmr.rst7  ${mol}.rst7
                         rm -rf hmr.in
-                fi
-        done
+
+			if [ "${bidirection}" == "true" ]; then
+				#mol="${translistrev[$m]}_${s}"
+				mol="${lig2s[$m]}~${lig1s[$m]}_${s}"
+				cat <<EOF > hmr.in
+HMassRepartition
+outparm hmr.parm7 hmr.rst7
+EOF
+				parmed -i hmr.in -p ${mol}.parm7 -c ${mol}.rst7 >> output 2>&1
+				sleep 1
+				mv hmr.parm7 ${mol}.parm7
+				mv hmr.rst7  ${mol}.rst7
+				rm -rf hmr.in
+			fi
+		done
+	fi
         ##########################################
 
 
         ##########################################
         # double check prepared systems
         for m in "${!translist[@]}";do
-                mol="${translist[$m]}_${s}"
+                #mol="${translist[$m]}_${s}"
+		mol="${lig1s[$m]}~${lig2s[$m]}_${s}"
                 nwat=$(calcwaterinparm ${mol}.parm7)
                 nsod=$(calcsodiuminparm ${mol}.parm7)
 		ncl=$(calcchlorideinparm ${mol}.parm7)
 
                 printf "\n${mol} has ${nwat} waters, ${nsod} Na+ ions, and ${ncl} Cl- ions"
+
+		if [ "${bidirection}" == "true" ]; then
+			#mol="${translistrev[$m]}_${s}"
+			mol="${lig2s[$m]}~${lig1s[$m]}_${s}"
+			nwat=$(calcwaterinparm ${mol}.parm7); nsod=$(calcsodiuminparm ${mol}.parm7); ncl=$(calcchlorideinparm ${mol}.parm7)
+			printf "\n${mol} has ${nwat} waters, ${nsod} Na+ ions, and ${ncl} Cl- ions\n"
+		fi
         done
         ##########################################
 

@@ -115,6 +115,7 @@ gti_vdw_exp=2                   # gti_vdw_exp
 # in a "2-state" way in which for a given transformation P:A --> P:B, both P:A and P:B structures
 # considered and represents the two end states.
 twostate=false
+bidirection=true
 
 
 # ticalc determines the calculation.
@@ -137,6 +138,19 @@ nnodes=1                        # number of nodes to be used for each transforma
 ngpus=8                         # number of gpus/node to be used for each transformation
 wallclock=3-00:00:00              # wallclock for individual jobs
 
+# analysis related
+# path to production runs. default path_to_input="system"/"protocol"/run
+# exptdatafile is an optional text file containing experimental free energies.
+# exptdatafile can be set to "skip" or if provided, should be a file containing 2 columns.
+# col 1 should be ligand name (identical to ligand name in translist) and col2 should be
+# relative experimental free energy
+path_to_data=p38/runs/shake-hmr/new-shake-hmr/shake.2fs
+exptdatafile=p38_ExptData_t8.txt
+bar=true
+ccc=true
+start=0.0
+stop=100.0
+check_convergence=true
 
 EOFN
                         echo "Script expects a file named \"input\" in working directory. Check input.template for details."
@@ -201,6 +215,9 @@ EOFN
 	if [ "${ticalc}" != "rbfe" ] && [ "${ticalc}" != "rsfe" ]  && [ "${ticalc}" != "asfe" ]; then printf "\n\n\"ticalc\" should be set to either \"rbfe\" or \"rsfe\" or \"asfe\"\n\n" && exit 0; fi
 	if [ "${ticalc}" == "rsfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=rsfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
 	if [ "${ticalc}" == "asfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=asfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
+	if [ "${twostate}" != "true" ] && [ "${twostate}" != "false" ]; then printf "\n\n\"twostate\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
+	if [ "${bidirection_aq}" != "true" ] && [ "${bidirection_aq}" != "false" ]; then printf "\n\n\"bidirection_aq\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
+	if [ "${bidirection_com}" != "true" ] && [ "${bidirection_com}" != "false" ]; then printf "\n\n\"bidirection_com\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	
 
         # ensure path_to_input is absolute and check if input directories are present
@@ -213,6 +230,7 @@ EOFN
 		for i in "${!translist[@]}";do
                 	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
                 	listA+=("${stA}"); listB+=("${stB}")
+			translistrev+=("${stB}~${stA}")
         	done
         	listligs+=(${listA[@]} ${listB[@]})
         	uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
@@ -309,6 +327,40 @@ EOFN
                         fi
                 done
 	fi
+
+	# analysis keywords
+	if [ "${stage}" == "analysis" ]; then
+		if [ ! -d "${path_to_data}" ]; then 
+			printf "\n\n!!!! ERROR !!!!\n\n"
+			printf "\n\n!!!! ${path_to_data} does not exist \n\n"
+			exit 0
+		fi
+		if [ ! -f "${exptdatafile}" ] && [ "${exptdatafile}" != "skip" ]; then
+                        printf "\n\n!!!! ERROR !!!!\n\n"
+                        printf "\n\n!!!! ${exptdatafile} does not exist \n\n"
+                        exit 0
+                fi
+		if [ "${bar}" != "true" ] && [ "${bar}" != "false" ]; then 
+			printf "\n\n!!!! ERROR !!!!\n\n"
+			printf "\n\n${bar} must be set to \"true\" or \"false\"\n\n"
+		fi
+                if [ "${ccc}" != "true" ] && [ "${ccc}" != "false" ]; then
+                        printf "\n\n!!!! ERROR !!!!\n\n"
+                        printf "\n\n${ccc} must be set to \"true\" or \"false\"\n\n"
+                fi
+		if (( $(echo "$start < 0" | bc -l) )) || (( $(echo "$stop < 0" | bc -l) )) || (( $(echo "$start > 100" | bc -l) )) || (( $(echo "$stop > 100" | bc -l) )) || (( $(echo "$start > $stop" | bc -l) )); then
+			printf "\n\n!!!! ERROR !!!!\n\n"
+			printf "\n\n \"start\" and \"stop\" should have values between 0 to 100 \n\n"
+			printf "\n\n \"start\" should have a value less than \"stop\" \n\n"
+		fi
+                if [ "${check_convergence}" != "true" ] && [ "${check_convergence}" != "false" ]; then
+                        printf "\n\n!!!! ERROR !!!!\n\n"
+                        printf "\n\n${check_convergence} must be set to \"true\" or \"false\"\n\n"
+                fi
+	fi
+
+		
+
 	############################
 	############################
 

@@ -3,14 +3,14 @@
 # containing initial structure/parameter files.
 # For example, a single folder "initial" may contain multiple
 # subdirectories containing initial files for different systems
-path_to_input=initial
+path_to_input=initial_clean
 
 
 # Subdirectory containing initial structure/parameter files
 # of "system"
 # For example, 
 # system=CDK2
-system=smallMols
+system=CDK2
 
 
 
@@ -31,7 +31,7 @@ system=smallMols
 # ${path_to_input}/${system}
 # example,
 # translist=(mobley_1527293 mobley_3034976)
-translist=(1h1q~1h1r 1h1q~1h1s)
+translist=(1h1q~1h1s 1h1q~1oi9 1oi9~1h1s)
 
 
 nlambda=11                      # number of lambda windows
@@ -61,7 +61,7 @@ mapinspect=0
 # will be generated.
 # mapnetwork=true ensures that in a given network of transformations, cc and sc 
 # regions of each ligand is identical in every transformation in which is participates 
-mapnetwork=false
+mapnetwork=true
 
 # boxbuild determines if and how MD boxes will be built
 # "skip" --> skip box building 
@@ -71,7 +71,7 @@ mapnetwork=false
 # for RSFE and ASFE calculations, boxbuild=0 and boxbuild=1 are identical. 
 # 2 --> build boxes for both "complex" and "aqueous" states with same number 
 # of water and ions
-boxbuild=2
+boxbuild=1
 boxbufcom=16  			# MD box buffer for "complex" states
 boxbufaq=20			# MD box buffer for "aqueous" states
 ionconc=0.15			# Ion concentration in MD box
@@ -111,6 +111,8 @@ gti_vdw_exp=2                   # gti_vdw_exp
 # in a "2-state" way in which for a given transformation P:A --> P:B, both P:A and P:B structures
 # considered and represents the two end states.
 twostate=false
+bidirection_aq=true
+bidirection_com=true
 
 
 # ticalc determines the calculation.
@@ -124,7 +126,7 @@ ticalc=rbfe                     # "rbfe -> relative binding free energy/rsfe -> 
 # stage=run-equil --> run equil simulations
 # stage=run-TI --> run TI simulations
 # stage=check-TI --> check TI simulations
-stage=setup                     # "setup/run-equil/check-equil/run-TI/check-TI"
+stage=analysis                     # "setup/run-equil/check-equil/run-TI/check-TI"
 setupmode=0                     # 0 --> regular TI/ 1 --> end-point ACES/ 2 --> TI from end-point ACES
 
 # job submission related
@@ -132,5 +134,21 @@ partition=general-long-gpu      # name of specific partition on HPC. Use "null" 
 nnodes=1                        # number of nodes to be used for each transformation
 ngpus=8                         # number of gpus/node to be used for each transformation
 wallclock=3-00:00:00              # wallclock for individual jobs
+
+# analysis related
+# path to production runs. default path_to_input="system"/"protocol"/run
+# exptdatafile is an optional text file containing experimental free energies.
+# exptdatafile can be set to "skip" or if provided, should be a file containing 2 columns. 
+# col 1 should be ligand name (identical to ligand name in translist) and col2 should be 
+# relative experimental free energy
+path_to_data=/run/media/abir/hdd1/work/afe/stx/auto/work-in-progress/v6.0-modular/format_2/benchmark/CDK2/runs/case5_new
+exptdatafile=skip
+bar=true
+ccc=false
+start=0.0
+stop=100.0
+check_convergence=true
+
+
 
 

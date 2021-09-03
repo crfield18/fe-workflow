@@ -3,6 +3,7 @@
 ##########################################
 path=`pwd`
 pathTObin=${path}/bin			  		  	# path to bin folder
+pathTOFEToolKit=/home/abir/devel/git/AMBER_DD_BOOST/FE-ToolKit
 export PATH="$PATH:${pathTObin}"
 ###########################################
 
@@ -15,19 +16,7 @@ source ${pathTObin}/function-write_template_rbfe.sh				# template for rbfe calcu
 source ${pathTObin}/function-write_template_rsfe.sh				# template for rsfe calculations
 source ${pathTObin}/function-createbox.sh
 source ${pathTObin}/function-preparePDBs.sh
-
-
-###########################################
-# top level exit function
-trap "exit 1" TERM
-export TOP_PID=$$
-
-function killit()
-{
-   echo "Goodbye"
-   kill -s TERM $TOP_PID
-}
-
+source ${pathTObin}/function-analyze.sh
 
 
 ###########################################
@@ -37,24 +26,20 @@ function killit()
 parse_input $1
 ####
 
+# initial array initialization
+for i in "${!translist[@]}";do
+	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
+	listA+=("${stA}"); listB+=("${stB}")
+done
+listligs+=(${listA[@]} ${listB[@]})
+uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
 #################################
 ##BEGIN STAGE=setup
 if [ "$stage" == "setup" ]; then
 #################################
 
 	mkdir -p ${system}/setup
-
-###for i in "${!translist[@]}";do
-###	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-###	listA+=("${stA}"); listB+=("${stB}")
-###done
-###listligs+=(${listA[@]} ${listB[@]})
-###uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-###for i in "${!uniqueligs[@]}";do
-###	for j in "${!listligs[@]}";do
-###        	if [ "${uniqueligs[$i]}" == "${listligs[$j]}" ]; then uniquechgs[$i]="${listchgs[$j]}" && break; fi
-###	done
-###done
 
 	# File Organization
 	source ${pathTObin}/section-FileOrganization.sh
@@ -78,6 +63,16 @@ exit 0
 	# END of setupmode=0
 #################################
 ##END STAGE=setup
+fi
+#################################
+
+#################################
+##BEGIN STAGE=analysis
+if [ "$stage" == "analysis" ]; then
+#################################
+	source ${pathTObin}/section-analysis.sh
+#################################
+##END STAGE=check-TI
 fi
 #################################
 
