@@ -223,112 +223,127 @@ EOFN
         # ensure path_to_input is absolute and check if input directories are present
         if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
 
-	########################
-	########################
+	#########################################################
+	#########################################################
+	#########################################################
+	#########################################################
+	# if stage=setup, 
 	# check input files
-	if [ "${ticalc}" == "rbfe" ] || [ "${ticalc}" == "rsfe" ]; then
-		for i in "${!translist[@]}";do
-                	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-                	listA+=("${stA}"); listB+=("${stB}")
-			translistrev+=("${stB}~${stA}")
-        	done
-        	listligs+=(${listA[@]} ${listB[@]})
-        	uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-	else
-		for i in "${!translist[@]}";do
-			if grep -q '~' <<< "${translist[$i]}"; then printf "\n\n The character '~' is present is ${translist[$i]}. For \"ticalc\"=asfe, translist should contain a list of ligand molecules.\n\n" && exit 0; fi
-			listligs+=("${translist[$i]}")
-        		uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-		done
-	fi
-	########################
+	if [ "${stage}" == "setup" ]; then
 
-	if [ "${ticalc}" == "rbfe" ]; then
-		pdbmissing=0; ligmissing=0; slist=(com aq)
-		for i in "${!uniqueligs[@]}";do
-                	molname=${uniqueligs[$i]}
-                	if [ ! -f ${path_to_input}/${system}/${molname}.pdb ]; then
-				printf "\n\n!!!! ERROR !!!!\n\n"
-                        	printf "\n\n ${molname}.pdb is missing\n\n"
-                        	pdbmissing=1
-                	elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}.pdb; then
-				printf "\n\n!!!! ERROR !!!!\n\n"
-				printf "\n\n ${molname}.pdb does not contain residue named "LIG". The ligand molecule in ${molname}.pdb must be named "LIG" \n\n"
-                        	pdbmissing=1
-			fi
+		if [ "${ticalc}" == "rbfe" ] || [ "${ticalc}" == "rsfe" ]; then
+			for i in "${!translist[@]}";do
+		        	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
+		        	listA+=("${stA}"); listB+=("${stB}")
+				translistrev+=("${stB}~${stA}")
+			done
+			listligs+=(${listA[@]} ${listB[@]})
+			uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+		else
+			for i in "${!translist[@]}";do
+				if grep -q '~' <<< "${translist[$i]}"; then printf "\n\n The character '~' is present is ${translist[$i]}. For \"ticalc\"=asfe, translist should contain a list of ligand molecules.\n\n" && exit 0; fi
+				listligs+=("${translist[$i]}")
+				uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+			done
+		fi
+		########################
 
-                	if [ ! -f ${path_to_input}/${system}/${molname}_0.mol2 ] || [ ! -f ${path_to_input}/${system}/${molname}_0.frcmod ] || [ ! -f ${path_to_input}/${system}/${molname}_0.lib ]; then
-				printf "\n\n!!!! ERROR !!!!\n\n"
-                        	printf "\n\n One or more of ligand parameter files present in ${molname}.pdb is missing. \n"
-				printf "Parameter files of the ligand present in ${molname}.pdb must be provided as ${molname}_0.mol2, ${molname}_0.frcmod, ${molname}_0.lib. \n"
-				printf "If ${molname}.pdb contain additional nonstandard residues, paramater files associated with these nonstandard residues must also be provided as \n"
-				printf "${molname}_1.frcmod/${molname}_1.lib, ${molname}_2.frcmod/${molname}_2.lib etc \n\n"
-                        	ligmissing=1
-			elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
-				printf "\n\n!!!! ERROR !!!!\n\n"
-				printf "\n\n resname of the ligand in ${molname}_0.mol2 must be \"LIG\" \n\n"
-				ligmissing=1
-			elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
-				printf "\n\n!!!! ERROR !!!!\n\n"
-		        	printf "\n\n resname 0of the ligand in ${molname}_0.lib must be \"LIG\" \n\n"
-				ligmissing=1
-                	fi
-
-			if [ "${ligmissing}" -eq 1 ]; then exit 0; fi
-
-			frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
-			libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)
+		if [ "${ticalc}" == "rbfe" ]; then
+			pdbmissing=0; ligmissing=0; slist=(com aq)
+			for i in "${!uniqueligs[@]}";do
+		        	molname=${uniqueligs[$i]}
+		        	if [ ! -f ${path_to_input}/${system}/${molname}.pdb ]; then
+					printf "\n\n!!!! ERROR !!!!\n\n"
+		                	printf "\n\n ${molname}.pdb is missing\n\n"
+		                	pdbmissing=1
+		        	elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}.pdb; then
+					printf "\n\n!!!! ERROR !!!!\n\n"
+					printf "\n\n ${molname}.pdb does not contain residue named "LIG". The ligand molecule in ${molname}.pdb must be named "LIG" \n\n"
+		                	pdbmissing=1
+				fi
 		
-			if [ "${frcmods}" -ne "${libs}" ]; then 
-				printf "\n\n!!!! ERROR !!!!\n\n"
-				printf "\n\n Each ${molname}_?.lib file should have a corresponding ${molname}_?.frcmod file \n\n"
-				exit 0
-			else
-				frcmodlist+=($frcmods)
-				liblist+=($libs)
-			fi
-        	done
-        	if [ "${pdbmissing}" -eq 1 ] || [ "${ligmissing}" -eq 1 ]; then exit 0; fi
+		        	if [ ! -f ${path_to_input}/${system}/${molname}_0.mol2 ] || [ ! -f ${path_to_input}/${system}/${molname}_0.frcmod ] || [ ! -f ${path_to_input}/${system}/${molname}_0.lib ]; then
+					printf "\n\n!!!! ERROR !!!!\n\n"
+		                	printf "\n\n One or more of ligand parameter files present in ${molname}.pdb is missing. \n"
+					printf "Parameter files of the ligand present in ${molname}.pdb must be provided as ${molname}_0.mol2, ${molname}_0.frcmod, ${molname}_0.lib. \n"
+					printf "If ${molname}.pdb contain additional nonstandard residues, paramater files associated with these nonstandard residues must also be provided as \n"
+					printf "${molname}_1.frcmod/${molname}_1.lib, ${molname}_2.frcmod/${molname}_2.lib etc \n\n"
+		                	ligmissing=1
+				elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
+					printf "\n\n!!!! ERROR !!!!\n\n"
+					printf "\n\n resname of the ligand in ${molname}_0.mol2 must be \"LIG\" \n\n"
+					ligmissing=1
+				elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
+					printf "\n\n!!!! ERROR !!!!\n\n"
+			        	printf "\n\n resname 0of the ligand in ${molname}_0.lib must be \"LIG\" \n\n"
+					ligmissing=1
+		        	fi
+		
+				if [ "${ligmissing}" -eq 1 ]; then exit 0; fi
+		
+				frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
+				libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)
+			
+				if [ "${frcmods}" -ne "${libs}" ]; then 
+					printf "\n\n!!!! ERROR !!!!\n\n"
+					printf "\n\n Each ${molname}_?.lib file should have a corresponding ${molname}_?.frcmod file \n\n"
+					exit 0
+				else
+					frcmodlist+=($frcmods)
+					liblist+=($libs)
+				fi
+			done
+			if [ "${pdbmissing}" -eq 1 ] || [ "${ligmissing}" -eq 1 ]; then exit 0; fi
+		fi
+		
+		if [ "${ticalc}" == "rsfe" ] || [ "${ticalc}" == "asfe" ]; then
+		        pdbmissing=0; ligmissing=0; slist=(aq)
+		        for i in "${!uniqueligs[@]}";do
+		                molname=${uniqueligs[$i]}
+		                if [ ! -f ${path_to_input}/${system}/${molname}_0.mol2 ] || [ ! -f ${path_to_input}/${system}/${molname}_0.frcmod ] || [ ! -f ${path_to_input}/${system}/${molname}_0.lib ]; then
+		                        printf "\n\n!!!! ERROR !!!!\n\n"
+		                        printf "\n\n One or more of ligand parameter files present in ${molname}.pdb is missing. \n"
+		                        printf "Parameter files of the ligand present in ${molname}.pdb must be provided as ${molname}_0.mol2, ${molname}_0.frcmod, ${molname}_0.lib. \n"
+		                        printf "If ${molname}.pdb contain additional nonstandard residues, paramater files associated with these nonstandard residues must also be provided as \n"
+		                        printf "${molname}_1.frcmod/${molname}_1.lib, ${molname}_2.frcmod/${molname}_2.lib etc \n\n"
+		                        ligmissing=1
+		                elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
+		                        printf "\n\n!!!! ERROR !!!!\n\n"
+		                        printf "\n\n resname of the ligand in ${molname}_0.mol2 must be \"LIG\" \n\n"
+		                        ligmissing=1
+		                elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
+		                        printf "\n\n!!!! ERROR !!!!\n\n"
+		                        printf "\n\n resname of the ligand in ${molname}_0.lib must be \"LIG\" \n\n"
+		                        ligmissing=1
+		                fi
+		
+				if [ "${ligmissing}" -eq 1 ]; then exit 0; fi
+		
+		                frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
+		                libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)
+		
+		                if [ "${frcmods}" -ne "${libs}" ]; then
+		                        printf "\n\n!!!! ERROR !!!!\n\n"
+		                        printf "\n\n Each ${molname}_?.lib file should have a corresponding ${molname}_?.frcmod file \n\n"
+		                        exit 0
+		                else
+		                        frcmodlist+=($frcmods)
+		                        liblist+=($libs)
+		                fi
+		        done
+		fi
 	fi
+	#########################################################
+	#########################################################
+	#########################################################
+	#########################################################
 
-        if [ "${ticalc}" == "rsfe" ] || [ "${ticalc}" == "asfe" ]; then
-                pdbmissing=0; ligmissing=0; slist=(aq)
-                for i in "${!uniqueligs[@]}";do
-                        molname=${uniqueligs[$i]}
-                        if [ ! -f ${path_to_input}/${system}/${molname}_0.mol2 ] || [ ! -f ${path_to_input}/${system}/${molname}_0.frcmod ] || [ ! -f ${path_to_input}/${system}/${molname}_0.lib ]; then
-                                printf "\n\n!!!! ERROR !!!!\n\n"
-                                printf "\n\n One or more of ligand parameter files present in ${molname}.pdb is missing. \n"
-                                printf "Parameter files of the ligand present in ${molname}.pdb must be provided as ${molname}_0.mol2, ${molname}_0.frcmod, ${molname}_0.lib. \n"
-                                printf "If ${molname}.pdb contain additional nonstandard residues, paramater files associated with these nonstandard residues must also be provided as \n"
-                                printf "${molname}_1.frcmod/${molname}_1.lib, ${molname}_2.frcmod/${molname}_2.lib etc \n\n"
-                                ligmissing=1
-                        elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.mol2; then
-                                printf "\n\n!!!! ERROR !!!!\n\n"
-                                printf "\n\n resname of the ligand in ${molname}_0.mol2 must be \"LIG\" \n\n"
-                                ligmissing=1
-                        elif ! grep -Fq 'LIG' ${path_to_input}/${system}/${molname}_0.lib; then
-                                printf "\n\n!!!! ERROR !!!!\n\n"
-                                printf "\n\n resname of the ligand in ${molname}_0.lib must be \"LIG\" \n\n"
-                                ligmissing=1
-                        fi
-
-			if [ "${ligmissing}" -eq 1 ]; then exit 0; fi
-
-                        frcmods=$(ls -l ${path_to_input}/${system}/${molname}_?.frcmod | wc -l)
-                        libs=$(ls -l ${path_to_input}/${system}/${molname}_?.lib | wc -l)
-
-                        if [ "${frcmods}" -ne "${libs}" ]; then
-                                printf "\n\n!!!! ERROR !!!!\n\n"
-                                printf "\n\n Each ${molname}_?.lib file should have a corresponding ${molname}_?.frcmod file \n\n"
-                                exit 0
-                        else
-                                frcmodlist+=($frcmods)
-                                liblist+=($libs)
-                        fi
-                done
-	fi
-
-	# analysis keywords
+	#########################################################
+	#########################################################
+	#########################################################
+	#########################################################
+	# if stage=analysis, 
+	# check related keywords
 	if [ "${stage}" == "analysis" ]; then
 		if [ ! -d "${path_to_data}" ]; then 
 			printf "\n\n!!!! ERROR !!!!\n\n"
@@ -358,11 +373,11 @@ EOFN
                         printf "\n\n${check_convergence} must be set to \"true\" or \"false\"\n\n"
                 fi
 	fi
+	#########################################################
+	#########################################################
+	#########################################################
+	#########################################################
 
-		
-
-	############################
-	############################
 
 }
 
