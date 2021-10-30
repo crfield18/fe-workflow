@@ -148,9 +148,11 @@ path_to_data=p38/runs/shake-hmr/new-shake-hmr/shake.2fs
 exptdatafile=p38_ExptData_t8.txt
 bar=true
 ccc=true
+ccc_ddG=true
 start=0.0
 stop=100.0
 check_convergence=true
+showallcycles=true
 
 EOFN
                         echo "Script expects a file named \"input\" in working directory. Check input.template for details."
@@ -213,24 +215,19 @@ EOFN
         if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then print "\n\nShould be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" \n\n" && exit 0; fi
 
 	if [ "${ticalc}" != "rbfe" ] && [ "${ticalc}" != "rsfe" ]  && [ "${ticalc}" != "asfe" ]; then printf "\n\n\"ticalc\" should be set to either \"rbfe\" or \"rsfe\" or \"asfe\"\n\n" && exit 0; fi
-	if [ "${ticalc}" == "rsfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=rsfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
 	if [ "${ticalc}" == "asfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=asfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
 	if [ "${twostate}" != "true" ] && [ "${twostate}" != "false" ]; then printf "\n\n\"twostate\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	if [ "${bidirection_aq}" != "true" ] && [ "${bidirection_aq}" != "false" ]; then printf "\n\n\"bidirection_aq\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	if [ "${bidirection_com}" != "true" ] && [ "${bidirection_com}" != "false" ]; then printf "\n\n\"bidirection_com\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	
-
-        # ensure path_to_input is absolute and check if input directories are present
-        if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
-
-	#########################################################
-	#########################################################
-	#########################################################
-	#########################################################
-	# if stage=setup, 
-	# check input files
 	if [ "${stage}" == "setup" ]; then
 
+		# ensure path_to_input is absolute and check if input directories are present
+		if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
+		
+		########################
+		########################
+		# check input files
 		if [ "${ticalc}" == "rbfe" ] || [ "${ticalc}" == "rsfe" ]; then
 			for i in "${!translist[@]}";do
 		        	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
@@ -247,7 +244,7 @@ EOFN
 			done
 		fi
 		########################
-
+		
 		if [ "${ticalc}" == "rbfe" ]; then
 			pdbmissing=0; ligmissing=0; slist=(com aq)
 			for i in "${!uniqueligs[@]}";do
@@ -333,19 +330,9 @@ EOFN
 		        done
 		fi
 	fi
-	#########################################################
-	#########################################################
-	#########################################################
-	#########################################################
 
-	#########################################################
-	#########################################################
-	#########################################################
-	#########################################################
-	# if stage=analysis, 
-	# check related keywords
+	# analysis keywords
 	if [ "${stage}" == "analysis" ]; then
-		if [ "${ticalc}" == "rbfe" ]; then slist=(com aq); else slist=(aq); fi
 		if [ ! -d "${path_to_data}" ]; then 
 			printf "\n\n!!!! ERROR !!!!\n\n"
 			printf "\n\n!!!! ${path_to_data} does not exist \n\n"
@@ -364,6 +351,11 @@ EOFN
                         printf "\n\n!!!! ERROR !!!!\n\n"
                         printf "\n\n${ccc} must be set to \"true\" or \"false\"\n\n"
                 fi
+                if [ "${ccc_ddG}" != "true" ] && [ "${ccc_ddG}" != "false" ]; then
+                        printf "\n\n!!!! ERROR !!!!\n\n"
+                        printf "\n\n${ccc_ddG} must be set to \"true\" or \"false\"\n\n"
+                fi
+
 		if (( $(echo "$start < 0" | bc -l) )) || (( $(echo "$stop < 0" | bc -l) )) || (( $(echo "$start > 100" | bc -l) )) || (( $(echo "$stop > 100" | bc -l) )) || (( $(echo "$start > $stop" | bc -l) )); then
 			printf "\n\n!!!! ERROR !!!!\n\n"
 			printf "\n\n \"start\" and \"stop\" should have values between 0 to 100 \n\n"
@@ -373,12 +365,23 @@ EOFN
                         printf "\n\n!!!! ERROR !!!!\n\n"
                         printf "\n\n${check_convergence} must be set to \"true\" or \"false\"\n\n"
                 fi
+                if [ "${showallcycles}" != "true" ] && [ "${showallcycles}" != "false" ]; then
+                        printf "\n\n!!!! ERROR !!!!\n\n"
+                        printf "\n\n${showallcycles} must be set to \"true\" or \"false\"\n\n"
+                fi
+		if [ "${ticalc}" == "rbfe" ]; then 
+			slist=(com aq)
+		elif [ "${ticalc}" == "rsfe" ]; then
+			slist=(aq vac)
+		else
+			slist=(aq)
+		fi
 	fi
-	#########################################################
-	#########################################################
-	#########################################################
-	#########################################################
 
+		
+
+	############################
+	############################
 
 }
 

@@ -14,24 +14,26 @@ function writetemplate_rbfe
         done
 
 	lams=($(gen_lambdas $nlambda))
-	if [ "$s" == "com" ]; then
-		if [ "${twostate}" == "true" ]; then
-			endstates=(0.00000000 1.00000000)
-			parmbase=unisc
-			rstbase=(stateA stateB)
+	if [ "${twostate}" == "true" ]; then
+		endstates=(0.00000000 1.00000000)
+		parmbase=unisc
+		rstbase=(stateA stateB)
+		if [ "$s" == "com" ]; then
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqNTP4 eqV eqP eqA eqProt2 eqProt1 eqProt05 eqProt025 eqProt01 eqProt0 minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
 		else
-			endstates=(0.00000000)
-			parmbase=unisc
-			rstbase=(stateA stateA)
-			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA eqProt2 eqProt1 eqProt05 eqProt025 eqProt01 eqProt0 minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqNTP4 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
 		fi
 	else
 		endstates=(0.00000000)
 		parmbase=unisc
 		rstbase=(stateA stateA)
-		eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+		if [ "$s" == "com" ]; then
+			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA eqProt2 eqProt1 eqProt05 eqProt025 eqProt01 eqProt0 minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+		else
+			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+		fi
 	fi
+
 
 
 	cat <<EOFN >TEMPLATE.sh
@@ -1668,7 +1670,7 @@ done
 # slurm to submit all trials together
 ##########
 ##########
-if [ "\${twostate}" != true ] || [ "\${env}" == "aq" ]; then
+if [ "\${twostate}" != true ]; then
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm
 #!/bin/bash
@@ -1809,7 +1811,7 @@ done
 EOF
 
 
-elif [ "\${twostate}" == true ] && [ "\${env}" == "com" ]; then
+elif [ "\${twostate}" == true ]; then
 
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm

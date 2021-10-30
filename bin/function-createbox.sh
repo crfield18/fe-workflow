@@ -1074,15 +1074,32 @@ if __name__ == "__main__":
         mappedmol1atomnames.append(atoms[0])
         mappedmol2atomnames.append(atoms[1])
 
-    pdb1 = parmed.load_file(args.pdb1)
-    pdb2 = parmed.load_file(args.pdb2)
+    if ".mol2" in args.pdb1:
+        q = parmed.load_file(args.pdb1)
+        q.save("{}.pdb".format(args.pdb1.split('.mol2')[0]),overwrite=True)
+        pdb1 = parmed.load_file("{}.pdb".format(args.pdb1.split('.mol2')[0]))
+    else:
+        pdb1 = parmed.load_file(args.pdb1)
+
+    if ".mol2" in args.pdb2:
+        q = parmed.load_file(args.pdb2)
+        q.save("{}.pdb".format(args.pdb2.split('.mol2')[0]),overwrite=True)
+        pdb2 = parmed.load_file("{}.pdb".format(args.pdb2.split('.mol2')[0]))
+    else:
+        pdb2 = parmed.load_file(args.pdb2)
+
 
 #### manipulate pdb1 
-    pdb1copy1 = CopyPDB (pdb1)
-    p1mol1 = Extract(pdb1copy1, ":{}".format(args.lig1))
-    p1mol2 = CopyPDB (p1mol1)
-    pdb1copy2 = CopyPDB (pdb1)
-    p1nl = Strip(pdb1copy2, ":{}".format(args.lig1))
+    if args.system == "com":
+        pdb1copy1 = CopyPDB (pdb1)
+        p1mol1 = Extract(pdb1copy1, ":{}".format(args.lig1))
+        p1mol2 = CopyPDB (p1mol1)
+        pdb1copy2 = CopyPDB (pdb1)
+        p1nl = Strip(pdb1copy2, ":{}".format(args.lig1))
+    else:
+        p1mol1 = CopyPDB (pdb1)
+        p1mol2 = CopyPDB (pdb1)
+
     p1mol2.residues[0].name = "{}".format(args.lig2)
 
     p1mol1atomnames=[]
@@ -1111,11 +1128,16 @@ if __name__ == "__main__":
 ###################
 
 #### manipulate pdb2
-    pdb2copy1 = CopyPDB (pdb2)
-    p2mol1 = Extract(pdb2copy1, ":{}".format(args.lig2))
-    p2mol2 = CopyPDB (p2mol1)
-    pdb2copy2 = CopyPDB (pdb2)
-    p2nl = Strip(pdb2copy2, ":{}".format(args.lig2))
+    if args.system == "com":
+        pdb2copy1 = CopyPDB (pdb2)
+        p2mol1 = Extract(pdb2copy1, ":{}".format(args.lig2))
+        p2mol2 = CopyPDB (p2mol1)
+        pdb2copy2 = CopyPDB (pdb2)
+        p2nl = Strip(pdb2copy2, ":{}".format(args.lig2))
+    else:
+        p2mol1 = CopyPDB (pdb2)
+        p2mol2 = CopyPDB (pdb2)
+
     p2mol2.residues[0].name = "{}".format(args.lig1)
 
     p2mol1atomnames=[]
@@ -1399,7 +1421,7 @@ EOF
 }
 
 
-function create_box_rbfe_twostate {
+function create_box_twostate {
 
         local pff=$1; shift
         local lff=$1; shift
@@ -1412,28 +1434,46 @@ function create_box_rbfe_twostate {
         local s=$1; shift
         local translist=("$@")
 
-        local mollist=(); local liglist=(); local numnonstdlist=()
-        while read line; do
-                IFS=' ' read -ra args <<< $line
-                mollist+=(${args[0]}); liglist+=(${args[1]}); numnonstdlist+=(${args[2]})
-        done < ${mapfile}
+	if [ "${s}" == "com" ]; then
 
-        # unnecessary now but may be needed later.
-        if [ "${s}" == "com" ]; then load=pdbseq; else load=pdbseq; fi
+        	local mollist=(); local liglist=(); local numnonstdlist=()
+        	while read line; do
+                	IFS=' ' read -ra args <<< $line
+                	mollist+=(${args[0]}); liglist+=(${args[1]}); numnonstdlist+=(${args[2]})
+        	done < ${mapfile}
+		load=pdbseq
 
-        ###
-        mergedpdbs=(); lig1s=(); lig2s=(); nnstds=()
-        for i in "${!translist[@]}";do
-               stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-               indA=$(get_index "${stA}" "${mollist[@]}"); indB=$(get_index "${stB}" "${mollist[@]}")
-               ligA=${liglist[${indA}]}; ligB=${liglist[${indB}]}
-               nnstdA=${numnonstdlist[${indA}]}; nnstdB=${numnonstdlist[${indB}]}
+	else
 
-               parse_pdb_twostate "${stA}.pdb" "${stB}.pdb" "${stA}~${stB}.map.txt" "${ligA}" "${ligB}" "${stA}_0.mol2" "${stB}_0.mol2" "$s" "${stA}~${stB}"
-               merged1pdbs+=(merged1_${stA}~${stB}); merged2pdbs+=(merged2_${stA}~${stB})
-               lig1s+=(${stA}); lig2s+=(${stB})
-               nnstds+=(${nnstdA})
-        done
+                local mollist=(); local liglist=()
+                while read line; do
+                        IFS=' ' read -ra args <<< $line
+                        mollist+=(${args[0]}); liglist+=(${args[1]})
+                done < ${mapfile}
+                load=pdbseq
+	fi
+
+
+	mergedpdbs=(); lig1s=(); lig2s=(); nnstds=()
+	for i in "${!translist[@]}";do
+		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
+		indA=$(get_index "${stA}" "${mollist[@]}"); indB=$(get_index "${stB}" "${mollist[@]}")
+		ligA=${liglist[${indA}]}; ligB=${liglist[${indB}]}
+		if [ "${s}" == "com" ]; then
+			parse_pdb_twostate "${stA}.pdb" "${stB}.pdb" "${stA}~${stB}.map.txt" "${ligA}" "${ligB}" "${stA}_0.mol2" "${stB}_0.mol2" "$s" "${stA}~${stB}"
+			nnstdA=${numnonstdlist[${indA}]}; nnstdB=${numnonstdlist[${indB}]}
+			nnstds+=(${nnstdA})
+		else
+			parse_pdb_twostate "${stA}_0.mol2" "${stB}_0.mol2" "${stA}~${stB}.map.txt" "${ligA}" "${ligB}" "${stA}_0.mol2" "${stB}_0.mol2" "$s" "${stA}~${stB}"
+			nnstds+=("1")
+		fi
+
+		merged1pdbs+=(merged1_${stA}~${stB}); merged2pdbs+=(merged2_${stA}~${stB})
+		lig1s+=(${stA}); lig2s+=(${stB})
+	done
+
+
+
         ###
         # write and run tleap to generate initial parm file
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${merged1pdbs[0]}" "${lig1s[0]}" "${nnstds[0]}" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "0" "${boxbuild}" "${s}"
@@ -1474,6 +1514,7 @@ function create_box_rbfe_twostate {
                                 if [ "${s}" == "com" ]; then load=pdbseq; else load=pdbseq; fi
 
                                 write_tleap_merged "${pff}" "${lff}" "${wm}" "${merged1pdbs[$m]}" "${lig1s[$m]}" "${nnstds[$m]}" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
+
                                 tleap -s -f tleap.in > output
                                 mv merged.parm7 "${lig1s[$m]}~${lig2s[$m]}-1_${s}".parm7; mv merged.rst7 "${lig1s[$m]}~${lig2s[$m]}-1_${s}".rst7
         			nwat=$(calcwaterinparm ${lig1s[$m]}~${lig2s[$m]}-1_${s}.parm7)

@@ -145,9 +145,11 @@ path_to_data=/run/media/abir/hdd1/work/afe/stx/auto/work-in-progress/v6.0-modula
 exptdatafile=skip
 bar=true
 ccc=false
+ccc_ddG=true
 start=0.0
 stop=100.0
 check_convergence=true
+showallcycles=true
 
 
 

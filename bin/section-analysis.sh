@@ -59,18 +59,29 @@ for i in "${translist[@]}";do
 done
 rm -rf mdouts2dats.py
 
-cd results
-	if [ "${exptdatafile}" == "skip" ]; then
-		truncate -s0 Expt.dat
-		for i in ${uniqueligs[@]};do
-			printf "${i}	0 \n" >> Expt.dat
-		done
-		exptdatafile="Expt.dat"
-	else
-		cp ${path}/${exptdatafile} .
-	fi
+if [ "${exptdatafile}" == "skip" ]; then
+        truncate -s0 Expt.dat
+        for i in ${uniqueligs[@]};do
+                printf "${i}    0 \n" >> Expt.dat
+        done
+        exptdatafile="Expt.dat"
+fi
+cp ${exptdatafile} results/
 
-	write_gmbar ${nlambda}
+
+cd results
+#if [ "${exptdatafile}" == "skip" ]; then
+#	truncate -s0 Expt.dat
+#	for i in ${uniqueligs[@]};do
+#		printf "${i}	0 \n" >> Expt.dat
+#	done
+#	exptdatafile="Expt.dat"
+#else
+#	cp ${path}/${exptdatafile} .
+#fi
+
+	write_gmbar ${nlambda} ${ticalc}
+
 
 	#######################################
 	export PATH="$PATH:${pathTOFEToolKit}/local/bin"
@@ -81,29 +92,34 @@ cd results
 	source ${pathTOFEToolKit}/local/bin/activate
 	#######################################
 
-	#echo "python3 ./gmbar.py -f ${exptdatafile} -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) > graphmbar.inp"
 	if [ "${bidirection}" == "true" ]; then ntrials=$(($ntrials*2)); fi
 
-	python3 ./gmbar.py -f ${exptdatafile} -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) > graphmbar.inp
+	gmbarargs=("-f ${exptdatafile}")
+	graphmbarargs=(--nboot=1 --fc=10 --guess=2)
+	#graphmbarargs=(--nboot=200 --fc=10 --guess=2)
 
-	graphmbarargs=(--nboot=200 --fc=10 --guess=2)
+	if [ "${ccc}" == "true" ] && [ "${ccc_ddG}" == "true" ]; then gmbarargs=("--ddG" "${gmbarargs[@]}"); fi
+	if [ "${bar}" == "true" ]; then gmbarargs=("--bar" "${gmbarargs[@]}"); fi
+	if [ "${showallcycles}" == "true" ]; then gmbarargs=("--super" "${gmbarargs[@]}"); fi
+	if [ "${ccc}" == "false" ]; then gmbarinpargs=("--nocyc" "${gmbarargs[@]}"); else gmbarinpargs=("${gmbarargs[@]}"); fi
 
-	if [ "${bar}" == "true" ]; then graphmbarargs=("--bar" "${graphmbarargs[@]}"); fi
-	if [ "${ccc}" == "false" ]; then graphmbarargs=("--nocon" "${graphmbarargs[@]}"); fi
+	#echo "python3 ./gmbar.py $(echo ${gmbarargs[*]}) -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) > graphmbar.inp" 
+	python3 ./gmbar.py $(echo ${gmbarinpargs[*]}) -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) > graphmbar.inp
+
 
 	if [ "${check_convergence}" == "false" ]; then 
 		graphmbar $(echo ${graphmbarargs[*]}) --start ${start} --stop ${stop} graphmbar.inp > graphmbar.out
-		python3 ./gmbar.py -f ${exptdatafile} -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) -a graphmbar.out > out
+		python3 ./gmbar.py $(echo ${gmbarargs[*]}) -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) -a graphmbar.out > out
 	else
 		for i in $(seq ${start} 20 ${stop}); do
         		if [ "${start}" != ${i} ]; then
 				graphmbar $(echo ${graphmbarargs[*]}) --start ${start} --stop ${i} graphmbar.inp > graphmbar_${start}-${i}.out
-				python3 ./gmbar.py -f ${exptdatafile} -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) -a graphmbar_${start}-${i}.out > ${start}-${i}.out
+				python3 ./gmbar.py $(echo ${gmbarargs[*]}) -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) -a graphmbar_${start}-${i}.out > ${start}-${i}.out
         		fi
 
         		if [ "${i}" != ${stop} ]; then
 				graphmbar $(echo ${graphmbarargs[*]}) --start ${i} --stop ${stop} graphmbar.inp > graphmbar_${i}-${stop}.out
-				python3 ./gmbar.py -f ${exptdatafile} -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) -a graphmbar_${i}-${stop}.out > ${i}-${stop}.out
+				python3 ./gmbar.py $(echo ${gmbarargs[*]}) -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) -a graphmbar_${i}-${stop}.out > ${i}-${stop}.out
         		fi
 
 		done

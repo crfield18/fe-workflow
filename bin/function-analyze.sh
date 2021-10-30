@@ -297,7 +297,10 @@ rm -rf gen_lambda.py
 function write_gmbar {
 
 	nlambda=$1; shift
-        cat << EOF > gmbar.py
+	ticalc=$1; shift
+
+	if [ "${ticalc}" == "rbfe" ]; then
+        	cat << EOF > gmbar.py
 #!/usr/bin/env python3
 
 # ######################################################################
@@ -321,6 +324,40 @@ def getdir( transform, env, stage, trial ):
     elif env == "solvated":
         myenv = "aq"
     return "data/%s/%s/%i/"%(transform,myenv,int(trial))
+EOF
+
+	elif [ "${ticalc}" == "rsfe" ]; then
+                cat << EOF > gmbar.py
+#!/usr/bin/env python3
+
+# ######################################################################
+#
+# These routines are specific to the directory structure of this project
+#
+# ######################################################################
+
+
+def getdir( transform, env, stage, trial ):
+    """
+    transform -- string, name of the A->B transformation
+    env -- string, the environment. This is either: "solvated" or "complex"
+    stage -- string, the transformation step; e.g., "recharge", "decharge", "vdw"
+    trial -- string, the independent trial
+
+    returns a directory name where the efep_*_*.dat files are located
+    """
+    if env == "complex":
+        myenv = "aq"
+    elif env == "solvated":
+        myenv = "vac"
+    return "data/%s/%s/%i/"%(transform,myenv,int(trial))
+EOF
+
+    	fi
+	
+
+
+	cat << EOF >> gmbar.py
 
 
 def getedges( arcfiles ):
@@ -495,6 +532,22 @@ graphmbar input file generator and output file analyzer
          required=False)
 
 
+    parser.add_argument \\
+        ("-d","--ddG",
+         help="If present, then ddG cycle restraints are used (complexed-solvated) rather than separate cycle conditions for each phase)",
+         default=False,
+         action='store_true',
+         required=False)
+
+
+    parser.add_argument \\
+        ("-s","--super",
+         help="If present, include all possible cycles, not just those that do not encircle smaller cycles",
+         default=False,
+         action='store_true',
+         required=False)
+
+
 
     args = parser.parse_args()
 
@@ -542,13 +595,17 @@ graphmbar input file generator and output file analyzer
     if args.analyze == "":
 
         gmb.WriteInp(edges,stagedlams,trials,getdir,\\
-                     args.nocyc,args.exptcon,exptvalues)
+                     args.nocyc,args.exptcon,exptvalues,\\
+                     ddG=args.ddG,withsupercyc=args.super)
+
 
     else:
 
         vs = gmb.ProcessOut(args.analyze,edges,stagedlams,trials,\\
                             args.nocyc,args.exptcon,exptvalues,\\
-                            args.lead,args.wang)
+                            args.lead,args.wang,\\
+                            ddG=args.ddG,withsupercyc=args.super)
+
 
 
 #print(getstagedlambdas())

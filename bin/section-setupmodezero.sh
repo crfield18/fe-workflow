@@ -176,7 +176,7 @@ if [ "${setupmode}" == 0 ]; then
                                 	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
                                 	for s in ${slist[@]}; do
                                         	mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}
-						if [ "${s}" == "aq" ] || [ "${twostate}" == "false" ]; then
+						if [ "${twostate}" == "false" ]; then
 							cp ${stA}~${stB}_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
 							cp ${stA}~${stB}_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
 						else
@@ -210,7 +210,7 @@ if [ "${setupmode}" == 0 ]; then
                                                 	if [ "${ticalc}" == "rbfe" ]; then
                                                         	writetemplate_rbfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
                                                 	else
-                                                        	writetemplate_rsfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]}
+                                                        	writetemplate_rsfe $nlambda $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
                                                 	fi
 
 							sh TEMPLATE.sh; sleep 1
@@ -219,7 +219,7 @@ if [ "${setupmode}" == 0 ]; then
 
 
 						if [ "${s}" == "aq" ]; then bidirection=${bidirection_aq}; else bidirection=${bidirection_com}; fi
-						if [ "${bidirection}" == "true" ]; then
+						if [ "${bidirection}" == "true" ] && [ "${twostate}" == "false" ]; then
 							mkdir -p ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}
 							if [ "${s}" == "aq" ] || [ "${twostate}" == "false" ]; then
 								cp ${stB}~${stA}_${s}.parm7  ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/unisc.parm7
