@@ -1,5 +1,0 @@
-parm methanol.parm7
-trajin methanol.rst7
-trajout methanol.pdb
-go
-quit

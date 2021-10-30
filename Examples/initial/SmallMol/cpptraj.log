@@ -1,6 +1,0 @@
-# 03/24/21 15:16:04
-parm 2CPI.parm7
-trajin 2CPI.rst7
-trajout tt.rst7
-go
-quit
