@@ -2,7 +2,7 @@
 
 ##########################################
 path=`pwd`
-pathTOWFToolKit=/run/media/abir/hdd1/work/afe/workflow/clean_10282021		# path to bin folder
+pathTOWFToolKit=/run/media/abir/hdd1/work/afe/workflow/alchemical_fe		# path to bin folder
 pathTOFEToolKit=/home/abir/devel/git/AMBER_DD_BOOST/FE-ToolKit
 export PATH="$PATH:${pathTOWFToolKit}/bin"
 ###########################################
