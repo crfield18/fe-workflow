@@ -1,0 +1,26 @@
+Minimization with Cartesian restraints for the solute
+&cntrl
+imin            = 1
+maxcyc          = 5000
+ntmin           = 2
+ntx             = 1
+ntxo            = 1
+ntpr            = 5
+
+ntr             = 1
+restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
+restraint_wt    = 0.1
+
+ifsc            = 1
+icfe            = 1
+
+noshakemask     = '@1-87'
+
+clambda         = 0.00000000
+timask1         = '@1-41'
+timask2         = '@42-87'
+scmask1         = '@19,31,35'
+scmask2         = '@48,67-71,73,87'
+
+gti_syn_mass    = 0
+/

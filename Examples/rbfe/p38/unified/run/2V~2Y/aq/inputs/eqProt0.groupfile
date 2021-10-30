@@ -1,0 +1,1 @@
+-O -p unisc.parm7 -c current/0.00000000_eqProt01.rst7 -i inputs/0.00000000_eqProt0.mdin -o current/0.00000000_eqProt0.mdout -r current/0.00000000_eqProt0.rst7 -x current/0.00000000_eqProt0.nc -ref current/0.00000000_eqProt01.rst7
