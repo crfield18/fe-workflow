@@ -1,0 +1,226 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newcommand{\dontusepackage}[2][]{%
+  \@namedef{ver@#2.sty}{9999/12/31}%
+  \@namedef{opt@#2.sty}{#1}}
+\makeatother
+\dontusepackage{mciteplus}
+
+\documentclass[11pt,letterpaper,titlepage]{article}
+
+
+\usepackage{amsmath,calc}
+\usepackage{scalerel,amssymb,graphicx,MnSymbol}
+
+\usepackage{indentfirst}
+\usepackage{soul}
+\usepackage{xcolor}
+\usepackage{cleveref}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{textcomp}
+\usepackage{lscape}
+\usepackage{subcaption}
+\usepackage{rotating}
+%%\usepackage{arydshln}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+\usepackage{dcolumn}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{pdflscape}
+
+\newcolumntype{d}[1]{D{+}{\pm}{#1}}
+\newcolumntype{.}{D{.}{.}{-1}}
+
+
+\usepackage{xr}
+%\externaldocument[SI-]{SI.condensed}
+
+%%%%%%%
+% Format changes
+% packages
+\usepackage{setspace}
+\usepackage[T1]{fontenc}
+\usepackage[small,compact]{titlesec}
+\usepackage[top=1in, bottom=1in, left=0.75in, right=0.75in] {geometry} % Margins
+\usepackage[sort&compress,numbers,round]{natbib}
+\usepackage[skip=2pt,font=small]{caption}
+\usepackage[symbol]{footmisc}
+%commands
+
+% All font related
+\renewcommand{\rmdefault}{phv} % Arial
+\renewcommand{\sfdefault}{phv} % Arial
+\titlespacing{\section}{0pt}{8pt}{5pt}
+\titlespacing{\subsection}{0pt}{5pt}{5pt}
+\titlespacing{\subsubsection}{0pt}{5pt}{2pt}
+\renewcommand{\familydefault}{\sfdefault}
+
+% for removing numbers from sections & subsections
+\renewcommand\thesection{}
+\renewcommand\thesubsection{}
+\renewcommand\thesubsubsection{}
+% section name alignment and font size
+\titleformat{\section}[block]{\bfseries\Large\filright}{}{0em}{}
+
+%For removing brackets around bibliography list numbers
+\makeatletter
+\renewcommand\@biblabel[1]{#1.}
+\makeatother
+
+\captionsetup{labelsep=period}
+% End of format commands
+%%%%%%%
+
+\title
+{\bf Automated workflow Production Free Energy Simulation Setup and Analysis (\textit{ProFESSA})}
+
+\begin{document}
+
+\maketitle
+
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}}
+\begin{footnotesize}
+\begin{landscape}
+\begin{center}
+\begin{longtable}[1]{p{3cm}|p{0.5cm}|p{11cm}|p{4cm}}
+\caption{Keywords associated with the \textit{ProFESSA} workflow} \label{tab:long} \\
+
+\hline \multicolumn{1}{c|}{\textbf{Keyword}} & \multicolumn{1}{c|}{\textbf{Value}} & \multicolumn{1}{c|}{\textbf{Description}} & \multicolumn{1}{c}{\textbf{Example}} \\ \hline
+\endfirsthead
+
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline \multicolumn{1}{c|}{\textbf{Keyword}} & \multicolumn{1}{c|}{\textbf{Value}} & \multicolumn{1}{c|}{\textbf{Description}} & \multicolumn{1}{c}{\textbf{Example}} \\ \hline
+\endhead
+
+\hline \multicolumn{4}{r}{{Continued on next page}} \\ \hline
+\endfoot
+
+\hline \hline
+\endlastfoot
+
+
+
+path\_to\_input    & string          & Path to directory that contains input files. It should contain a subdirectory \textit{system}.  & path\_to\_input =/home/username/afe/initial                       \\ 
+\hline
+system             & string          & Name of the system. A folder named system should be present in \textit{path\_to\_input/}, and should contain the initial structure and parameter files.      & system=CDK2             \\ 
+\hline
+translist          & list of strings & A list of desired transformations or edges. In the case of RBFE or RSFE calculations, \textit{translist} should be a list in which each entry consists of two molnames separated by the character "\textasciitilde{}", while in the case of ASFE calculations, \textit{translist} should be a list of molnames. Initial structure/parameter files of these molnames should be provided in~\textit{path\_to\_input/system }and should be named as follows:  \newline For RBFE calculations, each molname present in \textit{translist} should have an associated~\textit{molname.pdb}, representing the receptor-ligand complex structure and [\textit{molname\_0.mol2 molname\_0.lib}~\textit{molname\_0.frcmod]}, representing the ligand parameters. Parameters of additional non-standard residues, if present, can be provided as [\textit{molname\_1.mol2 molname\_1.lib molname\_1.frcmod]}, [\textit{molname\_2.mol2 molname\_2.lib molname\_2.frcmod]}, etc.\newline For RSFE and ASFE calculations, each molname present in \textit{translist} should have associated [\textit{molname\_0.mol2}~\textit{molname\_0.lib}~ \textit{molname\_0.frcmod] }files. & translist=(1h1q\textasciitilde{}1h1r 1h1q\textasciitilde{}1h1s)  \\ 
+\hline
+ticalc             & string          & Specifies nature of calculation. Acceptable values - \textit{rbfe}, \textit{rsfe}, \textit{asfe}.   & ticalc=rbfe  \\ 
+\hline
+nlambda            & integer         & Number of lambda windows in TI calculation. Acceptable values - positive integers.   & nlambda=21   \\ 
+\hline
+protocol           & string          & Protocol for running TI simulations. Acceptable value - \textit{unified}.     & protocol=unified     \\ 
+\hline
+	mapmethod          & integer         & Specifies the algorithm using which TS/TC regions are going to be determined. Acceptable values - \textit{0}, \textit{1}, \textit{2}. \newline \textit{0} specifies MCS algorithm. \newline \textit{1} specifies MCS-E algorithm. \newline \textit{2} specifies MCS-E2 algorithm. \newline For a given transformation/edge~\textit{molname1\textasciitilde{}molname2} in \textit{translist}, an atom map file, \textit{molname1\textasciitilde{}molname2.map.txt}, is generated in the folder \textit{system/setup}.   & mapmethod=1      \\ 
+\hline
+	mapinspect         & integer         & Allows manual inspection of TS/TC regions. Acceptable values -~\textit{0, 1, 2.} \newline \textit{0} specifies no manual inspection. \newline\textit{1} specifies manual inspection. \newline \textit{2} specifies resume setup assuming manual inspection has been completed. \newline If \textit{mapinspect} is set to \textit{2}, the necessary atom map files should be present in \textit{system/setup} folder. & mapinspect=true \\
+\hline
+mapnetwork         & string          & Specifies if network-wide consistent TS/TC regions of ligands will be generated. Acceptable values - \textit{true},\textit{false}.    & mapnetwork=false     \\ 
+\hline
+boxbuild           & string /\newline integer  & Specifies if and how MD boxes will be built. Acceptable values - \textit{0}, \textit{1}, \textit{2}, \textit{skip}.\newline \textit{0} specifies to build boxes only for "aqueous" state and not for "complex" state.\newline \textit{1} specifies to build boxes for both "aqueous" and "complex" states.\newline \textit{2} specifies to build boxes for both "aqueous" and "complex" states with identical number of water and ions.\newline \textit{skip} specifies to skip box building altogether.\newline For RSFE and ASFE calculations, \textit{boxbuild 0} and \textit{1} are identical. & boxbuild=1   \\ 
+\hline
+boxbufcom          & integer         & Specifies MD box buffer for "complex" states. Relevant only for RBFE calculations. Acceptable values - positive integers. & boxbufcom=16   \\ 
+\hline
+boxbufaq           & integer         & Specifies MD box buffer for "aqueous" states. Relevant only for RBFE calculations. Acceptable values - positive integers.   & boxbufaq=21  \\ 
+\hline
+ionconc            & float           & Specifies the MD box ion concentration in units of mol/L (M). Acceptable values - positive real number.  & ionconc=0.15  \\ 
+\hline
+pff                & string          & Specifies protein forcefield. Acceptable values - \textit{ff14SB}  & pff=ff14SB   \\ 
+\hline
+lff                & string          & Specifies ligand forcefield. Acceptable values - \textit{gaff}, \textit{gaff2}  & lff=gaff2 \\ 
+\hline
+wm                 & string          & Specifies water model. Acceptable values - \textit{tip4pew}, \textit{tip3p}  & wm=tip4pew  \\ 
+\hline
+mdboxshape         & string          & Specifies shape of MD box. Acceptable values - \textit{cubic}  & mdboxshape=cubic  \\ 
+\hline
+ntrials            & integer         & Specifies the number of independent trials of calculation. Acceptable values - positive integers.  & ntrials=10  \\ 
+\hline
+cutoff             & integer         & Specifies non-bonded cutoff in TI simulations. Acceptable values - positive integers.  & cutoff=10  \\ 
+\hline
+repex              & string          & Specifies if Hamiltonian Replica Exchange will be employed. & repex=true    \\ 
+\hline
+nstlimti           & integer         & Specifies the length of production TI simulations in units of fs. Acceptable values - positive integers.  & nstlimti=5000   \\ 
+\hline
+numexchgti         & integer         & Specifies the number of exchanges in replica exchange TI simulations. \textit{numexchgti} is ignored is \textit{repex} is set to false. Acceptable values - positive integers.  & numexchgti=1000     \\ 
+\hline
+hmr                & string          & Specifies if Hydrogen Mass Repartitioning will be used. Acceptable values - \textit{true}, \textit{false}.   & hmr=false   \\ 
+\hline
+notrajectory       & string          & Specifies if production trajectories will be saved during TI simulations. Acceptable values - \textit{true}, \textit{false}.  & notrajectory=true  \\ 
+\hline
+scalpha            & float           & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{scalpha} in TI simulations. Acceptable values - positive real numbers.   & scalpha=0.5   \\ 
+\hline
+scbeta             & float           & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{scbeta}~in TI simulations. Acceptable values - positive real numbers.   & scbeta=0.5  \\ 
+\hline
+gti\_add\_sc       & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_add\_sc} in TI simulations. Acceptable values - positive integers.  & gti\_add\_sc=5     \\ 
+\hline
+gti\_scale\_beta   & float           & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_scale\_beta} in TI simulations. Acceptable values - positive real number.  & gti\_scale\_beta=1  \\ 
+\hline
+gti\_cut           & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_cut} in TI simulations. Acceptable values - positive integers.  & gti\_cut=1  \\ 
+\hline
+gti\_cut\_sc\_on   & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_cut\_sc\_on} in TI simulations. Acceptable values - positive integers.  & gti\_cut\_sc\_on=8  \\ 
+\hline
+gti\_cut\_sc\_off  & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_cut\_sc\_off} in TI simulations. Acceptable values - positive integers.  & gti\_cut\_sc\_off=10  \\ 
+\hline
+gti\_lam\_sch      & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_lam\_sch} in TI simulations. Acceptable values - positive integers.  & gti\_lam\_sch=1  \\ 
+\hline
+gti\_ele\_sc       & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_ele\_sc} in TI simulations. Acceptable values - positive integers. & gti\_ele\_sc=1  \\ 
+\hline
+gti\_vdw\_sc       & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_vdw\_sc} in TI simulations. Acceptable values - positive integers.  & gti\_vdw\_sc=1  \\ 
+\hline
+gti\_cut\_sc       & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_cut\_sc} in TI simulations. Acceptable values - positive integers.   & gti\_cut\_sc=1  \\ 
+\hline
+gti\_ele\_exp      & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_ele\_exp} in TI simulations. Acceptable values - positive integers.  & gti\_ele\_exp=2  \\ 
+\hline
+gti\_vdw\_exp      & integer         & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{gti\_vdw\_exp} in TI simulations. Acceptable values - positive integers. & gti\_vdw\_exp=2  \\ 
+\hline
+twostate           & string          & Specifies if twostate setup will be employed in TI simulations. Acceptable values - \textit{true}, \textit{false}. & twostate=true  \\ 
+\hline
+bidirection\_aq    & string          & Specifies if bidirectional setup will be used for "aqueous" state TI simulations. Applicable when \textit{twostate} is set to \textit{false}. Acceptable values - \textit{true}, \textit{false}.  & bidirection\_aq=false  \\ 
+\hline
+bidirection\_com   & string          & Specifies if bidirectional setup will be used for "complex" state TI simulations. Applicable when \textit{twostate} is set to \textit{false}. Acceptable values - \textit{true}, \textit{false}. & bidirection\_aq=false  \\ 
+\hline
+stage              & string          & Specifies the action of the script. Acceptable values - \textit{setup}, \textit{analysis}.\newline \textit{setup} specifies script to set up TI simulations.\newline \textit{analysis} specifies script to perform analysis. & stage=setup  \\ 
+\hline
+setupmode          & integer         & Specifies the mode of simulation setup. Acceptable values - \textit{0}\newline \textit{0} sets up regular TI simulations. & setupmode=0  \\ 
+\hline
+partition          & string          & Specifies the HPC partition on which TI runs will be performed. Acceptable values - \textit{null}, \textit{name of HPC partition}. & partition=gpu  \\ 
+\hline
+nnodes             & integer         & Specifies the number of nodes to be requested for a single set of TI simulations. Acceptable values - positive integer. & nnodes=1  \\ 
+\hline
+ngpus              & integer         & Specifies the number of gpus per node to be requested for a single set of TI simulations. Acceptable values - positive integer.  & ngpus=8  \\ 
+\hline
+wallclock          & string          & Specifies the wallclock on TI jobs. Acceptable values - formatted time in hours:minutes:days. & wallclock=3-00:00:00                                             \\ 
+\hline
+path\_to\_data     & string          & Specifies the path to production runs. Default path is set to \textit{system/protocol/run}  & path\_to\_data=CDK2/unified/run   \\ 
+\hline
+exptdatafile       & string          & Specifies the name of a text file containing experimental ligand binding free energies. Acceptable values - \textit{skip}, \textit{filename}.\newline The text file should have two columns corresponding to \textit{molname} (column 1) and relative ligand binding free energy (column 2). & exptdatafile=Expt.dat  \\ 
+\hline
+bar                & string          & Specifies if BAR is going to be used for analysis instead of MBAR. Acceptable values - \textit{true}, \textit{false}.  & bar=false   \\ 
+\hline
+ccc                & string          & Specifies if cycle closure corrections are to be applied during analysis. Acceptable values - \textit{true}, \textit{false}. & ccc=true  \\ 
+\hline
+ccc\_ddG           & string          & Specifies if cycle closures will be applied to \textit{"complex" - "aqueous"} delta delta Gs instead of \textit{"complex"} and \textit{"aqueous"} delta Gs, independently. Acceptable values - \textit{true}, \textit{false}. & ccc\_ddG=true  \\ 
+\hline
+start              & float           & Specifies the percentage of data to ignore from the beginning of TI production runs. Acceptable values - float numbers ranging from 0 to 100, and less than \textit{stop}.  & start=20.0  \\ 
+\hline
+stop               & float           & Specifies the percentage of data to read from the start of TI production runs. Acceptable values - float numbers ranging from 0 to 100, and greater than \textit{start}.  & stop=100.00   \\ 
+\hline
+check\_convergence & string          & Specifies if check of data convergence will be carried out during analysis. Acceptable values - \textit{true}, \textit{false}.\newline If \textit{check\_convergence} is set to \textit{true}, the analysis is carried out multiple times, for a range of \textit{start} and \textit{stop} values. & check\_convergence=true  \\
+\hline
+showallcycles      & string          & Specifies if the output should show information on all possible cycles within the given transformation network. Acceptable values - \textit{true}, \textit{false}. & showallcycles=true  \\
+\hline
+\end{longtable}
+\end{center}
+\end{landscape}
+\end{footnotesize}
+
+
+\end{document}
