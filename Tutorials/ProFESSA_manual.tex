@@ -32,6 +32,7 @@
 \usepackage{longtable}
 \usepackage{tabu}
 \usepackage{pdflscape}
+\usepackage{hyperref}
 
 \newcolumntype{d}[1]{D{+}{\pm}{#1}}
 \newcolumntype{.}{D{.}{.}{-1}}
@@ -53,19 +54,20 @@
 %commands
 
 % All font related
-\renewcommand{\rmdefault}{phv} % Arial
-\renewcommand{\sfdefault}{phv} % Arial
-\titlespacing{\section}{0pt}{8pt}{5pt}
-\titlespacing{\subsection}{0pt}{5pt}{5pt}
-\titlespacing{\subsubsection}{0pt}{5pt}{2pt}
-\renewcommand{\familydefault}{\sfdefault}
+%%\renewcommand{\rmdefault}{phv} % Arial
+%%\renewcommand{\sfdefault}{phv} % Arial
+%%\titlespacing{\section}{0pt}{8pt}{5pt}
+%%\titlespacing{\subsection}{0pt}{5pt}{5pt}
+%%\titlespacing{\subsubsection}{0pt}{5pt}{2pt}
+%%\renewcommand{\familydefault}{\sfdefault}
 
-% for removing numbers from sections & subsections
-\renewcommand\thesection{}
-\renewcommand\thesubsection{}
-\renewcommand\thesubsubsection{}
-% section name alignment and font size
-\titleformat{\section}[block]{\bfseries\Large\filright}{}{0em}{}
+%% for removing numbers from sections & subsections
+%%\renewcommand\thesection{}
+%%\renewcommand\thesubsection{}
+%%\renewcommand\thesubsubsection{}
+%% section name alignment and font size
+%%\titleformat{\section}[block]{\bfseries\Large\filright}{}{0em}{}
+%\titleformat{\section}[block]{\bfseries\Large\filright}
 
 %For removing brackets around bibliography list numbers
 \makeatletter
@@ -73,6 +75,15 @@
 \makeatother
 
 \captionsetup{labelsep=period}
+
+% Itacilize section
+\newenvironment{itquote}
+  {\begin{quote}\itshape}
+  {\end{quote}\ignorespacesafterend}
+\newenvironment{itpars}
+  {\par\itshape}
+  {\par}
+
 % End of format commands
 %%%%%%%
 
@@ -83,13 +94,274 @@
 
 \maketitle
 
+\section*{Tutorial for setting up alchemical free energy simulations using AMBER20 with AMBER-DD boost}
+\vspace{1cm}
+
+\section {Availability of the AMBER-DD boost package}
+
+The AMBER Drug Discovery Boost package consists of the current release version of
+AmberTools21, which can be downloaded directly from AmberMD.org, and the specialized
+version of AMBER20 (the pmemd package). The AMBER20 part of AMBER Drug Discovery
+Boost package is only available to AMBER20 license holders.  Active Amber developers can
+access the package  directly through the Amber development GitLab repository.  For other
+AMBER20 license holders, the primary mode for accessing the AMBER Drug Discovery Boost
+package is through GitLab repository set up through the laboratory for Biomolecular
+Simulation Research (LBSR) at Rutgers, which mirrors the AMBER Drug Discovery Boost
+package in the Amber development GitLab repository.
+
+A verified AMBER20 license holder will need a GitLab account in order to access the
+AMBER Drug Discovery Boost GitLab repository. A new GitLab
+account can easily be obtained at www.GitLab.com.  The user first need to send the
+e-mail address/username associated with the GitLab account to: Abir Ganguly at
+abir.ganguly@rutgers.edu or Darrin York at Darrin.York@rutgers.edu in order to be added to
+the AMBER Drug Discovery Boost  GitLab projects.
+\textit{Note}: if you have created a new GitLab account through a social media account
+such as Google or Facebook, you will need to manually set up your GitLab password in order
+for git clone to work. Once added, the user will receive three separate notification
+emails confirming that the user has been added to the following three projects:\\
+
+\flushleft{
+Laboratory for Biomolecular Simulation Research / AMBER Drug Discovery Boost \\
+Laboratory for Biomolecular Simulation Research / Alchemical\_FE \\
+Laboratory for Biomolecular Simulation Research / FE-ToolKit \\
+}
+
+Upon this confirmation the user will be able to check out the packages as follows: \\
+
+\flushleft{
+With ssh-key setup in GitLab (recommended):  \\
+git clone git@gitlab.com:RutgersLBSR/amber-drug-discovery-boost.git \\
+git clone git@gitlab.com:RutgersLBSR/Alchemical\_fe.git \\
+git clone git@gitlab.com:RutgersLBSR/FE-ToolKit.git \\
+}
+
+\flushleft{
+Without ssh-key setup in GitLab: \\
+git clone https://gitlab.com/RutgersLBSR/amber-drug-discovery-boost.git \\
+git clone https://gitlab.com/RutgersLBSR/Alchemical\_fe.git \\
+git clone https://gitlab.com/RutgersLBSR/FE-ToolKit.git \\
+}
+
+The \textit{Alchemical\_fe} folder contains the following sub-folders:
+\begin{itemize}
+        \item{\textit{Documentation} - containing documentation specific to AMBER Drug Discovery Boost}
+        \item{\textit{Tutorials} - containing tutorials for setting up alchemical free energy simulations using AMBER Drug Discovery Boost}
+        \item{\textit{Examples} - containing test cases for relative binding free energy (RBFE) and relative solvation free energy (RSFE) calculations}
+        \item{\textit{bin} - containing scripts to help set up alchemical free energy simulations using Amber Drug Discovery Boost}
+\end{itemize}
+
+%%\setlength{\parindent}{20pt}
+
+We are also in the process of putting documentation up on the Wiki site that will be updated on a regular basis - \url{https://gitlab.com/RutgersLBSR/alchemical\_fe/-/wikis/Setup-AFE\_AMBER\_DD\_BOOST}
+
+
+\vspace{1cm}
+\section{Purpose of \textit{setup\_fe}}
+\vspace{1cm}
+
+The \textit{setup\_fe} script is designed to help setup the directory structure and input files that are necessary for 
+running alchemical free energy simulations with AMBER-DD Boost. The script accepts a simplified input file named \textit{‘input’} that
+is described in detail later in the tutorial. Briefly, for a given system, such as a specific protein target, or a collection of 
+small molecules, a) a list of desired transformations can be provided, b) key simulation settings can be specified, 
+and c) initial configuration files (MD equilibrated parameter (parm) and coordinate (rst) files associated with the system and
+specified transformations) must be provided. \textit{setup\_fe} can then be used to generate a hierarchy of directories 
+containing relevant parameter, coordinate, and AMBER input files and job submission scripts. \textit{setup\_fe} can subsequently be used 
+to analyze the free energy simulations using \textit{FE-ToolKit}
+
+
+\vspace{1cm}
+\section{Initial requirements of \textit{setup\_fe}}
+\vspace{1cm}
+
+Following conditions must be met before running \textit{setup\_fe} -
+\renewcommand{\labelenumi}{\Roman{enumi}}
+\begin{enumerate}
+	\item {\textit{AMBERHOME needs to be set}}
+	\item{\textit{cpptraj}(AmberTools) needs to be installed and available in \$PATH}
+	\item{\textit{parmed}(AmberTools) needs to be installed and available in \$PATH}
+	\item{\textit{python3} needs to be installed and available in \$PATH}
+	\item{\textit{bin} subdirectory within \textit{Alchemical\_fe} folder needs to be available in \$PATH}
+	\item{\textit{RDKit} needs to be installed and python3 bindings to \textit{RDKit} needs to be available in \$PYTHONPATH}
+	\begin{itemize}
+		\item{\textit{RDKit} can be installed with a package manager}
+		\begin{itemize}
+			\item{Fedora - \textit{sudo dnf install rdkit.x86\_64 python3-rdkit.x86\_64}}
+			\item{Ubuntu - \textit{sudo apt install python-rdkit}}
+		\end{itemize}
+		\item{or, \textit{RDKit} can be installed using \textit{conda}}
+		\begin{itemize}
+			\item{See \url{http://www.rdkit.org/docs/Install.html\#installation for details}}
+		\end{itemize}
+	\end{itemize}
+	\item{folder containing initial structure and parameter files}
+		\begin{itemize}
+			\item For relative binding free energy (RBFE) calculations, this folder should contain, for each \\
+				intended transformation (edge), PDB file(s) of the protein-ligand(s) complex(es) and  \\
+				parameter (mol2, lib, frcmod) files for the associated ligands and any nonstandard residues  \\
+				present in the protein-ligand PDB file(s).  \\
+				For relative and absolute solvation free energy (RSFE, ASFE) calculations, this folder \\
+				should contain, for each intended transformation, parameter (mol2, lib, frcmod) files for the  \\
+				associated ligand(s). \\
+				For further details related to input format please refer to Table~1 \\
+		\end{itemize}
+\end{enumerate}
+
+\vspace{1cm}
+\section{Setup of \textit{setup\_fe}}
+\vspace{1cm}
+
+The \textit{setup\_fe} script can be created by running the script \textit{makesetup\_fe.sh} located in the \textit{bin} subdirectory
+of the \textit{Alchemical\_fe} folder. 
+
+\vspace{0.1cm}
+\centerline{./makesetup\_fe.sh}
+\vspace{0.1cm}
+
+\textit{makesetup\_fe.sh} help set the following three variables : \${pathTOWRKDIR}, 
+\${pathTOWFToolKit}, and \${pathTOFEToolKit} within \textit{setup\_fe}. 
+\begin{enumerate}
+	\item{\${pathTOWRKDIR} should be set to the intended working directory.}
+	\item{\${pathTOWFToolKit} should be set to the path of the \textit{Alchemical\_fe} folder.}
+	\item{\${pathTOFEToolKit} should be set to the path of the \textit{FE-ToolKit} folder.}
+\end{enumerate}
+By defaults, these variables are set to the path of the \textit{current working directory}. Alternatively, these variables 
+can be modified manually in \textit{setup\_fe}.
+
+
+\vspace{1cm}
+\section{Input file for \textit{setup\_fe}}
+\vspace{1cm}
+
+\textit{setup\_fe} requires an input file named \textit{input} that contains key settings of the
+alchemical free energy simulations that are going to be set up. A template input file can be
+generated by running the script with a flag \textit{-h} or \textit{-help}. A typical input file looks like the
+following -
+
+\vspace{1cm}
+\begin{itquote}
+	
+{\color{blue}
+	
+path\_to\_input=initial 			\\
+system=CDK2 					\\
+
+translist=(1h1q~1h1s 1h1q~1oi9 1oi9~1h1s) 	\\
+nlambda=11  					\\
+protocol=unified 				\\
+
+mapmethod=2 					\\
+mapinspect=0 					\\
+mapnetwork=true 				\\
+
+boxbuild=1 					\\
+boxbufcom=16  		 			\\
+boxbufaq=20		 			\\
+ionconc=0.15		 			\\
+pff=ff14SB					\\
+lff=gaff2					\\
+wm=tip4pew					\\
+mdboxshape=cubic				\\
+
+ntrials=3					\\
+
+cutoff=10               			\\
+repex=true 					\\
+nstlimti=5000           			\\
+numexchgti=1000         			\\
+hmr=false 					\\
+notrajectory=true				\\
+
+scalpha=0.5             			\\
+scbeta=1.0              			\\
+gti\_add\_sc=5 					\\
+gti\_scale\_beta=1      			\\
+gti\_cut=1              			\\
+gti\_cut\_sc\_on=8      			\\
+gti\_cut\_sc\_off=10    			\\
+gti\_lam\_sch=1         			\\
+gti\_ele\_sc=1          			\\
+gti\_vdw\_sc=1          			\\
+gti\_cut\_sc=2          			\\
+gti\_ele\_exp=2         			\\
+gti\_vdw\_exp=2         			\\
+
+twostate=false 					\\
+bidirection\_aq=true 				\\
+bidirection\_com=true 				\\
+
+ticalc=rbfe                      		\\
+stage=analysis                   		\\
+setupmode=0                      		\\
+
+partition=general-long-gpu       		\\
+nnodes=1                        		\\
+ngpus=8                        			\\
+wallclock=3-00:00:00          			\\
+
+path\_to\_data=data 				\\
+exptdatafile=skip 				\\
+bar=true 					\\
+ccc=false 					\\
+ccc\_ddG=true 					\\
+start=0.0 					\\
+stop=100.0 					\\
+check\_convergence=true 			\\
+showallcycles=true 				\\
+
+}
+
+\end{itquote}
+
+Table 1 provides a detailed description of keywords that are specific to \textit{setup\_fe}. For 
+keywords/flags that are specific to AMBER20 and AMBER-DD Boost refer to the 
+\href{https://ambermd.org/doc12/Amber20.pdf}{AMBER20 reference manual}
+and \textit{AMBER-DD Boost Documentation}.
+
+
+\vspace{1cm}
+\section{File infrastructure created by \textit{setup\_fe}}
+\vspace{1cm}
+
+With the \textit{input} file present in \$pathTOWRKDIR, \textit{setup\_fe} can be executed as 
+
+\vspace{0.1cm}
+\centerline{./setup\_fe}
+\vspace{0.1cm}
+
+In \textit{"setup"} mode, \textit{setup\_fe} creates a folder named \textit{"system"}, as defined i
+in the \textit{input} file in \$pathTOWRKDIR. 
+The \textit{"system"} folder will have two subdirectories, \textit{setup} and \textit{run}. The folder
+\textit{setup} will house the  various intermediate files that were generated and used in creating 
+the final input files. The folder \textit{run} will contain independent subdirectories corresponding 
+to each entry (transformation) in the keyword \textit{"translist"} in the \textit{input} file. These 
+subdirectories that will have the same naming convention as provided in the \textit{input} file, 
+will further contain subdirectories named \textit{"com"} and \textit{"aq"} for RBFE calculations, or 
+only the subdirectory \textit{"aq"} for RSFE and ASFE calculations. The \textit{"com"} and \textit{"aq"}
+subdirectories correspond to complex and aqueous simulations, respectively, and will contain 
+the final merged TI parameter and coordinate input files, template submission slurm scripts, an
+\textit{input} folder containing relevant AMBER input files, and production sub-folders corresponding 
+to each specified independent trial that will house the production simulation data. 
+
+In \textit{"analysis"} mode, \textit{setup\_fe} creates a folder named \textit{results} in \$pathTOWRKDIR. 
+The \textit{results} folder will contain a subdirectory \textit{data} that will have a nested directory 
+structure containing Energy and DV/DL data from the various simulations in the transformation network 
+being analyzed. The \textit{results} folder will also contain the graphmbar input file named
+\textit{graphmbar.inp} for \textit{FE-Toolkit}, a python script named \textit{gmbar.py} that facilitates 
+the generation of the graphmbar input file, the graphmbar output file named \textit{graphmbar.out} 
+generated by \textit{FE-Toolkit}, and a simplified output file named \textit{out} summarizing the final 
+free energy results of the entire transformation network.
+
+
+
+
+
 
 \newcolumntype{P}[1]{>{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}}
 \begin{footnotesize}
 \begin{landscape}
 \begin{center}
 \begin{longtable}[1]{p{3cm}|p{0.5cm}|p{11cm}|p{4cm}}
-\caption{Keywords associated with the \textit{ProFESSA} workflow} \label{tab:long} \\
+\caption{Keywords associated with the \textit{ProFESSA} workflow} \label{table:keywords} \\
 
 \hline \multicolumn{1}{c|}{\textbf{Keyword}} & \multicolumn{1}{c|}{\textbf{Value}} & \multicolumn{1}{c|}{\textbf{Description}} & \multicolumn{1}{c}{\textbf{Example}} \\ \hline
 \endfirsthead
