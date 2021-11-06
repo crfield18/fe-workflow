@@ -1454,7 +1454,7 @@ function create_box_twostate {
 	fi
 
 
-	mergedpdbs=(); lig1s=(); lig2s=(); nnstds=()
+	merged1pdbs=(); merged2pdbs=(); lig1s=(); lig2s=(); nnstds=()
 	for i in "${!translist[@]}";do
 		stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
 		indA=$(get_index "${stA}" "${mollist[@]}"); indB=$(get_index "${stB}" "${mollist[@]}")
@@ -1473,7 +1473,6 @@ function create_box_twostate {
 	done
 
 
-
         ###
         # write and run tleap to generate initial parm file
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${merged1pdbs[0]}" "${lig1s[0]}" "${nnstds[0]}" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "0" "${boxbuild}" "${s}"
@@ -1482,7 +1481,7 @@ function create_box_twostate {
         # calculate water and number of ions necessary to reach desired ion conc
         nwat=$(calcwaterinparm merged.parm7)
         nions=$(calcMDions "$nwat" "${ionconc}")
-        #echo "No. of water and ions required in ${list[0]} : $nwat $nions"
+        #echo "No. of water and ions required in ${merged1pbds[0]} : $nwat $nions"
 
         # generate parm file with calculated number of ions
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${merged1pdbs[0]}" "${lig1s[0]}" "${nnstds[0]}" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
@@ -1831,7 +1830,7 @@ EOF
                 mol="${translist[$m]}_${s}"
                 nwat=$(calcwaterinparm ${mol}.parm7)
                 nions=$(calcionsinparm ${mol}.parm7)
-                echo "${mol} has ${nwat} waters, ${nions} Na+ ions, and ${nions} Cl- ions"
+                printf "${mol} has ${nwat} waters, ${nions} Na+ ions, and ${nions} Cl- ions \n"
         done
         ##########################################
 

@@ -99,10 +99,9 @@ if [ "${ticalc}" == "rbfe" ]; then
                                         printf "\n\nFor all transformations identical number of water and ions will be added to both \"aq\" and \"com\" systems. In case of \"com\" systems, existing solvent configurations will be stripped before resolvating. \n\n"
                                 fi
                                 
-				printf "\n\nBuilding topology+parameter files for \"aq\" systems. Water and Ions being added...\n\n"
-
 
 				for s in aq com; do
+					printf "\n\nBuilding topology+parameter files for \"${s}\" systems. Water and Ions being added...\n\n"
 					if [ "${s}" == "aq" ]; then boxbuf=${boxbufaq}; else boxbuf=${boxbufcom}; fi
 					create_box_twostate "${pff}" "${lff}" "${wm}" "${boxbuild}" "${mdboxshape}" "${boxbuf}" "${ionconc}" "molname-ligname.mapping" "${s}" "${translist[@]}"
                                 	printf "\n\nDone...\n\n"
