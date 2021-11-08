@@ -67,6 +67,7 @@ ntmin           = 2
 ntx             = 1
 ntxo            = 1
 ntpr            = 5
+cut             = ${CUTOFF}
 
 ntr             = 1 
 restraintmask 	= '!:WAT,Cl-,K+,Na+ & !@H='
@@ -95,6 +96,7 @@ ntmin           = 2
 ntx             = 1
 ntxo            = 1
 ntpr            = 5
+cut             = ${CUTOFF}
 
 
 ifsc            = 1
@@ -568,6 +570,7 @@ ntmin           = 2
 ntx             = 1
 ntxo            = 1
 ntpr            = 5
+cut             = ${CUTOFF}
 
 
 ifsc            = 1
