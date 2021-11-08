@@ -1994,6 +1994,7 @@ EOF2
 
 
         	if [ "\\\${stage}" == "eqP0" ]; then
+			a=0; b=0; c=0
                 	for lam in \\\${endstates[@]};do
                         	box=(\\\$(tail -1 t\\\${trial}/\\\${lam}_\\\${stage}.rst7))
                         	a=\\\$(awk "BEGIN {print ( \\\$a + \\\${box[0]} ) }")
