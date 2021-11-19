@@ -1326,7 +1326,7 @@ function create_box_rbfe {
         nchloride=$(calcchlorideinparm ${lig1s[0]}~${lig2s[0]}_${s}.parm7)
         #echo "final number of water and ions in ${lig1s[0]}_${s} : $nwat $nions $nsodium $nchloride"
 
-	if [ "${#mergedpdbs[@]}" -gt 1 ]; then
+	if [ "${#mergedpdbs[@]}" -ge 1 ]; then
         #	mergedpdbs=(${mergedpdbs[@]:1}); lig1s=(${lig1s[@]:1}); lig2s=(${lig2s[@]:1}); nnstds=(${nnstds[@]:1})
 
 		if [ "${boxbuild}" != 2 ]; then

@@ -3,7 +3,7 @@
 # containing initial structure/parameter files.
 # For example, a single folder "initial" may contain multiple
 # subdirectories containing initial files for different systems
-path_to_input=initial_clean
+path_to_input=/run/media/abir/hdd1/work/afe/workflow/initial_clean
 
 
 # Subdirectory containing initial structure/parameter files
@@ -31,10 +31,17 @@ system=CDK2
 # ${path_to_input}/${system}
 # example,
 # translist=(mobley_1527293 mobley_3034976)
-translist=(1h1q~1h1s 1h1q~1oi9 1oi9~1h1s)
+translist=(1h1q~1h1s)
 
+# lambda window specification
+# nlambda specifies number of lambda windows
+# lamschedule specifies if an user-defined lambda schedule will be used
+# lamschedule=yes requires the specification of lams, which is a list 
+# containing 'nlambda' entries, containing the specific lambda values
+nlambda=13                      
+lamschedule=yes			
+lams=(0 0.229764 0.302697 0.359436 0.40913 0.455318 0.5 0.544682 0.59087 0.640564 0.697303 0.770236 1)
 
-nlambda=11                      # number of lambda windows
 protocol=unified                # unified protocol for TI
 
 # mapmethod determines the algorithm using which cc and sc regions
@@ -110,7 +117,7 @@ gti_vdw_exp=2                   # gti_vdw_exp
 # twostate=true directs script to setup the equilibration file infrastructure
 # in a "2-state" way in which for a given transformation P:A --> P:B, both P:A and P:B structures
 # considered and represents the two end states.
-twostate=false
+twostate=true
 bidirection_aq=true
 bidirection_com=true
 
@@ -126,7 +133,7 @@ ticalc=rbfe                     # "rbfe -> relative binding free energy/rsfe -> 
 # stage=run-equil --> run equil simulations
 # stage=run-TI --> run TI simulations
 # stage=check-TI --> check TI simulations
-stage=analysis                     # "setup/run-equil/check-equil/run-TI/check-TI"
+stage=setup                     # "setup/run-equil/check-equil/run-TI/check-TI"
 setupmode=0                     # 0 --> regular TI/ 1 --> end-point ACES/ 2 --> TI from end-point ACES
 
 # job submission related

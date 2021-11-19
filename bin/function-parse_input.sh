@@ -38,7 +38,9 @@ system=smallMols
 translist=(1h1q~1h1r 1h1q~1h1s)
 
 
-nlambda=11                      # number of lambda windows
+nlambda=13                      # number of lambda windows
+lamschedule=yes
+lams=(0 0.229764 0.302697 0.359436 0.40913 0.455318 0.5 0.544682 0.59087 0.640564 0.697303 0.770236 1)
 protocol=unified                # unified protocol for TI
 
 # mapmethod determines the algorithm using which cc and sc regions
@@ -164,7 +166,7 @@ EOFN
 
         # read input file
         read_input input
-
+	
         # check if AMBERHOME is set
         if [ -z "${AMBERHOME}" ]; then printf "\n\nAMBERHOME is not set\n\n" && exit 0; fi
         # check if cpptraj is present
@@ -174,6 +176,22 @@ EOFN
 
 
         # check input file parameters
+
+	# lambda schedule related
+	if [ "${lamschedule}" == "yes" ]; then
+		printf "\n\n User defined lambda schedule... \n"
+		if [ "${nlambda}" -ne "${#lams[@]}" ]; then printf "\n\nThe list of lambda values should be provided as a list using \"lams\". The value of \"nlambda\" should be equal to the total number of entries in the list \"lams\" \n\n" && exit 0; fi
+		# format lambda values
+		for l in ${!lams[@]}; do
+			lams[$l]=$(printf "%0.8f" ${lams[$l]})
+		done
+	else
+		printf "\n\n Auto generated lambda schedule... \n"
+		lams=($(gen_lambdas $nlambda))
+	fi
+	printf "\n The following lambda schedule will be used \n"
+	printf "%s\n\n" "${lams[*]}"
+
         if [ "${protocol}" != "unified" ]; then printf "\n\nScript currently supports only \"unified\" protocol\n\n" && exit 0; fi
 
 	if [ "${mapmethod}" -lt 0 ] && [ "${mapmethod}" -gt 2 ]; then printf "\n\n\"mapmethod\" should be set to 0 for \"MCSS\", 1 for \"MCSS-E\" algorithm for atom-mapping\n\n, 2 for \"MCSS-E\" variant applicable to linear transformations that involve change in mass of atoms" && exit 0; fi

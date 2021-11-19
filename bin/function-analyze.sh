@@ -296,7 +296,7 @@ rm -rf gen_lambda.py
 
 function write_gmbar {
 
-	nlambda=$1; shift
+	#nlambda=$1; shift
 	ticalc=$1; shift
 
 	if [ "${ticalc}" == "rbfe" ]; then
@@ -411,7 +411,7 @@ def getstagedlambdas():
 EOF
 
 
-lams=($(gen_lambdas ${nlambda}))
+#lams=($(gen_lambdas ${nlambda}))
 
 printf '    lams["unified"] = [ ' >> gmbar.py
 

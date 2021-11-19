@@ -5,7 +5,7 @@ function writetemplate_rbfe
 {
         #echo "$#"
         local args=$*; args=($args)
-        local varlist=(nlambda CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
         local i=0
         for a in "${varlist[@]}"; do
                 declare -n arr="$a"
@@ -13,7 +13,6 @@ function writetemplate_rbfe
                 i=$(($i+1))
         done
 
-	lams=($(gen_lambdas $nlambda))
 	if [ "${twostate}" == "true" ]; then
 		endstates=(0.00000000 1.00000000)
 		parmbase=unisc

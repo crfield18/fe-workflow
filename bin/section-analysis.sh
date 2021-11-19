@@ -40,7 +40,6 @@ for i in "${translist[@]}";do
 					path_tar=results/data/${i}/${s}/${fktrial}
 					path_src=results/data/${i}/${s}tmp/${trial}
 					mkdir -p ${path_tar}
-					lams=($(gen_lambdas ${nlambda}))
 					lamsreversed=($(for lr in ${lams[@]}; do echo $lr; done | sort -r))
 
 					for li in ${!lams[@]}; do
@@ -80,7 +79,7 @@ cd results
 #	cp ${path}/${exptdatafile} .
 #fi
 
-	write_gmbar ${nlambda} ${ticalc}
+	write_gmbar ${ticalc}
 
 
 	#######################################
