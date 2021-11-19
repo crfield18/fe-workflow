@@ -157,7 +157,7 @@ if __name__ == "__main__":
         else:
             s = ListToSelection( atoms )
             
-    print s
+    print(s)
 
 EOF
 	chmod a+x getmask.py
