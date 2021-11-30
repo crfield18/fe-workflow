@@ -814,7 +814,7 @@ if __name__ == "__main__":
 
         p = parmed.load_file(args.pdb)
 
-    f1 = open ("{}".format(args.map),'r')
+    f1 = open("{}".format(args.map),'r')
     lines = f1.readlines()
 
     if args.calc == "rbfe":
@@ -1064,7 +1064,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    f1 = open ("{}".format(args.map),'r')
+    f1 = open("{}".format(args.map),'r')
     lines = f1.readlines()
 
     mappedmol1atomnames=[]
