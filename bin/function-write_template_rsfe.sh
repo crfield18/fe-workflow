@@ -1212,11 +1212,11 @@ EOF2
                         done
                         laststage=eqP0TI
 		else
-                        # check if pmemd.cuda.MPI is present
-                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
+                        # check if pmemd.cuda_SPFP.MPI is present
+                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI &> /dev/null; then echo "pmemd.cuda_SPFP.MPI is missing." && exit 0; fi
 
                         export LAUNCH="mpirun -np \\\${#lams[@]}"
-                        export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+                        export EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
                         export MV2_ENABLE_AFFINITY=0
                         \\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 
@@ -1238,13 +1238,13 @@ EOF2
 	done
 
         ### # run production
-        ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+        ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
         ### echo "running replica ti"
         ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 
 
 	cat << EOFP > extract.py
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 def OpenParm( fname, xyz=None ):
     import parmed
@@ -1383,7 +1383,7 @@ EOFP
 
 			if [ \\\${dir} == "aq" ]; then
         			# run production
-        			EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+        			EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
         			echo "running replica ti"
         			mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 			else
@@ -1476,10 +1476,10 @@ EOF2
 			else
 
 
-                        	# check if pmemd.cuda.MPI is present
-                        	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
+                        	# check if pmemd.cuda_SPFP.MPI is present
+                        	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI &> /dev/null; then echo "pmemd.cuda_SPFP.MPI is missing." && exit 0; fi
 				export LAUNCH="mpirun -np \\\${#endstates[@]}"
-				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
 				export MV2_ENABLE_AFFINITY=0
 				\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 				
@@ -1561,11 +1561,11 @@ EOF2
                                 laststage=eqP0TI
                         done
                 else
-                        # check if pmemd.cuda.MPI is present
-                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
+                        # check if pmemd.cuda_SPFP.MPI is present
+                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI &> /dev/null; then echo "pmemd.cuda_SPFP.MPI is missing." && exit 0; fi
 
                         export LAUNCH="mpirun -np \\\${#lams[@]}"
-                        export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+                        export EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
                         export MV2_ENABLE_AFFINITY=0
                         \\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 
@@ -1607,13 +1607,13 @@ EOF2
 
 
         ### # run production
-        ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+        ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
         ### echo "running replica ti"
         ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 
 
         cat << EOFP > extract.py
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 def OpenParm( fname, xyz=None ):
     import parmed
@@ -1753,7 +1753,7 @@ EOFP
                         if [ \\\${dir} == "aq" ]; then
                                 # run production
 				LAUNCH="mpirun -np \\\${#lams[@]}"
-                                EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+                                EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
                                 echo "running replica ti"
                                 \\\${LAUNCH} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
                         else
