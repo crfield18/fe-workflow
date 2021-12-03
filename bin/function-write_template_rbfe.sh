@@ -1809,7 +1809,7 @@ EOF2
         # run production
         EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
         echo "running replica ti"
-        mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+        mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 done
 
 EOF
@@ -2015,7 +2015,7 @@ EOF2
 	# run production
 	EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
 	echo "running replica ti"
-	mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+	mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 done
 
 EOF
@@ -2046,12 +2046,12 @@ if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
 EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
 echo "running replica ti"
-mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/ti.groupfile
+mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/ti.groupfile
 EOF
 
 if [ "\${REPEX}" == "false" ]; then
         sed -i -e 's/numexchg/!numexchg/g' -e 's/gremd_acyc = 1/!gremd_acyc = 1/g' inputs/\\\${lam}_ti.mdin inputs/\\\${lam}_analyze.mdin
-        sed -i 's/ -rem 3//g' inputs/ti.groupfile
+        sed -i 's/ -rem 3 -remlog remt${trial}.log//g' inputs/ti.groupfile
 fi
 
 

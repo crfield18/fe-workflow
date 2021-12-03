@@ -300,7 +300,7 @@ if [ "${setupmode}" == 0 ]; then
                                 				# if repex=false, alter input files and slurm files
                                 				if [ "${repex}" == "false" ]; then
                                         				sed -i -e '/numexchg/d' -e '/gremd_acyc/d' inputs/*_ti.mdin
-                                        				sed -i -e 's/ -rem 3//g' -e 's/running replica ti/running regular ti/g' run_alltrials.slurm
+                                        				sed -i -e 's/ -rem 3 -remlog remt${trial}.log//g' -e 's/running replica ti/running regular ti/g' run_alltrials.slurm
                                 				fi
 
 								for(( t=1;t<=${ntrials};t++));do
