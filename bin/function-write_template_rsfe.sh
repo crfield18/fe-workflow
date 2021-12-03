@@ -1240,7 +1240,7 @@ EOF2
         ### # run production
         ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
         ### echo "running replica ti"
-        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 
 
 	cat << EOFP > extract.py
@@ -1385,7 +1385,7 @@ EOFP
         			# run production
         			EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
         			echo "running replica ti"
-        			mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+        			mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 			else
         			LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
         			EXE=\\\${AMBERHOME}/bin/pmemd.cuda
@@ -1609,7 +1609,7 @@ EOF2
         ### # run production
         ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
         ### echo "running replica ti"
-        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 
 
         cat << EOFP > extract.py
@@ -1755,7 +1755,7 @@ EOFP
 				LAUNCH="mpirun -np \\\${#lams[@]}"
                                 EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
                                 echo "running replica ti"
-                                \\\${LAUNCH} \\\${EXE} -rem 3 -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+                                \\\${LAUNCH} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
                         else
                                 LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
                                 EXE=\\\${AMBERHOME}/bin/pmemd.cuda
