@@ -24,6 +24,7 @@ function writetemplate_rsfe
                 endstates=(0.00000000)
 		eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
 	fi
+	preminTIstage="eqA"
 
 
 	cat <<EOFN >TEMPLATE.sh
@@ -1174,7 +1175,7 @@ EOF2
 			for i in \\\${!lams[@]}; do
 				lam=\\\${lams[\\\$i]}
 				if [ "\\\${i}" -eq 0 ]; then
-					init=\\\${endstates[0]}_eqA.rst7
+					init=\\\${endstates[0]}_\\\${preminTIstage}.rst7
  				else
 					init=\\\${lams[\\\$((\\\$i-1))]}_eqP0TI.rst7
 				fi			
@@ -1516,7 +1517,7 @@ EOF2
 			p=("\\\${firsthalf[*]}" "\\\${secondhalf[*]}")
 
                         for l in \\\${!p[@]};do
-                                startingconfig=\\\${endstates[\\\$l]}_eqA.rst7
+                                startingconfig=\\\${endstates[\\\$l]}_\\\${preminTIstage}.rst7
                                 list=(\\\${p[\\\$l]})
                                 for i in \\\${!list[@]}; do
                                         lam=\\\${list[\\\$i]}

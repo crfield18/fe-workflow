@@ -19,8 +19,10 @@ function writetemplate_rbfe
 		rstbase=(stateA stateB)
 		if [ "$s" == "com" ]; then
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqNTP4 eqV eqP eqA eqProt2 eqProt1 eqProt05 eqProt025 eqProt01 eqProt0 minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+			preminTIstage="eqProt0"
 		else
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqNTP4 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+			preminTIstage="eqA"
 		fi
 	else
 		endstates=(0.00000000)
@@ -28,8 +30,10 @@ function writetemplate_rbfe
 		rstbase=(stateA stateA)
 		if [ "$s" == "com" ]; then
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA eqProt2 eqProt1 eqProt05 eqProt025 eqProt01 eqProt0 minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+			preminTIstage="eqProt0"
 		else
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+			preminTIstage="eqA"
 		fi
 	fi
 
@@ -1743,7 +1747,7 @@ EOF2
 			for i in \\\${!lams[@]}; do
 				lam=\\\${lams[\\\$i]}
 				if [ "\\\${i}" -eq 0 ]; then
-					init=\\\${endstates[0]}_eqA.rst7
+					init=\\\${endstates[0]}_\\\${preminTIstage}.rst7
 				else
 					init=\\\${lams[\\\$((\\\$i-1))]}_eqP0TI.rst7
 				fi
@@ -1922,7 +1926,7 @@ EOF2
 			p=("\\\${firsthalf[*]}" "\\\${secondhalf[*]}")
 
 			for l in \\\${!p[@]};do
-				startingconfig=\\\${endstates[\\\$l]}_eqA.rst7
+				startingconfig=\\\${endstates[\\\$l]}_\\\${preminTIstage}.rst7
 				list=(\\\${p[\\\$l]})
 				for i in \\\${!list[@]}; do
 					lam=\\\${list[\\\$i]}
