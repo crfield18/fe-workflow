@@ -1496,7 +1496,7 @@ EOF2
 					if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
 					cpptraj < center.in
 					sleep 1
-					 mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+					mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
 				done
 			fi
 		elif [ "\\\${alllams}" == 1 ] && [ "\\\$stage" == "minTI" ]; then
