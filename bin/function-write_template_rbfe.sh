@@ -49,6 +49,7 @@ endstates=(${endstates[*]})
 twostate=${twostate}
 lams=(${lams[@]})
 env=${s}
+preminTIstage=${preminTIstage}
 
 #generate initial configurations for lambda windows
 mkdir -p current inputs
@@ -1696,6 +1697,7 @@ endstates=(\${endstates[@]})
 lams=(\${lams[@]})
 twostate=\${twostate}
 eqstage=(${eqstagelist[*]})
+preminTIstage=\${preminTIstage}
 
 
 # check if AMBERHOME is set
@@ -1838,6 +1840,7 @@ endstates=(\${endstates[@]})
 lams=(\${lams[@]})
 twostate=\${twostate}
 eqstage=(${eqstagelist[*]})
+preminTIstage=\${preminTIstage}
 
 
 # check if AMBERHOME is set
