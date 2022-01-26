@@ -627,7 +627,7 @@ function calcMDions {
 
         # calculate water and number of ions necessary to reach desired ion conc
         cat <<EOF > calcMDions.py
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import numpy as np
 import sys
@@ -639,7 +639,7 @@ def get_waters():
         try:
                 n_waters = int(n_waters)
         except ValueError:
-                print '### ERROR not an integer ###'
+                #print '### ERROR not an integer ###'
                 n_waters = get_waters()
         return float(n_waters)
 
@@ -648,7 +648,7 @@ def get_ion_conc():
         try:
                 ion_conc = float(ion_conc)
         except ValueError:
-                print '### ERROR not a valid ion concentration ###'
+                #print '### ERROR not a valid ion concentration ###'
                 ion_conc = get_ion_conc()
         return ion_conc
 
@@ -660,7 +660,7 @@ ions_needed = round((n_waters/density)*ion_conc)
 print ("{0:.0f}".format(ions_needed))
 EOF
         chmod a+x calcMDions.py
-	local nions=$(python2.7 ./calcMDions.py $nwat ${ionconc})
+	local nions=$(python3 ./calcMDions.py $nwat ${ionconc})
 	echo "${nions}"
 	rm -rf calcMDions.py
 }
