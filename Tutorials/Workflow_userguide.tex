@@ -88,7 +88,7 @@
 %%%%%%%
 
 \title
-{\bf User guide for using workflow tools for automated Production Free Energy Simulation Setup and Analysis (\textit{ProFESSA})using AMBER Drug Discovery Boost}
+{\bf Workflow Tools for automated Production Free Energy Simulation Setup and Analysis (\textit{ProFESSA}) using AMBER Drug Discovery Boost - User Guide}
 
 \begin{document}
 
@@ -97,7 +97,9 @@
 %\section*{An user guide for using the workflow tools alchemical free energy simulations using AMBER20 with AMBER-DD boost}
 %\vspace{1cm}
 
+\vspace{0.1cm}
 \section {Availability of the AMBER Drug Discovery Boost package}
+\vspace{0.1cm}
 
 The AMBER Drug Discovery Boost package consists of the current release version of
 AmberTools21, which can be downloaded directly from AmberMD.org, and the specialized
@@ -154,20 +156,22 @@ The \textit{Alchemical\_fe} folder contains the following sub-folders:
 
 We are also in the process of putting documentation up on the Wiki site that will be updated on a regular basis - \url{https://gitlab.com/RutgersLBSR/alchemical\_fe/-/wikis/Setup-AFE\_AMBER\_DD\_BOOST}
 
+\vspace{0.1cm}
 \section {Installation of AMBER Drug Discovery Boost}
+\vspace{0.1cm}
 
 The installation process of AMBER DD Boost is identical to that of 
 AMBER20, and detailed instructions can be found here 
 https://ambermd.org/Installation.php
 
-\vspace{1cm}
-\section{Purpose of the \textit{Workflow Tools}}
-\vspace{1cm}
+\vspace{0.1cm}
+\section{Purpose of the Workflow Tools}
+\vspace{0.1cm}
 
-\textit{Workflow Tools} are a set of scripts that are designed to 
+Workflow Tools are a set of scripts that are designed to 
 facilitate the setup, execution, and analysis of alchemical 
 free energy simulations (AFE) using AMBER DD Boost. Currently, the 
-\textit{Workflow Tools} can be used to perform relative binding
+Workflow Tools can be used to perform relative binding
 free energy (RBFE), relative solvation free energy (RSFE), and 
 absolute solvation free energy (RSFE) calculations. The scripts
 uses a
@@ -182,17 +186,17 @@ b) key simulation settings can be specified, and
 c) initial configuration files (MD equilibrated parameter (parm) and 
 coordinate (rst) files associated with the system and
 specified transformations) must be provided. 
-The \textit{Workflow Tools} can then be used to generate a hierarchy of directories 
+The Workflow Tools can then be used to generate a hierarchy of directories 
 containing relevant parameter, coordinate, and AMBER input files and job submission scripts. 
-The \textit{Workflow Tools} can also be used 
+The Workflow Tools can also be used 
 to analyze the free energy simulations using \textit{FE-ToolKit}
 
 
-\vspace{1cm}
-\section{Initial requirements of using the \textit{Workflow Tools}}
-\vspace{1cm}
+\vspace{0.1cm}
+\section{Initial requirements of using the Workflow Tools}
+\vspace{0.1cm}
 
-Following conditions must be met before using the \textit{Workflow Tools} -
+Following conditions must be met before using the Workflow Tools -
 \renewcommand{\labelenumi}{\Roman{enumi}}
 \begin{enumerate}
 	\item {\textit{AMBERHOME needs to be set}}
@@ -229,11 +233,11 @@ Following conditions must be met before using the \textit{Workflow Tools} -
 		\end{itemize}
 \end{enumerate}
 
-\vspace{1cm}
-\section{Usage of the \textit{Workflow Tools}}
-\vspace{1cm}
+\vspace{0.1cm}
+\section{Usage of the Workflow Tools}
+\vspace{0.1cm}
 
-The \textit{setup\_fe} script represents the main executable of the \textit{Workflow Tools}, 
+The \textit{setup\_fe} script represents the main executable of the Workflow Tools, 
 and can be 
 created by running the script \textit{makesetup\_fe.sh} located in the \textit{bin} subdirectory
 of the \textit{Alchemical\_fe} folder. 
@@ -253,11 +257,9 @@ By defaults, these variables are set to the path of the \textit{current working 
 can be modified manually in \textit{setup\_fe}. 
 \textit{setup\_fe} expects a inputfile named \textit{input} in \${pathTOWRKDIR}
 
-
-
-\vspace{1cm}
+\vspace{0.1cm}
 \section{Input file for \textit{setup\_fe}}
-\vspace{1cm}
+\vspace{0.1cm}
 
 \textit{setup\_fe} requires an input file named \textit{input} that contains key settings of the
 alchemical free energy simulations that are going to be set up. A template input file can be
@@ -345,10 +347,9 @@ For keywords/flags that are specific to AMBER20 and AMBER-DD Boost refer to the
 \href{https://ambermd.org/doc12/Amber20.pdf}{AMBER20 reference manual}
 and \textit{AMBER DD Boost Documentation}.
 
-
-\vspace{1cm}
+\vspace{0.1cm}
 \section{File infrastructure created by \textit{setup\_fe}}
-\vspace{1cm}
+\vspace{0.1cm}
 
 With the \textit{input} file present in \$pathTOWRKDIR, \textit{setup\_fe} can be executed as 
 
