@@ -26,7 +26,7 @@ setupmode=0
 # ticalc=rbfe --> relative binding free energy
 # ticalc=rsfe --> relative solvation free energy
 # ticalc=asfe --> absolute solvation free energy
-ticalc=rsfe                     
+ticalc=rbfe                     
 
 # stage controls the action of the script
 # stage=setup 		--> setup of TI  simulations
