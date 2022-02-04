@@ -162,7 +162,7 @@ cd \$path
 	#################################
 		source \${pathTOWFToolKit}/bin/section-analysis.sh
 	#################################
-	##END STAGE=check-TI
+	##END STAGE=analysis
 	fi
 	#################################
 cd \$pathhere

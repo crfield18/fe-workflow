@@ -3,7 +3,10 @@ function parse_input {
         if [ ! -z "$1" ]; then
                 if [ "$1" == "-h" ] || [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ] ; then
                         cat << EOFN > input.template
-# Directory that contains within it a subdirectory "system"
+#######################################################################
+# 1. NAME OF SYSTEM, INPUT STRUCTURES, and TYPE OF CALCULATION
+#######################################################################
+# Directory that contains within it a subdirectory names "system"
 # containing initial structure/parameter files.
 # For example, a single folder "initial" may contain multiple
 # subdirectories containing initial files for different systems
@@ -13,9 +16,27 @@ path_to_input=initial
 # Subdirectory containing initial structure/parameter files
 # of "system"
 # For example,
-# system=CDK2
-system=smallMols
+#system=smallMols
+system=CDK2
 
+
+# setupmode determines the calculation.
+# setupmode=0 --> regular TI
+# setupmode=1 --> end-point ACES
+# setupmode=2 --> TI from end-point ACES.
+# currenty, only setupmode=0 is implemented. 
+setupmode=0                     
+
+# ticalc determines the nature of TI calculation.
+# ticalc=rbfe --> relative binding free energy
+# ticalc=rsfe --> relative solvation free energy
+# ticalc=asfe --> absolute solvation free energy
+ticalc=rbfe                     
+
+# stage controls the action of the script
+# stage=setup 		--> setup of TI  simulations
+# stage=analysis 	--> analysis of TI simulations using FE-ToolKit
+stage=setup                     
 
 
 # List of desired transformations or edges
@@ -35,20 +56,21 @@ system=smallMols
 # ${path_to_input}/${system}
 # example,
 # translist=(mobley_1527293 mobley_3034976)
-translist=(1h1q~1h1r 1h1q~1h1s)
+#translist=(1h1q~1h1r 1h1r~1h1s 1h1s~1oiu 1oiu~1h1q 1h1r~1oiu 1h1s~1h1q)
+translist=(1h1q~1h1r 1h1r~1h1s)
+#######################################################################
 
 
-nlambda=13                      # number of lambda windows
-lamschedule=yes
-lams=(0 0.229764 0.302697 0.359436 0.40913 0.455318 0.5 0.544682 0.59087 0.640564 0.697303 0.770236 1)
-protocol=unified                # unified protocol for TI
-
+#######################################################################
+# 2. ATOM MAPPING 
+#######################################################################
+#
 # mapmethod determines the algorithm using which cc and sc regions
 # will be determined.
 # mapmethod=0 --> MCSS
 # mapmethod=1 --> MCSS-E
 # mapmethod=2 --> MCSS-E2
-mapmethod=2
+mapmethod=0
 
 # mapinspect determines if there is need of manual inspection of the
 # atom maps
@@ -68,15 +90,21 @@ mapinspect=0
 # mapnetwork=true ensures that in a given network of transformations, cc and sc
 # regions of each ligand is identical in every transformation in which is participates
 mapnetwork=false
+#######################################################################
 
+#######################################################################
+# 3. MD BOX BUILDING
+#######################################################################
+#
 # boxbuild determines if and how MD boxes will be built
-# "skip" --> skip box building
-# 0      --> for RBFE calculations, do not build boxes for "complex" state, only for "aqueous"
-#            state.
-# 1 --> build boxes for both "complex" and "aqueous" states
-# for RSFE and ASFE calculations, boxbuild=0 and boxbuild=1 are identical.
-# 2 --> build boxes for both "complex" and "aqueous" states with same number
-# of water and ions
+# "skip" 	--> skip box building
+# 0      	--> for RBFE calculations, do not build boxes for "complex" state, 
+#		    only for "aqueous" state.
+# 1 		--> build boxes for both "complex" and "aqueous" states
+# 		    for RSFE and ASFE calculations, boxbuild=0 and boxbuild=1 are 
+#		    identical.
+# 2 		--> build boxes for both "complex" and "aqueous" states with same 
+#		    number of water and ions
 boxbuild=2
 boxbufcom=16                    # MD box buffer for "complex" states
 boxbufaq=20                     # MD box buffer for "aqueous" states
@@ -85,14 +113,24 @@ pff=ff14SB                      # Protein force field
 lff=gaff2                       # Ligand forcefield
 wm=tip4pew                      # Water model
 mdboxshape=cubic                # Shape of MD box
+#######################################################################
 
+
+#######################################################################
+# 4. GENERAL SETTINGS OF TI SIMULATIONS
+#######################################################################
+#
+nlambda=25                      # number of lambda windows
+lamschedule=yes
+lams=(0 0.176834 0.229764 0.269379 0.302697 0.33229 0.359436 0.384886 0.40913 0.432518 0.455318 0.477748 0.5 0.522252 0.544682 0.567482 0.59087 0.615114 0.640564 0.66771 0.697303 0.730621 0.770236 0.823166 1)
+protocol=unified                # unified protocol for TI
 
 ntrials=3                       # Number of independent trials
 
 cutoff=10                       # non-bonded cutoff
 repex=true
-nstlimti=5000                   # length of TI simulations
-numexchgti=1000                 # number of exchanges in replica exchange TI simulations. if repex=true
+nstlimti=20                     # length of TI simulations
+numexchgti=250000               # number of exchanges in replica exchange TI simulations. if repex=true
 hmr=false
 notrajectory=true               # when true, no output trajectories are generated
 scalpha=0.5                     # scalpha
@@ -116,38 +154,37 @@ gti_vdw_exp=2                   # gti_vdw_exp
 # twostate=true directs script to setup the equilibration file infrastructure
 # in a "2-state" way in which for a given transformation P:A --> P:B, both P:A and P:B structures
 # considered and represents the two end states.
-twostate=false
-bidirection=true
+twostate=true
+bidirection_com=false
+bidirection_aq=false
+#######################################################################
 
 
-# ticalc determines the calculation.
-# ticalc=rbfe --> relative binding free energy
-# ticalc=rsfe --> relative solvation free energy
-# ticalc=asfe --> absolute solvation free energy
-ticalc=rbfe                     # "rbfe -> relative binding free energy/rsfe -> relative solvation free energy"
 
-# stage controls the action of the script
-# stage=setup --> sets up TI calculations
-# stage=run-equil --> run equil simulations
-# stage=run-TI --> run TI simulations
-# stage=check-TI --> check TI simulations
-stage=setup                     # "setup/run-equil/check-equil/run-TI/check-TI"
-setupmode=0                     # 0 --> regular TI/ 1 --> end-point ACES/ 2 --> TI from end-point ACES
-
+#######################################################################
+# 5. SETTINGS RELATED TO JOB SUBMISSION
+#######################################################################
+#
 # job submission related
 partition=general-long-gpu      # name of specific partition on HPC. Use "null" is not relevant
 nnodes=1                        # number of nodes to be used for each transformation
 ngpus=8                         # number of gpus/node to be used for each transformation
-wallclock=3-00:00:00              # wallclock for individual jobs
+wallclock=3-00:00:00            # wallclock for individual jobs
+#######################################################################
 
+#######################################################################
+# 6. ANALYSIS
+#######################################################################
+#
 # analysis related
 # path to production runs. default path_to_input="system"/"protocol"/run
 # exptdatafile is an optional text file containing experimental free energies.
 # exptdatafile can be set to "skip" or if provided, should be a file containing 2 columns.
 # col 1 should be ligand name (identical to ligand name in translist) and col2 should be
 # relative experimental free energy
-path_to_data=p38/runs/shake-hmr/new-shake-hmr/shake.2fs
-exptdatafile=p38_ExptData_t8.txt
+#
+path_to_data=data
+exptdatafile=cdk2_expt.dat
 bar=true
 ccc=true
 ccc_ddG=true
@@ -155,6 +192,7 @@ start=0.0
 stop=100.0
 check_convergence=true
 showallcycles=true
+#######################################################################
 
 EOFN
                         echo "Script expects a file named \"input\" in working directory. Check input.template for details."

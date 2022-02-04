@@ -247,7 +247,7 @@ if [ "${setupmode}" == 0 ]; then
                                                         	if [ "${ticalc}" == "rbfe" ]; then
                                                                 	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
                                                         	else
-                                                                	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]}
+                                                                	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
                                                         	fi
 
                                                         	sh TEMPLATE.sh; sleep 1
@@ -299,8 +299,16 @@ if [ "${setupmode}" == 0 ]; then
 
                                 				# if repex=false, alter input files and slurm files
                                 				if [ "${repex}" == "false" ]; then
-                                        				sed -i -e '/numexchg/d' -e '/gremd_acyc/d' inputs/*_ti.mdin
-                                        				sed -i -e 's/ -rem 3 -remlog remt${trial}.log//g' -e 's/running replica ti/running regular ti/g' run_alltrials.slurm
+                                        				sed -i 	-e '/numexchg/d' \
+										-e '/gremd_acyc/d' \
+										-e 's/ntwx .*/ntwx            = 10000/' \
+										-e 's/ntwr .*/ntwx            = 5000/' \
+										-e 's/ntpr .*/ntpr            = 1000/' \
+										-e 's/bar_intervall .*/bar_intervall   = 1000/' \
+										inputs/*_ti.mdin
+                                        				sed -i 	-e 's/ -rem 3 -remlog remt${trial}.log//g' \
+										-e 's/running replica ti/running regular ti/g' \
+										run_alltrials.slurm
                                 				fi
 
 								for(( t=1;t<=${ntrials};t++));do

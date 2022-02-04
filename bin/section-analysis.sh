@@ -57,6 +57,7 @@ for i in "${translist[@]}";do
 	done
 done
 rm -rf mdouts2dats.py
+exit 0
 
 if [ "${exptdatafile}" == "skip" ]; then
         truncate -s0 Expt.dat
@@ -69,18 +70,7 @@ cp ${exptdatafile} results/
 
 
 cd results
-#if [ "${exptdatafile}" == "skip" ]; then
-#	truncate -s0 Expt.dat
-#	for i in ${uniqueligs[@]};do
-#		printf "${i}	0 \n" >> Expt.dat
-#	done
-#	exptdatafile="Expt.dat"
-#else
-#	cp ${path}/${exptdatafile} .
-#fi
-
 	write_gmbar ${ticalc}
-
 
 	#######################################
 	export PATH="$PATH:${pathTOFEToolKit}/local/bin"

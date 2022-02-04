@@ -1516,9 +1516,9 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
-ntwr            = 5000
-ntpr            = 1000
+ntwx            = ${NSTLIMTI}
+ntwr            = ${NSTLIMTI}
+ntpr            = ${NSTLIMTI}
 cut             = ${CUTOFF}
 iwrap           = 1
 
@@ -1536,7 +1536,7 @@ ifsc            = 1
 icfe            = 1
 
 ifmbar          = 1
-bar_intervall   = 1
+bar_intervall   = ${NSTLIMTI}
 mbar_states     = \${#lams[@]}
 EOF
 ilam=0
