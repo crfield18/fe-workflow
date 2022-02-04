@@ -1,0 +1,11 @@
+-O -p unisc.parm7 -c t1/0.00000000_eqATI.rst7 -i inputs/0.00000000_preTI.mdin -o t1/0.00000000_preTI.mdout -r t1/0.00000000_preTI.rst7 -x t1/0.00000000_preTI.nc -ref t1/0.00000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.10000000_eqATI.rst7 -i inputs/0.10000000_preTI.mdin -o t1/0.10000000_preTI.mdout -r t1/0.10000000_preTI.rst7 -x t1/0.10000000_preTI.nc -ref t1/0.10000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.20000000_eqATI.rst7 -i inputs/0.20000000_preTI.mdin -o t1/0.20000000_preTI.mdout -r t1/0.20000000_preTI.rst7 -x t1/0.20000000_preTI.nc -ref t1/0.20000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.30000000_eqATI.rst7 -i inputs/0.30000000_preTI.mdin -o t1/0.30000000_preTI.mdout -r t1/0.30000000_preTI.rst7 -x t1/0.30000000_preTI.nc -ref t1/0.30000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.40000000_eqATI.rst7 -i inputs/0.40000000_preTI.mdin -o t1/0.40000000_preTI.mdout -r t1/0.40000000_preTI.rst7 -x t1/0.40000000_preTI.nc -ref t1/0.40000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.50000000_eqATI.rst7 -i inputs/0.50000000_preTI.mdin -o t1/0.50000000_preTI.mdout -r t1/0.50000000_preTI.rst7 -x t1/0.50000000_preTI.nc -ref t1/0.50000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.60000000_eqATI.rst7 -i inputs/0.60000000_preTI.mdin -o t1/0.60000000_preTI.mdout -r t1/0.60000000_preTI.rst7 -x t1/0.60000000_preTI.nc -ref t1/0.60000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.70000000_eqATI.rst7 -i inputs/0.70000000_preTI.mdin -o t1/0.70000000_preTI.mdout -r t1/0.70000000_preTI.rst7 -x t1/0.70000000_preTI.nc -ref t1/0.70000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.80000000_eqATI.rst7 -i inputs/0.80000000_preTI.mdin -o t1/0.80000000_preTI.mdout -r t1/0.80000000_preTI.rst7 -x t1/0.80000000_preTI.nc -ref t1/0.80000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/0.90000000_eqATI.rst7 -i inputs/0.90000000_preTI.mdin -o t1/0.90000000_preTI.mdout -r t1/0.90000000_preTI.rst7 -x t1/0.90000000_preTI.nc -ref t1/0.90000000_eqATI.rst7
+-O -p unisc.parm7 -c t1/1.00000000_eqATI.rst7 -i inputs/1.00000000_preTI.mdin -o t1/1.00000000_preTI.mdout -r t1/1.00000000_preTI.rst7 -x t1/1.00000000_preTI.nc -ref t1/1.00000000_eqATI.rst7

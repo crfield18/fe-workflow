@@ -1,0 +1,1 @@
+-O -p unisc.parm7 -c t1/0.00000000_eqV.rst7 -i inputs/0.00000000_eqP.mdin -o t1/0.00000000_eqP.mdout -r t1/0.00000000_eqP.rst7 -x t1/0.00000000_eqP.nc -ref t1/0.00000000_eqV.rst7

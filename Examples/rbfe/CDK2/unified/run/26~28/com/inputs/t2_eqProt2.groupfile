@@ -1,0 +1,2 @@
+-O -p unisc.parm7 -c t2/0.00000000_eqA.rst7 -i inputs/0.00000000_eqProt2.mdin -o t2/0.00000000_eqProt2.mdout -r t2/0.00000000_eqProt2.rst7 -x t2/0.00000000_eqProt2.nc -ref t2/0.00000000_eqA.rst7
+-O -p unisc.parm7 -c t2/1.00000000_eqA.rst7 -i inputs/1.00000000_eqProt2.mdin -o t2/1.00000000_eqProt2.mdout -r t2/1.00000000_eqProt2.rst7 -x t2/1.00000000_eqProt2.nc -ref t2/1.00000000_eqA.rst7

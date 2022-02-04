@@ -1,0 +1,1048 @@
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/prep to search path.
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib to search path.
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm to search path.
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd to search path.
+-s: Ignoring startup file: leaprc
+-f: Source tleap.in.
+
+Welcome to LEaP!
+Sourcing: ./tleap.in
+----- Source: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.protein.ff14SB
+----- Source of /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.protein.ff14SB done
+Log file: ./leap.log
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/parm10.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ff14SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff14SB protein backbone and sidechain parameters
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/amino12.lib
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/aminoct12.lib
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/aminont12.lib
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ff14SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff14SB protein backbone and sidechain parameters
+----- Source: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.gaff2
+----- Source of /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+----- Source: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.water.tip4pew
+----- Source of /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.water.tip4pew done
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/atomic_ions.lib
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/solvents.lib
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+This is the additional/replacement parameter set for TIP4PEW
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ionsjc_tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+Monovalent ion parameters for Ewald and TIP4P/EW water from Joung & Cheatham JPCB (2008)
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ions234lm_126_tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of divalent to tetravalent ions for TIP4P/EW water model (12-6 normal usage set)
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+This is the additional/replacement parameter set for TIP4PEW
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ionsjc_tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+Monovalent ion parameters for Ewald and TIP4P/EW water from Joung & Cheatham JPCB (2008)
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/tip4pewbox.off
+Loading parameters: ./26_0.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+modified parameters
+Loading library: ./26_0.lib
+Loading parameters: ./28_0.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+modified parameters
+Loading library: ./28_0.lib
+Loading PDB file: ./merged1_26~28.pdb using sequence 
+  matching pdb residues -> sequence template
+	res	pdb	template
+	1	L10	L10
+	2	L11	L11
+	3	SER	NSER
+	4	MET	MET
+	5	GLU	GLU
+	6	ASN	ASN
+	7	PHE	PHE
+	8	GLN	GLN
+	9	LYS	LYS
+	10	VAL	VAL
+	11	GLU	GLU
+	12	LYS	LYS
+	13	ILE	ILE
+	14	GLY	GLY
+	15	GLU	GLU
+	16	GLY	GLY
+	17	THR	THR
+	18	TYR	TYR
+	19	GLY	GLY
+	20	VAL	VAL
+	21	VAL	VAL
+	22	TYR	TYR
+	23	LYS	LYS
+	24	ALA	ALA
+	25	ARG	ARG
+	26	ASN	ASN
+	27	LYS	LYS
+	28	LEU	LEU
+	29	THR	THR
+	30	GLY	GLY
+	31	GLU	GLU
+	32	VAL	VAL
+	33	VAL	VAL
+	34	ALA	ALA
+	35	LEU	LEU
+	36	LYS	LYS
+	37	LYS	LYS
+	38	ILE	ILE
+	39	ARG	ARG
+	40	LEU	LEU
+	41	ASP	ASP
+	42	THR	THR
+	43	GLU	GLU
+	44	THR	THR
+	45	GLU	GLU
+	46	GLY	GLY
+	47	VAL	VAL
+	48	PRO	PRO
+	49	SER	SER
+	50	THR	THR
+	51	ALA	ALA
+	52	ILE	ILE
+	53	ARG	ARG
+	54	GLU	GLU
+	55	ILE	ILE
+	56	SER	SER
+	57	LEU	LEU
+	58	LEU	LEU
+	59	LYS	LYS
+	60	GLU	GLU
+	61	LEU	LEU
+	62	ASN	ASN
+	63	HID	HID
+	64	PRO	PRO
+	65	ASN	ASN
+	66	ILE	ILE
+	67	VAL	VAL
+	68	LYS	LYS
+	69	LEU	LEU
+	70	LEU	LEU
+	71	ASP	ASP
+	72	VAL	VAL
+	73	ILE	ILE
+	74	HID	HID
+	75	THR	THR
+	76	GLU	GLU
+	77	ASN	ASN
+	78	LYS	LYS
+	79	LEU	LEU
+	80	TYR	TYR
+	81	LEU	LEU
+	82	VAL	VAL
+	83	PHE	PHE
+	84	GLU	GLU
+	85	PHE	PHE
+	86	LEU	LEU
+	87	HID	HID
+	88	GLN	GLN
+	89	ASP	ASP
+	90	LEU	LEU
+	91	LYS	LYS
+	92	LYS	LYS
+	93	PHE	PHE
+	94	MET	MET
+	95	ASP	ASP
+	96	ALA	ALA
+	97	SER	SER
+	98	ALA	ALA
+	99	LEU	LEU
+	100	THR	THR
+	101	GLY	GLY
+	102	ILE	ILE
+	103	PRO	PRO
+	104	LEU	LEU
+	105	PRO	PRO
+	106	LEU	LEU
+	107	ILE	ILE
+	108	LYS	LYS
+	109	SER	SER
+	110	TYR	TYR
+	111	LEU	LEU
+	112	PHE	PHE
+	113	GLN	GLN
+	114	LEU	LEU
+	115	LEU	LEU
+	116	GLN	GLN
+	117	GLY	GLY
+	118	LEU	LEU
+	119	ALA	ALA
+	120	PHE	PHE
+	121	CYS	CYS
+	122	HID	HID
+	123	SER	SER
+	124	HID	HID
+	125	ARG	ARG
+	126	VAL	VAL
+	127	LEU	LEU
+	128	HID	HID
+	129	ARG	ARG
+	130	ASP	ASP
+	131	LEU	LEU
+	132	LYS	LYS
+	133	PRO	PRO
+	134	GLN	GLN
+	135	ASN	ASN
+	136	LEU	LEU
+	137	LEU	LEU
+	138	ILE	ILE
+	139	ASN	ASN
+	140	THR	THR
+	141	GLU	GLU
+	142	GLY	GLY
+	143	ALA	ALA
+	144	ILE	ILE
+	145	LYS	LYS
+	146	LEU	LEU
+	147	ALA	ALA
+	148	ASP	ASP
+	149	PHE	PHE
+	150	GLY	GLY
+	151	LEU	LEU
+	152	ALA	ALA
+	153	ARG	ARG
+	154	ALA	ALA
+	155	PHE	PHE
+	156	GLY	GLY
+	157	VAL	VAL
+	158	PRO	PRO
+	159	VAL	VAL
+	160	ARG	ARG
+	161	THR	THR
+	162	TYR	CTYR
+	163	HIE	NHIE
+	164	GLU	GLU
+	165	VAL	VAL
+	166	VAL	VAL
+	167	THR	THR
+	168	LEU	LEU
+	169	TRP	TRP
+	170	TYR	TYR
+	171	ARG	ARG
+	172	ALA	ALA
+	173	PRO	PRO
+	174	GLU	GLU
+	175	ILE	ILE
+	176	LEU	LEU
+	177	LEU	LEU
+	178	GLY	GLY
+	179	CYS	CYS
+	180	LYS	LYS
+	181	TYR	TYR
+	182	TYR	TYR
+	183	SER	SER
+	184	THR	THR
+	185	ALA	ALA
+	186	VAL	VAL
+	187	ASP	ASP
+	188	ILE	ILE
+	189	TRP	TRP
+	190	SER	SER
+	191	LEU	LEU
+	192	GLY	GLY
+	193	CYS	CYS
+	194	ILE	ILE
+	195	PHE	PHE
+	196	ALA	ALA
+	197	GLU	GLU
+	198	MET	MET
+	199	VAL	VAL
+	200	THR	THR
+	201	ARG	ARG
+	202	ARG	ARG
+	203	ALA	ALA
+	204	LEU	LEU
+	205	PHE	PHE
+	206	PRO	PRO
+	207	GLY	GLY
+	208	ASP	ASP
+	209	SER	SER
+	210	GLU	GLU
+	211	ILE	ILE
+	212	ASP	ASP
+	213	GLN	GLN
+	214	LEU	LEU
+	215	PHE	PHE
+	216	ARG	ARG
+	217	ILE	ILE
+	218	PHE	PHE
+	219	ARG	ARG
+	220	THR	THR
+	221	LEU	LEU
+	222	GLY	GLY
+	223	THR	THR
+	224	PRO	PRO
+	225	ASP	ASP
+	226	GLU	GLU
+	227	VAL	VAL
+	228	VAL	VAL
+	229	TRP	TRP
+	230	PRO	PRO
+	231	GLY	GLY
+	232	VAL	VAL
+	233	THR	THR
+	234	SER	SER
+	235	MET	MET
+	236	PRO	PRO
+	237	ASP	ASP
+	238	TYR	TYR
+	239	LYS	LYS
+	240	PRO	PRO
+	241	SER	SER
+	242	PHE	PHE
+	243	PRO	PRO
+	244	LYS	LYS
+	245	TRP	TRP
+	246	ALA	ALA
+	247	ARG	ARG
+	248	GLN	GLN
+	249	ASP	ASP
+	250	PHE	PHE
+	251	SER	SER
+	252	LYS	LYS
+	253	VAL	VAL
+	254	VAL	VAL
+	255	PRO	PRO
+	256	PRO	PRO
+	257	LEU	LEU
+	258	ASP	ASP
+	259	GLU	GLU
+	260	ASP	ASP
+	261	GLY	GLY
+	262	ARG	ARG
+	263	SER	SER
+	264	LEU	LEU
+	265	LEU	LEU
+	266	SER	SER
+	267	GLN	GLN
+	268	MET	MET
+	269	LEU	LEU
+	270	HID	HID
+	271	TYR	TYR
+	272	ASP	ASP
+	273	PRO	PRO
+	274	ASN	ASN
+	275	LYS	LYS
+	276	ARG	ARG
+	277	ILE	ILE
+	278	SER	SER
+	279	ALA	ALA
+	280	LYS	LYS
+	281	ALA	ALA
+	282	ALA	ALA
+	283	LEU	LEU
+	284	ALA	ALA
+	285	HIE	HIE
+	286	PRO	PRO
+	287	PHE	PHE
+	288	PHE	PHE
+	289	GLN	GLN
+	290	ASP	ASP
+	291	VAL	VAL
+	292	THR	THR
+	293	LYS	LYS
+	294	PRO	PRO
+	295	VAL	VAL
+	296	PRO	PRO
+	297	HID	HID
+	298	LEU	CLEU
+	299	VAL	NVAL
+	300	PRO	PRO
+	301	ASP	ASP
+	302	TYR	TYR
+	303	HID	HID
+	304	GLU	GLU
+	305	ASP	ASP
+	306	ILE	ILE
+	307	HID	HID
+	308	THR	THR
+	309	TYR	TYR
+	310	LEU	LEU
+	311	ARG	ARG
+	312	GLU	GLU
+	313	MET	MET
+	314	GLU	GLU
+	315	VAL	VAL
+	316	LYS	LYS
+	317	CYS	CYS
+	318	LYS	LYS
+	319	PRO	PRO
+	320	LYS	LYS
+	321	VAL	VAL
+	322	GLY	GLY
+	323	TYR	TYR
+	324	MET	MET
+	325	LYS	LYS
+	326	LYS	LYS
+	327	GLN	GLN
+	328	PRO	PRO
+	329	ASP	ASP
+	330	ILE	ILE
+	331	THR	THR
+	332	ASN	ASN
+	333	SER	SER
+	334	MET	MET
+	335	ARG	ARG
+	336	ALA	ALA
+	337	ILE	ILE
+	338	LEU	LEU
+	339	VAL	VAL
+	340	ASP	ASP
+	341	TRP	TRP
+	342	LEU	LEU
+	343	VAL	VAL
+	344	GLU	GLU
+	345	VAL	VAL
+	346	GLY	GLY
+	347	GLU	GLU
+	348	GLU	GLU
+	349	TYR	TYR
+	350	LYS	LYS
+	351	LEU	LEU
+	352	GLN	GLN
+	353	ASN	ASN
+	354	GLU	GLU
+	355	THR	THR
+	356	LEU	LEU
+	357	HID	HID
+	358	LEU	LEU
+	359	ALA	ALA
+	360	VAL	VAL
+	361	ASN	ASN
+	362	TYR	TYR
+	363	ILE	ILE
+	364	ASP	ASP
+	365	ARG	ARG
+	366	PHE	PHE
+	367	LEU	LEU
+	368	SER	SER
+	369	SER	SER
+	370	MET	MET
+	371	SER	SER
+	372	VAL	VAL
+	373	LEU	LEU
+	374	ARG	ARG
+	375	GLY	GLY
+	376	LYS	LYS
+	377	LEU	LEU
+	378	GLN	GLN
+	379	LEU	LEU
+	380	VAL	VAL
+	381	GLY	GLY
+	382	THR	THR
+	383	ALA	ALA
+	384	ALA	ALA
+	385	MET	MET
+	386	LEU	LEU
+	387	LEU	LEU
+	388	ALA	ALA
+	389	SER	SER
+	390	LYS	LYS
+	391	PHE	PHE
+	392	GLU	GLU
+	393	GLU	GLU
+	394	ILE	ILE
+	395	TYR	TYR
+	396	PRO	PRO
+	397	PRO	PRO
+	398	GLU	GLU
+	399	VAL	VAL
+	400	ALA	ALA
+	401	GLU	GLU
+	402	PHE	PHE
+	403	VAL	VAL
+	404	TYR	TYR
+	405	ILE	ILE
+	406	THR	THR
+	407	ASP	ASP
+	408	ASP	ASP
+	409	THR	THR
+	410	TYR	TYR
+	411	THR	THR
+	412	LYS	LYS
+	413	LYS	LYS
+	414	GLN	GLN
+	415	VAL	VAL
+	416	LEU	LEU
+	417	ARG	ARG
+	418	MET	MET
+	419	GLU	GLU
+	420	HID	HID
+	421	LEU	LEU
+	422	VAL	VAL
+	423	LEU	LEU
+	424	LYS	LYS
+	425	VAL	VAL
+	426	LEU	LEU
+	427	THR	THR
+	428	PHE	PHE
+	429	ASP	ASP
+	430	LEU	LEU
+	431	ALA	ALA
+	432	ALA	ALA
+	433	PRO	PRO
+	434	THR	THR
+	435	VAL	VAL
+	436	ASN	ASN
+	437	GLN	GLN
+	438	PHE	PHE
+	439	LEU	LEU
+	440	THR	THR
+	441	GLN	GLN
+	442	TYR	TYR
+	443	PHE	PHE
+	444	LEU	LEU
+	445	HIE	HIE
+	446	GLN	GLN
+	447	GLN	GLN
+	448	PRO	PRO
+	449	ALA	ALA
+	450	ASN	ASN
+	451	CYS	CYS
+	452	LYS	LYS
+	453	VAL	VAL
+	454	GLU	GLU
+	455	SER	SER
+	456	LEU	LEU
+	457	ALA	ALA
+	458	MET	MET
+	459	PHE	PHE
+	460	LEU	LEU
+	461	GLY	GLY
+	462	GLU	GLU
+	463	LEU	LEU
+	464	SER	SER
+	465	LEU	LEU
+	466	ILE	ILE
+	467	ASP	ASP
+	468	ALA	ALA
+	469	ASP	ASP
+	470	PRO	PRO
+	471	TYR	TYR
+	472	LEU	LEU
+	473	LYS	LYS
+	474	TYR	TYR
+	475	LEU	LEU
+	476	PRO	PRO
+	477	SER	SER
+	478	VAL	VAL
+	479	ILE	ILE
+	480	ALA	ALA
+	481	GLY	GLY
+	482	ALA	ALA
+	483	ALA	ALA
+	484	PHE	PHE
+	485	HIE	HIE
+	486	LEU	LEU
+	487	ALA	ALA
+	488	LEU	LEU
+	489	TYR	TYR
+	490	THR	THR
+	491	VAL	VAL
+	492	THR	THR
+	493	GLY	GLY
+	494	GLN	GLN
+	495	SER	SER
+	496	TRP	TRP
+	497	PRO	PRO
+	498	GLU	GLU
+	499	SER	SER
+	500	LEU	LEU
+	501	ILE	ILE
+	502	ARG	ARG
+	503	LYS	LYS
+	504	THR	THR
+	505	GLY	GLY
+	506	TYR	TYR
+	507	THR	THR
+	508	LEU	LEU
+	509	GLU	GLU
+	510	SER	SER
+	511	LEU	LEU
+	512	LYS	LYS
+	513	PRO	PRO
+	514	CYS	CYS
+	515	LEU	LEU
+	516	MET	MET
+	517	ASP	ASP
+	518	LEU	LEU
+	519	HID	HID
+	520	GLN	GLN
+	521	THR	THR
+	522	TYR	TYR
+	523	LEU	LEU
+	524	LYS	LYS
+	525	ALA	ALA
+	526	PRO	PRO
+	527	GLN	GLN
+	528	HIE	HIE
+	529	ALA	ALA
+	530	GLN	GLN
+	531	GLN	GLN
+	532	SER	SER
+	533	ILE	ILE
+	534	ARG	ARG
+	535	GLU	GLU
+	536	LYS	LYS
+	537	TYR	TYR
+	538	LYS	LYS
+	539	ASN	ASN
+	540	SER	SER
+	541	LYS	LYS
+	542	TYR	TYR
+	543	HIE	HIE
+	544	GLY	GLY
+	545	VAL	VAL
+	546	SER	SER
+	547	LEU	LEU
+	548	LEU	LEU
+	549	ASN	ASN
+	550	PRO	PRO
+	551	PRO	PRO
+	552	GLU	GLU
+	553	THR	THR
+	554	LEU	LEU
+	555	ASN	ASN
+	556	LEU	CLEU
+  Added missing heavy atom: .R<L11 2>.A<O2 46>
+  Added missing heavy atom: .R<L11 2>.A<O3 47>
+  Added missing heavy atom: .R<L11 2>.A<N6 48>
+  Added missing heavy atom: .R<L11 2>.A<C19 50>
+  total atoms in file: 9093
+  Leap added 8 missing atoms according to residue templates:
+       4 Heavy
+       4 H / lone pairs
+  Solute vdw bounding box:              72.111 73.173 72.489
+  Total bounding box for atom centers:  104.111 105.173 104.489
+  Solvent unit box:                     18.860 18.867 18.860
+  Total vdw box size:                   107.106 108.467 107.615 angstroms.
+  Volume: 1250208.853 A^3 
+  Total mass 640932.086 amu,  Density 0.851 g/cc
+  Added 32022 residues.
+ 0.006001 0 1 0
+0 Na+ ion required to neutralize.
+Adding 0 counter ions to "x" using 1A grid
+
+/home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/bin/teLeap: Warning!
+addIons: 1st Ion & target unit have charges of the same sign:
+     unit charge = -0.006001; ion1 charge = -1;
+     can't neutralize.
+Adding 88 counter ions to "x" using 1A grid
+Grid extends from solute vdw + 5.47  to  11.47
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed Na+ in x at (4.21, 5.79, -33.46).
+(Replacing solvent molecule)
+Placed Na+ in x at (14.82, 12.82, -39.87).
+(Replacing solvent molecule)
+Placed Na+ in x at (18.64, -14.36, -12.17).
+(Replacing solvent molecule)
+Placed Na+ in x at (24.80, 4.29, -17.30).
+(Replacing solvent molecule)
+Placed Na+ in x at (1.40, -20.42, 32.13).
+(Replacing solvent molecule)
+Placed Na+ in x at (-30.78, -8.11, -19.91).
+(Replacing solvent molecule)
+Placed Na+ in x at (12.61, -0.68, -29.29).
+(Replacing solvent molecule)
+Placed Na+ in x at (-7.31, 11.47, 15.88).
+(Replacing solvent molecule)
+Placed Na+ in x at (-39.09, 10.66, -4.33).
+(Replacing solvent molecule)
+Placed Na+ in x at (6.00, 20.59, -37.25).
+(Replacing solvent molecule)
+Placed Na+ in x at (16.78, 21.77, 24.41).
+(Replacing solvent molecule)
+Placed Na+ in x at (7.05, -13.48, 36.72).
+(Replacing solvent molecule)
+Placed Na+ in x at (-6.75, 11.46, -35.88).
+(Replacing solvent molecule)
+Placed Na+ in x at (2.14, -16.08, -30.50).
+(Replacing solvent molecule)
+Placed Na+ in x at (35.27, 5.40, 28.67).
+(Replacing solvent molecule)
+Placed Na+ in x at (35.32, -18.42, -0.23).
+(Replacing solvent molecule)
+Placed Na+ in x at (-24.90, -11.62, -0.96).
+(Replacing solvent molecule)
+Placed Na+ in x at (23.87, 3.43, -26.83).
+(Replacing solvent molecule)
+Placed Na+ in x at (-40.83, 8.04, -14.85).
+(Replacing solvent molecule)
+Placed Na+ in x at (-2.15, -2.19, 28.97).
+(Replacing solvent molecule)
+Placed Na+ in x at (6.16, -29.03, 25.52).
+(Replacing solvent molecule)
+Placed Na+ in x at (22.43, 22.09, -34.83).
+(Replacing solvent molecule)
+Placed Na+ in x at (-31.59, -2.37, -27.61).
+(Replacing solvent molecule)
+Placed Na+ in x at (-13.69, 6.21, 12.40).
+(Replacing solvent molecule)
+Placed Na+ in x at (-4.34, -28.68, -1.74).
+(Replacing solvent molecule)
+Placed Na+ in x at (35.98, -9.90, 17.93).
+(Replacing solvent molecule)
+Placed Na+ in x at (-19.60, 16.16, -38.65).
+(Replacing solvent molecule)
+Placed Na+ in x at (22.27, 35.85, 22.04).
+(Replacing solvent molecule)
+Placed Na+ in x at (-31.59, -2.37, 10.11).
+(Replacing solvent molecule)
+Placed Na+ in x at (28.48, 1.88, 42.46).
+(Replacing solvent molecule)
+Placed Na+ in x at (21.51, -43.18, -7.92).
+(Replacing solvent molecule)
+Placed Na+ in x at (-6.91, 39.60, -22.98).
+(Replacing solvent molecule)
+Placed Na+ in x at (4.36, 2.63, 43.38).
+(Replacing solvent molecule)
+Placed Na+ in x at (26.67, 3.57, -2.96).
+(Replacing solvent molecule)
+Placed Na+ in x at (41.27, -13.00, 38.98).
+(Replacing solvent molecule)
+Placed Na+ in x at (-2.96, -42.70, 7.46).
+(Replacing solvent molecule)
+Placed Na+ in x at (-36.04, 18.46, 4.65).
+(Replacing solvent molecule)
+Placed Na+ in x at (-17.63, -7.69, -40.61).
+(Replacing solvent molecule)
+Placed Na+ in x at (-43.53, -8.07, -11.04).
+(Replacing solvent molecule)
+Placed Na+ in x at (25.85, 45.14, 10.44).
+(Replacing solvent molecule)
+Placed Na+ in x at (30.70, 20.90, -20.24).
+(Replacing solvent molecule)
+Placed Na+ in x at (-33.95, 23.24, -21.88).
+(Replacing solvent molecule)
+Placed Na+ in x at (21.07, -38.50, 27.48).
+(Replacing solvent molecule)
+Placed Na+ in x at (-3.25, 37.38, -40.64).
+(Replacing solvent molecule)
+Placed Na+ in x at (1.68, -38.14, -14.21).
+(Replacing solvent molecule)
+Placed Na+ in x at (-9.99, 22.88, 10.02).
+(Replacing solvent molecule)
+Placed Na+ in x at (18.28, 17.80, 40.66).
+(Replacing solvent molecule)
+Placed Na+ in x at (-24.67, -26.94, -11.04).
+(Replacing solvent molecule)
+Placed Na+ in x at (-5.98, -11.39, 43.00).
+(Replacing solvent molecule)
+Placed Na+ in x at (29.89, -25.46, -12.57).
+(Replacing solvent molecule)
+Placed Na+ in x at (1.68, -0.41, -33.07).
+(Replacing solvent molecule)
+Placed Na+ in x at (44.27, 31.27, 10.44).
+(Replacing solvent molecule)
+Placed Na+ in x at (-41.45, 4.26, -30.53).
+(Replacing solvent molecule)
+Placed Na+ in x at (26.89, -41.88, 9.34).
+(Replacing solvent molecule)
+Placed Na+ in x at (22.36, -18.17, 39.21).
+(Replacing solvent molecule)
+Placed Na+ in x at (15.41, 25.78, -44.15).
+(Replacing solvent molecule)
+Placed Na+ in x at (8.59, 28.81, 6.65).
+(Replacing solvent molecule)
+Placed Na+ in x at (-14.65, -13.08, 23.12).
+(Replacing solvent molecule)
+Placed Na+ in x at (44.48, 11.45, 15.09).
+(Replacing solvent molecule)
+Placed Na+ in x at (-20.94, 40.64, -13.31).
+(Replacing solvent molecule)
+Placed Na+ in x at (17.30, 3.09, -41.68).
+(Replacing solvent molecule)
+Placed Na+ in x at (-28.45, 7.93, -40.75).
+(Replacing solvent molecule)
+Placed Na+ in x at (42.52, -18.29, 27.68).
+(Replacing solvent molecule)
+Placed Na+ in x at (7.57, 44.96, -24.00).
+(Replacing solvent molecule)
+Placed Na+ in x at (14.52, -28.68, -20.60).
+(Replacing solvent molecule)
+Placed Na+ in x at (-9.94, -33.29, 12.78).
+(Replacing solvent molecule)
+Placed Na+ in x at (35.20, 29.88, 26.78).
+(Replacing solvent molecule)
+Placed Na+ in x at (-36.32, -1.55, -5.59).
+(Replacing solvent molecule)
+Placed Na+ in x at (4.70, 19.87, 31.79).
+(Replacing solvent molecule)
+Placed Na+ in x at (13.05, -45.81, 7.82).
+(Replacing solvent molecule)
+Placed Na+ in x at (24.52, -9.16, -9.65).
+(Replacing solvent molecule)
+Placed Na+ in x at (-3.45, 44.65, -6.43).
+(Replacing solvent molecule)
+Placed Na+ in x at (36.75, 35.80, -3.54).
+(Replacing solvent molecule)
+Placed Na+ in x at (-12.73, -21.24, -27.61).
+(Replacing solvent molecule)
+Placed Na+ in x at (-37.00, 24.35, -8.14).
+(Replacing solvent molecule)
+Placed Na+ in x at (6.12, -29.85, 36.42).
+(Replacing solvent molecule)
+Placed Na+ in x at (31.78, 15.23, 37.72).
+(Replacing solvent molecule)
+Placed Na+ in x at (-26.53, 11.19, 12.70).
+(Replacing solvent molecule)
+Placed Na+ in x at (42.75, 12.11, -11.12).
+(Replacing solvent molecule)
+Placed Na+ in x at (-16.39, 31.47, -31.26).
+(Replacing solvent molecule)
+Placed Na+ in x at (34.76, -23.83, 7.46).
+(Replacing solvent molecule)
+Placed Na+ in x at (-7.17, -0.98, -42.97).
+(Replacing solvent molecule)
+Placed Na+ in x at (27.45, 34.06, -20.87).
+(Replacing solvent molecule)
+Placed Na+ in x at (16.55, -6.18, 42.68).
+(Replacing solvent molecule)
+Placed Na+ in x at (-24.80, -22.50, 0.00).
+(Replacing solvent molecule)
+Placed Na+ in x at (44.27, -6.47, 29.30).
+(Replacing solvent molecule)
+Placed Na+ in x at (11.84, 39.77, 17.48).
+(Replacing solvent molecule)
+Placed Na+ in x at (25.80, 10.75, -38.77).
+
+Done adding ions.
+Adding 88 counter ions to "x" using 1A grid
+Grid extends from solute vdw + 12.32  to  18.32
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed Cl- in x at (16.78, 40.64, -13.31).
+(Replacing solvent molecule)
+Placed Cl- in x at (45.53, 22.43, -2.96).
+(Replacing solvent molecule)
+Placed Cl- in x at (-2.96, 32.77, 7.46).
+(Replacing solvent molecule)
+Placed Cl- in x at (1.23, -26.56, -21.75).
+(Replacing solvent molecule)
+Placed Cl- in x at (33.34, -26.05, 22.00).
+(Replacing solvent molecule)
+Placed Cl- in x at (-17.46, -20.42, 13.27).
+(Replacing solvent molecule)
+Placed Cl- in x at (36.16, -2.64, -12.74).
+(Replacing solvent molecule)
+Placed Cl- in x at (-22.86, 25.59, 0.71).
+(Replacing solvent molecule)
+Placed Cl- in x at (2.81, 10.27, -47.14).
+(Replacing solvent molecule)
+Placed Cl- in x at (-7.21, 9.48, 29.64).
+(Replacing solvent molecule)
+Placed Cl- in x at (42.52, 19.44, 27.68).
+(Replacing solvent molecule)
+Placed Cl- in x at (14.63, -15.69, -23.51).
+(Replacing solvent molecule)
+Placed Cl- in x at (11.84, 39.77, -1.38).
+(Replacing solvent molecule)
+Placed Cl- in x at (8.27, 35.78, -36.26).
+(Replacing solvent molecule)
+Placed Cl- in x at (4.50, -44.19, 18.06).
+(Replacing solvent molecule)
+Placed Cl- in x at (21.44, 27.90, 33.69).
+(Replacing solvent molecule)
+Placed Cl- in x at (-25.78, -15.51, -31.96).
+(Replacing solvent molecule)
+Placed Cl- in x at (40.13, -3.37, 7.14).
+(Replacing solvent molecule)
+Placed Cl- in x at (-11.29, 26.09, -42.86).
+(Replacing solvent molecule)
+Placed Cl- in x at (33.79, -35.10, -1.55).
+(Replacing solvent molecule)
+Placed Cl- in x at (-36.55, -17.23, -8.48).
+(Replacing solvent molecule)
+Placed Cl- in x at (35.20, 11.01, -29.80).
+(Replacing solvent molecule)
+Placed Cl- in x at (2.21, 28.80, 23.78).
+(Replacing solvent molecule)
+Placed Cl- in x at (41.22, 0.69, 39.21).
+(Replacing solvent molecule)
+Placed Cl- in x at (-11.05, -25.87, -14.31).
+(Replacing solvent molecule)
+Placed Cl- in x at (10.40, -22.72, 48.57).
+(Replacing solvent molecule)
+Placed Cl- in x at (-26.03, 36.75, -24.11).
+(Replacing solvent molecule)
+Placed Cl- in x at (9.23, -8.36, -41.76).
+(Replacing solvent molecule)
+Placed Cl- in x at (36.12, 41.59, 17.47).
+(Replacing solvent molecule)
+Placed Cl- in x at (-22.02, 0.37, 21.20).
+(Replacing solvent molecule)
+Placed Cl- in x at (15.41, 6.91, 50.15).
+(Replacing solvent molecule)
+Placed Cl- in x at (6.76, -45.15, -3.77).
+(Replacing solvent molecule)
+Placed Cl- in x at (-34.22, 19.56, -36.23).
+(Replacing solvent molecule)
+Placed Cl- in x at (39.11, 30.59, -16.83).
+(Replacing solvent molecule)
+Placed Cl- in x at (-8.74, -29.20, 27.31).
+(Replacing solvent molecule)
+Placed Cl- in x at (-41.45, 4.26, 7.19).
+(Replacing solvent molecule)
+Placed Cl- in x at (-16.59, 38.51, -1.47).
+(Replacing solvent molecule)
+Placed Cl- in x at (40.77, -17.03, -22.76).
+(Replacing solvent molecule)
+Placed Cl- in x at (33.68, -24.91, 35.57).
+(Replacing solvent molecule)
+Placed Cl- in x at (-16.28, 7.64, -48.86).
+(Replacing solvent molecule)
+Placed Cl- in x at (-17.94, -32.89, 0.16).
+(Replacing solvent molecule)
+Placed Cl- in x at (22.27, 35.85, -34.54).
+(Replacing solvent molecule)
+Placed Cl- in x at (-4.23, -15.69, -42.37).
+(Replacing solvent molecule)
+Placed Cl- in x at (46.31, -3.67, 16.85).
+(Replacing solvent molecule)
+Placed Cl- in x at (-45.38, -7.68, -25.02).
+(Replacing solvent molecule)
+Placed Cl- in x at (-3.03, 50.43, -18.28).
+(Replacing solvent molecule)
+Placed Cl- in x at (4.04, -9.58, 50.08).
+(Replacing solvent molecule)
+Placed Cl- in x at (-46.96, 20.75, -14.12).
+(Replacing solvent molecule)
+Placed Cl- in x at (-28.06, 25.93, 10.98).
+(Replacing solvent molecule)
+Placed Cl- in x at (30.51, -9.39, 48.50).
+(Replacing solvent molecule)
+Placed Cl- in x at (26.43, 44.96, -5.14).
+(Replacing solvent molecule)
+Placed Cl- in x at (47.75, 9.68, 1.87).
+(Replacing solvent molecule)
+Placed Cl- in x at (21.27, 15.50, -49.44).
+(Replacing solvent molecule)
+Placed Cl- in x at (22.41, -50.73, 20.12).
+(Replacing solvent molecule)
+Placed Cl- in x at (26.37, -36.70, -20.55).
+(Replacing solvent molecule)
+Placed Cl- in x at (-32.71, -15.44, 10.89).
+(Replacing solvent molecule)
+Placed Cl- in x at (17.76, -32.24, 40.41).
+(Replacing solvent molecule)
+Placed Cl- in x at (-12.10, 44.55, -33.46).
+(Replacing solvent molecule)
+Placed Cl- in x at (20.25, 49.46, 20.89).
+(Replacing solvent molecule)
+Placed Cl- in x at (-36.77, -4.32, -42.37).
+(Replacing solvent molecule)
+Placed Cl- in x at (-15.11, -6.70, 34.40).
+(No solvent overlap)
+Placed Cl- in x at (46.15, -19.13, 14.53).
+(Replacing solvent molecule)
+Placed Cl- in x at (-49.79, 2.71, -5.44).
+(Replacing solvent molecule)
+Placed Cl- in x at (30.01, -4.80, -35.81).
+(Replacing solvent molecule)
+Placed Cl- in x at (4.37, 14.69, 46.55).
+(Replacing solvent molecule)
+Placed Cl- in x at (-3.11, -48.56, 22.87).
+(Replacing solvent molecule)
+Placed Cl- in x at (33.52, 28.64, -31.79).
+(Replacing solvent molecule)
+Placed Cl- in x at (-17.79, 17.30, 19.56).
+(Replacing solvent molecule)
+Placed Cl- in x at (42.65, 43.18, 6.95).
+(Replacing solvent molecule)
+Placed Cl- in x at (22.41, -50.73, 1.26).
+(No solvent overlap)
+Placed Cl- in x at (54.15, -15.13, 34.53).
+(Replacing solvent molecule)
+Placed Cl- in x at (-34.31, 35.85, -15.68).
+(Replacing solvent molecule)
+Placed Cl- in x at (26.52, 13.90, 51.84).
+(Replacing solvent molecule)
+Placed Cl- in x at (-25.55, -22.51, -23.66).
+(No solvent overlap)
+Placed Cl- in x at (53.15, 21.87, 14.53).
+(Replacing solvent molecule)
+Placed Cl- in x at (37.14, 9.21, -45.66).
+(Replacing solvent molecule)
+Placed Cl- in x at (12.92, -41.37, -18.86).
+(Replacing solvent molecule)
+Placed Cl- in x at (2.81, 29.13, -47.14).
+(Replacing solvent molecule)
+Placed Cl- in x at (-2.31, -25.05, 42.68).
+(Replacing solvent molecule)
+Placed Cl- in x at (10.50, 46.64, 4.49).
+(Replacing solvent molecule)
+Placed Cl- in x at (-8.67, -42.97, -5.58).
+(Replacing solvent molecule)
+Placed Cl- in x at (35.87, 27.41, 39.33).
+(Replacing solvent molecule)
+Placed Cl- in x at (-47.58, 22.19, 1.53).
+(Replacing solvent molecule)
+Placed Cl- in x at (-37.00, 24.35, -45.86).
+(Replacing solvent molecule)
+Placed Cl- in x at (-16.21, 51.16, -7.92).
+(Replacing solvent molecule)
+Placed Cl- in x at (10.40, 33.88, 29.71).
+(Replacing solvent molecule)
+Placed Cl- in x at (38.89, -36.09, 10.38).
+(Replacing solvent molecule)
+Placed Cl- in x at (-13.34, -8.64, -52.03).
+
+Done adding ions.
+Checking Unit.
+
+/home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/bin/teLeap: Note.
+Ignoring the warnings from Unit Checking.
+
+Building topology.
+Building atom parameters.
+Building bond parameters.
+Building angle parameters.
+Building proper torsion parameters.
+Building improper torsion parameters.
+ total 1787 improper torsions applied
+Building H-Bond parameters.
+Incorporating Non-Bonded adjustments.
+Not Marking per-residue atom chain types.
+Marking per-residue atom chain types.
+  (Residues lacking connect0/connect1 - 
+   these don't have chain types marked:
+
+	res	total affected
+
+	CLEU	2
+	CTYR	1
+	NHIE	1
+	NSER	1
+	NVAL	1
+  )
+ (no restraints)
+	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 1; Notes = 1.

@@ -1,0 +1,25 @@
+
+CPPTRAJ: Trajectory Analysis. V4.25.6 (AmberTools V20.00)
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 06/03/21 16:00:13
+| Available memory: 810.504 MB
+
+INPUT: Reading input from 'STDIN'
+  [parm 26~28-2_com.parm7]
+	Reading '26~28-2_com.parm7' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+  [set Nions = residues inmask :Cl-]
+	Variable 'Nions' set to '88'
+  [show Nions]
+	Nions = '88'
+  [quit]
+TIME: Total execution time: 0.1210 seconds.
+--------------------------------------------------------------------------------
+To cite CPPTRAJ use:
+Daniel R. Roe and Thomas E. Cheatham, III, "PTRAJ and CPPTRAJ: Software for
+  Processing and Analysis of Molecular Dynamics Trajectory Data". J. Chem.
+  Theory Comput., 2013, 9 (7), pp 3084-3095.
+

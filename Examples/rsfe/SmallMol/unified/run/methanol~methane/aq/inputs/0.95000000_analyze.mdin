@@ -1,0 +1,82 @@
+&cntrl
+imin            = 6
+nstlim          = 5000
+numexchg        = 1000
+dt              = 0.001
+irest           = 1
+ntx             = 5
+ntxo            = 1
+ntc             = 2
+ntf             = 1
+ntwx            = 0
+ntwr            = 0
+ntpr            = 1
+cut             = 10
+iwrap           = 0
+
+ntb             = 2
+temp0           = 298.
+ntt             = 3
+gamma_ln        = 2.
+tautp           = 1
+ntp             = 1
+barostat        = 2
+pres0           = 1.01325
+taup            = 5.0
+
+ifsc            = 1
+icfe            = 1
+
+ifmbar          = 1
+bar_intervall   = 1
+mbar_states     = 21
+mbar_lambda(1)     = 0.00000000
+mbar_lambda(2)     = 0.05000000
+mbar_lambda(3)     = 0.10000000
+mbar_lambda(4)     = 0.15000000
+mbar_lambda(5)     = 0.20000000
+mbar_lambda(6)     = 0.25000000
+mbar_lambda(7)     = 0.30000000
+mbar_lambda(8)     = 0.35000000
+mbar_lambda(9)     = 0.40000000
+mbar_lambda(10)     = 0.45000000
+mbar_lambda(11)     = 0.50000000
+mbar_lambda(12)     = 0.55000000
+mbar_lambda(13)     = 0.60000000
+mbar_lambda(14)     = 0.65000000
+mbar_lambda(15)     = 0.70000000
+mbar_lambda(16)     = 0.75000000
+mbar_lambda(17)     = 0.80000000
+mbar_lambda(18)     = 0.85000000
+mbar_lambda(19)     = 0.90000000
+mbar_lambda(20)     = 0.95000000
+mbar_lambda(21)     = 1.00000000
+
+noshakemask     = '@1-11'
+
+clambda         = 0.95000000
+
+timask1         = '@1-6'
+timask2         = '@7-11'
+crgmask         = ""
+scmask1         = '@6'
+scmask2         = ""
+scalpha         = 0.5
+scbeta          = 1.0
+
+gti_cut         = 1
+gti_output      = 1
+gti_add_sc      = 5
+gti_scale_beta  = 1
+gti_cut_sc_on   = 8
+gti_cut_sc_off  = 10
+gti_lam_sch     = 1
+gti_ele_sc      = 1
+gti_vdw_sc      = 1
+gti_cut_sc      = 2
+gti_ele_exp     = 2
+gti_vdw_exp     = 2
+/
+ &ewald
+ /
+

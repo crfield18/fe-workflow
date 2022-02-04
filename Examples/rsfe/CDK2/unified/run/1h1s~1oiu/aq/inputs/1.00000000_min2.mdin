@@ -1,0 +1,23 @@
+Minimization of the entire molecular system
+&cntrl
+imin            = 1
+maxcyc          = 5000
+ntmin           = 2
+ntx             = 1
+ntxo            = 1
+ntpr            = 5
+
+
+ifsc            = 1
+icfe            = 1
+
+noshakemask     = '@1-100'
+
+clambda         = 1.00000000
+timask1         = '@1-50'
+timask2         = '@51-100'
+scmask1         = '@46-50'
+scmask2         = '@96-100'
+
+gti_syn_mass    = 0
+/

@@ -1,0 +1,11 @@
+-O -p unisc.parm7 -c t2/0.00000000_preTI.rst7 -i inputs/0.00000000_ti.mdin -o t2/0.00000000_ti.mdout -r t2/0.00000000_ti.rst7 -x t2/0.00000000_ti.nc -ref t2/0.00000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.10000000_preTI.rst7 -i inputs/0.10000000_ti.mdin -o t2/0.10000000_ti.mdout -r t2/0.10000000_ti.rst7 -x t2/0.10000000_ti.nc -ref t2/0.10000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.20000000_preTI.rst7 -i inputs/0.20000000_ti.mdin -o t2/0.20000000_ti.mdout -r t2/0.20000000_ti.rst7 -x t2/0.20000000_ti.nc -ref t2/0.20000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.30000000_preTI.rst7 -i inputs/0.30000000_ti.mdin -o t2/0.30000000_ti.mdout -r t2/0.30000000_ti.rst7 -x t2/0.30000000_ti.nc -ref t2/0.30000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.40000000_preTI.rst7 -i inputs/0.40000000_ti.mdin -o t2/0.40000000_ti.mdout -r t2/0.40000000_ti.rst7 -x t2/0.40000000_ti.nc -ref t2/0.40000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.50000000_preTI.rst7 -i inputs/0.50000000_ti.mdin -o t2/0.50000000_ti.mdout -r t2/0.50000000_ti.rst7 -x t2/0.50000000_ti.nc -ref t2/0.50000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.60000000_preTI.rst7 -i inputs/0.60000000_ti.mdin -o t2/0.60000000_ti.mdout -r t2/0.60000000_ti.rst7 -x t2/0.60000000_ti.nc -ref t2/0.60000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.70000000_preTI.rst7 -i inputs/0.70000000_ti.mdin -o t2/0.70000000_ti.mdout -r t2/0.70000000_ti.rst7 -x t2/0.70000000_ti.nc -ref t2/0.70000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.80000000_preTI.rst7 -i inputs/0.80000000_ti.mdin -o t2/0.80000000_ti.mdout -r t2/0.80000000_ti.rst7 -x t2/0.80000000_ti.nc -ref t2/0.80000000_preTI.rst7
+-O -p unisc.parm7 -c t2/0.90000000_preTI.rst7 -i inputs/0.90000000_ti.mdin -o t2/0.90000000_ti.mdout -r t2/0.90000000_ti.rst7 -x t2/0.90000000_ti.nc -ref t2/0.90000000_preTI.rst7
+-O -p unisc.parm7 -c t2/1.00000000_preTI.rst7 -i inputs/1.00000000_ti.mdin -o t2/1.00000000_ti.mdout -r t2/1.00000000_ti.rst7 -x t2/1.00000000_ti.nc -ref t2/1.00000000_preTI.rst7

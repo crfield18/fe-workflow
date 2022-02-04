@@ -1,0 +1,530 @@
+source leaprc.protein.ff14SB
+loadamberparams frcmod.ff14SB
+source leaprc.gaff2
+source leaprc.water.tip4pew
+loadamberparams frcmod.tip4pew
+loadAmberParams frcmod.ionsjc_tip4pew
+loadoff tip4pewbox.off
+loadamberparams 2Z_0.frcmod
+loadoff 2Z_0.lib
+loadamberparams 3FW_0.frcmod
+loadoff 3FW_0.lib
+x = loadPdbUsingSeq merged2_2Z~3FW.pdb { L04 L08 NGLU ARG PRO THR PHE TYR ARG GLN
+GLU LEU ASN LYS THR ILE TRP GLU VAL PRO
+GLU ARG TYR GLN ASN LEU SER PRO VAL GLY
+SER GLY ALA TYR GLY SER VAL CYS ALA ALA
+PHE ASP THR LYS THR GLY LEU ARG VAL ALA
+VAL LYS LYS LEU SER ARG PRO PHE GLN SER
+ILE ILE HIE ALA LYS ARG THR TYR ARG GLU
+LEU ARG LEU LEU LYS HIE MET LYS HIE GLU
+ASN VAL ILE GLY LEU LEU ASP VAL PHE THR
+PRO ALA ARG SER LEU GLU GLU PHE ASN ASP
+VAL TYR LEU VAL THR HID LEU MET GLY ALA
+ASP LEU ASN ASN ILE VAL LYS CYS GLN LYS
+LEU THR ASP ASP HIE VAL GLN PHE LEU ILE
+TYR GLN ILE LEU ARG GLY LEU LYS TYR ILE
+HIP SER ALA ASP ILE ILE HIE ARG ASP LEU
+LYS PRO SER ASN LEU ALA VAL ASN GLU ASP
+CYS GLU LEU LYS ILE LEU ASP PHE GLY LEU
+HIE THR ASP ASP GLU MET THR GLY TYR VAL
+ALA THR ARG TRP TYR ARG ALA PRO GLU ILE
+MET LEU ASN TRP MET HID TYR ASN GLN THR
+VAL ASP ILE TRP SER VAL GLY CYS ILE MET
+ALA GLU LEU LEU THR GLY ARG THR LEU PHE
+PRO GLY THR ASP HIE ILE ASP GLN LEU LYS
+LEU ILE LEU ARG LEU VAL GLY THR PRO GLY
+ALA GLU LEU LEU LYS LYS ILE SER SER GLU
+SER ALA ARG ASN TYR ILE GLN SER LEU THR
+GLN MET PRO LYS MET ASN PHE ALA ASN VAL
+PHE ILE GLY ALA ASN PRO LEU ALA VAL ASP
+LEU LEU GLU LYS MET LEU VAL LEU ASP SER
+ASP LYS ARG ILE THR ALA ALA GLN ALA LEU
+ALA HIE ALA TYR PHE ALA GLN TYR HIP ASP
+PRO ASP ASP GLU PRO VAL ALA ASP PRO TYR
+ASP GLN SER PHE GLU SER ARG ASP LEU LEU
+ILE ASP GLU TRP LYS SER LEU THR TYR ASP
+GLU VAL ILE SER PHE VAL PRO PRO CPRO }
+solvateBox x TIP4PEWBOX 18
+addions x Na+ 74
+addions x Cl- 67
+
+savepdb x tmp.pdb
+m = loadpdb tmp.pdb
+setbox m centers
+remove m m.26672
+remove m m.26671
+remove m m.26670
+remove m m.26669
+remove m m.26668
+remove m m.26667
+remove m m.26666
+remove m m.26665
+remove m m.26664
+remove m m.26663
+remove m m.26662
+remove m m.26661
+remove m m.26660
+remove m m.26659
+remove m m.26658
+remove m m.26657
+remove m m.26656
+remove m m.26655
+remove m m.26654
+remove m m.26653
+remove m m.26652
+remove m m.26651
+remove m m.26650
+remove m m.26649
+remove m m.26648
+remove m m.26647
+remove m m.26646
+remove m m.26645
+remove m m.26644
+remove m m.26643
+remove m m.26642
+remove m m.26641
+remove m m.26640
+remove m m.26639
+remove m m.26638
+remove m m.26637
+remove m m.26636
+remove m m.26635
+remove m m.26634
+remove m m.26633
+remove m m.26632
+remove m m.26631
+remove m m.26630
+remove m m.26629
+remove m m.26628
+remove m m.26627
+remove m m.26626
+remove m m.26625
+remove m m.26624
+remove m m.26623
+remove m m.26622
+remove m m.26621
+remove m m.26620
+remove m m.26619
+remove m m.26618
+remove m m.26617
+remove m m.26616
+remove m m.26615
+remove m m.26614
+remove m m.26613
+remove m m.26612
+remove m m.26611
+remove m m.26610
+remove m m.26609
+remove m m.26608
+remove m m.26607
+remove m m.26606
+remove m m.26605
+remove m m.26604
+remove m m.26603
+remove m m.26602
+remove m m.26601
+remove m m.26600
+remove m m.26599
+remove m m.26598
+remove m m.26597
+remove m m.26596
+remove m m.26595
+remove m m.26594
+remove m m.26593
+remove m m.26592
+remove m m.26591
+remove m m.26590
+remove m m.26589
+remove m m.26588
+remove m m.26587
+remove m m.26586
+remove m m.26585
+remove m m.26584
+remove m m.26583
+remove m m.26582
+remove m m.26581
+remove m m.26580
+remove m m.26579
+remove m m.26578
+remove m m.26577
+remove m m.26576
+remove m m.26575
+remove m m.26574
+remove m m.26573
+remove m m.26572
+remove m m.26571
+remove m m.26570
+remove m m.26569
+remove m m.26568
+remove m m.26567
+remove m m.26566
+remove m m.26565
+remove m m.26564
+remove m m.26563
+remove m m.26562
+remove m m.26561
+remove m m.26560
+remove m m.26559
+remove m m.26558
+remove m m.26557
+remove m m.26556
+remove m m.26555
+remove m m.26554
+remove m m.26553
+remove m m.26552
+remove m m.26551
+remove m m.26550
+remove m m.26549
+remove m m.26548
+remove m m.26547
+remove m m.26546
+remove m m.26545
+remove m m.26544
+remove m m.26543
+remove m m.26542
+remove m m.26541
+remove m m.26540
+remove m m.26539
+remove m m.26538
+remove m m.26537
+remove m m.26536
+remove m m.26535
+remove m m.26534
+remove m m.26533
+remove m m.26532
+remove m m.26531
+remove m m.26530
+remove m m.26529
+remove m m.26528
+remove m m.26527
+remove m m.26526
+remove m m.26525
+remove m m.26524
+remove m m.26523
+remove m m.26522
+remove m m.26521
+remove m m.26520
+remove m m.26519
+remove m m.26518
+remove m m.26517
+remove m m.26516
+remove m m.26515
+remove m m.26514
+remove m m.26513
+remove m m.26512
+remove m m.26511
+remove m m.26510
+remove m m.26509
+remove m m.26508
+remove m m.26507
+remove m m.26506
+remove m m.26505
+remove m m.26504
+remove m m.26503
+remove m m.26502
+remove m m.26501
+remove m m.26500
+remove m m.26499
+remove m m.26498
+remove m m.26497
+remove m m.26496
+remove m m.26495
+remove m m.26494
+remove m m.26493
+remove m m.26492
+remove m m.26491
+remove m m.26490
+remove m m.26489
+remove m m.26488
+remove m m.26487
+remove m m.26486
+remove m m.26485
+remove m m.26484
+remove m m.26483
+remove m m.26482
+remove m m.26481
+remove m m.26480
+remove m m.26479
+remove m m.26478
+remove m m.26477
+remove m m.26476
+remove m m.26475
+remove m m.26474
+remove m m.26473
+remove m m.26472
+remove m m.26471
+remove m m.26470
+remove m m.26469
+remove m m.26468
+remove m m.26467
+remove m m.26466
+remove m m.26465
+remove m m.26464
+remove m m.26463
+remove m m.26462
+remove m m.26461
+remove m m.26460
+remove m m.26459
+remove m m.26458
+remove m m.26457
+remove m m.26456
+remove m m.26455
+remove m m.26454
+remove m m.26453
+remove m m.26452
+remove m m.26451
+remove m m.26450
+remove m m.26449
+remove m m.26448
+remove m m.26447
+remove m m.26446
+remove m m.26445
+remove m m.26444
+remove m m.26443
+remove m m.26442
+remove m m.26441
+remove m m.26440
+remove m m.26439
+remove m m.26438
+remove m m.26437
+remove m m.26436
+remove m m.26435
+remove m m.26434
+remove m m.26433
+remove m m.26432
+remove m m.26431
+remove m m.26430
+remove m m.26429
+remove m m.26428
+remove m m.26427
+remove m m.26426
+remove m m.26425
+remove m m.26424
+remove m m.26423
+remove m m.26422
+remove m m.26421
+remove m m.26420
+remove m m.26419
+remove m m.26418
+remove m m.26417
+remove m m.26416
+remove m m.26415
+remove m m.26414
+remove m m.26413
+remove m m.26412
+remove m m.26411
+remove m m.26410
+remove m m.26409
+remove m m.26408
+remove m m.26407
+remove m m.26406
+remove m m.26405
+remove m m.26404
+remove m m.26403
+remove m m.26402
+remove m m.26401
+remove m m.26400
+remove m m.26399
+remove m m.26398
+remove m m.26397
+remove m m.26396
+remove m m.26395
+remove m m.26394
+remove m m.26393
+remove m m.26392
+remove m m.26391
+remove m m.26390
+remove m m.26389
+remove m m.26388
+remove m m.26387
+remove m m.26386
+remove m m.26385
+remove m m.26384
+remove m m.26383
+remove m m.26382
+remove m m.26381
+remove m m.26380
+remove m m.26379
+remove m m.26378
+remove m m.26377
+remove m m.26376
+remove m m.26375
+remove m m.26374
+remove m m.26373
+remove m m.26372
+remove m m.26371
+remove m m.26370
+remove m m.26369
+remove m m.26368
+remove m m.26367
+remove m m.26366
+remove m m.26365
+remove m m.26364
+remove m m.26363
+remove m m.26362
+remove m m.26361
+remove m m.26360
+remove m m.26359
+remove m m.26358
+remove m m.26357
+remove m m.26356
+remove m m.26355
+remove m m.26354
+remove m m.26353
+remove m m.26352
+remove m m.26351
+remove m m.26350
+remove m m.26349
+remove m m.26348
+remove m m.26347
+remove m m.26346
+remove m m.26345
+remove m m.26344
+remove m m.26343
+remove m m.26342
+remove m m.26341
+remove m m.26340
+remove m m.26339
+remove m m.26338
+remove m m.26337
+remove m m.26336
+remove m m.26335
+remove m m.26334
+remove m m.26333
+remove m m.26332
+remove m m.26331
+remove m m.26330
+remove m m.26329
+remove m m.26328
+remove m m.26327
+remove m m.26326
+remove m m.26325
+remove m m.26324
+remove m m.26323
+remove m m.26322
+remove m m.26321
+remove m m.26320
+remove m m.26319
+remove m m.26318
+remove m m.26317
+remove m m.26316
+remove m m.26315
+remove m m.26314
+remove m m.26313
+remove m m.26312
+remove m m.26311
+remove m m.26310
+remove m m.26309
+remove m m.26308
+remove m m.26307
+remove m m.26306
+remove m m.26305
+remove m m.26304
+remove m m.26303
+remove m m.26302
+remove m m.26301
+remove m m.26300
+remove m m.26299
+remove m m.26298
+remove m m.26297
+remove m m.26296
+remove m m.26295
+remove m m.26294
+remove m m.26293
+remove m m.26292
+remove m m.26291
+remove m m.26290
+remove m m.26289
+remove m m.26288
+remove m m.26287
+remove m m.26286
+remove m m.26285
+remove m m.26284
+remove m m.26283
+remove m m.26282
+remove m m.26281
+remove m m.26280
+remove m m.26279
+remove m m.26278
+remove m m.26277
+remove m m.26276
+remove m m.26275
+remove m m.26274
+remove m m.26273
+remove m m.26272
+remove m m.26271
+remove m m.26270
+remove m m.26269
+remove m m.26268
+remove m m.26267
+remove m m.26266
+remove m m.26265
+remove m m.26264
+remove m m.26263
+remove m m.26262
+remove m m.26261
+remove m m.26260
+remove m m.26259
+remove m m.26258
+remove m m.26257
+remove m m.26256
+remove m m.26255
+remove m m.26254
+remove m m.26253
+remove m m.26252
+remove m m.26251
+remove m m.26250
+remove m m.26249
+remove m m.26248
+remove m m.26247
+remove m m.26246
+remove m m.26245
+remove m m.26244
+remove m m.26243
+remove m m.26242
+remove m m.26241
+remove m m.26240
+remove m m.26239
+remove m m.26238
+remove m m.26237
+remove m m.26236
+remove m m.26235
+remove m m.26234
+remove m m.26233
+remove m m.26232
+remove m m.26231
+remove m m.26230
+remove m m.26229
+remove m m.26228
+remove m m.26227
+remove m m.26226
+remove m m.26225
+remove m m.26224
+remove m m.26223
+remove m m.26222
+remove m m.26221
+remove m m.26220
+remove m m.26219
+remove m m.26218
+remove m m.26217
+remove m m.26216
+remove m m.26215
+remove m m.26214
+remove m m.26213
+remove m m.26212
+remove m m.26211
+remove m m.26210
+remove m m.26209
+remove m m.26208
+remove m m.26207
+remove m m.26206
+remove m m.26205
+remove m m.26204
+remove m m.26203
+remove m m.26202
+remove m m.26201
+remove m m.26200
+remove m m.26199
+remove m m.26198
+saveamberparm m out.parm7 out.rst7
+quit

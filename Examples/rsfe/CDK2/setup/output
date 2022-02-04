@@ -1,0 +1,172 @@
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/prep to search path.
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib to search path.
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm to search path.
+-I: Adding /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd to search path.
+-s: Ignoring startup file: leaprc
+-f: Source tleap.in.
+
+Welcome to LEaP!
+Sourcing: ./tleap.in
+----- Source: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.protein.ff14SB
+----- Source of /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.protein.ff14SB done
+Log file: ./leap.log
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/parm10.dat
+Reading title:
+PARM99 + frcmod.ff99SB + frcmod.parmbsc0 + OL3 for RNA
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ff14SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff14SB protein backbone and sidechain parameters
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/amino12.lib
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/aminoct12.lib
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/aminont12.lib
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ff14SB
+Reading force field modification type file (frcmod)
+Reading title:
+ff14SB protein backbone and sidechain parameters
+----- Source: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.gaff2
+----- Source of /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.gaff2 done
+Log file: ./leap.log
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/gaff2.dat
+Reading title:
+AMBER General Force Field for organic molecules (Version 2.11, May 2016)
+----- Source: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.water.tip4pew
+----- Source of /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/cmd/leaprc.water.tip4pew done
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/atomic_ions.lib
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/solvents.lib
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+This is the additional/replacement parameter set for TIP4PEW
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ionsjc_tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+Monovalent ion parameters for Ewald and TIP4P/EW water from Joung & Cheatham JPCB (2008)
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ions234lm_126_tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+Li/Merz ion parameters of divalent to tetravalent ions for TIP4P/EW water model (12-6 normal usage set)
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+This is the additional/replacement parameter set for TIP4PEW
+Loading parameters: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/parm/frcmod.ionsjc_tip4pew
+Reading force field modification type file (frcmod)
+Reading title:
+Monovalent ion parameters for Ewald and TIP4P/EW water from Joung & Cheatham JPCB (2008)
+Loading library: /home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/dat/leap/lib/tip4pewbox.off
+Loading parameters: ./1h1q_0.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+modified parameters
+Loading library: ./1h1q_0.lib
+Loading parameters: ./1h1r_0.frcmod
+Reading force field modification type file (frcmod)
+Reading title:
+modified parameters
+Loading library: ./1h1r_0.lib
+Loading PDB file: ./merged1_1h1q~1h1r.pdb using sequence 
+  matching pdb residues -> sequence template
+	res	pdb	template
+	1	L00	L00
+	2	L01	L01
+  total atoms in file: 90
+  Solute vdw bounding box:              12.334 11.630 13.009
+  Total bounding box for atom centers:  52.334 51.630 53.009
+  Solvent unit box:                     18.860 18.867 18.860
+  Total vdw box size:                   55.356 54.416 56.018 angstroms.
+  Volume: 168739.074 A^3 
+  Total mass 79645.366 amu,  Density 0.784 g/cc
+  Added 4383 residues.
+
+/home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/bin/teLeap: Warning!
+addIons: 1st Ion & target unit have charges of the same sign:
+     unit charge = 0.001; ion1 charge = 1;
+     can't neutralize.
+ 0.001000 0 1 0
+0 Cl- ion required to neutralize.
+Adding 0 counter ions to "x" using 1A grid
+Adding 12 counter ions to "x" using 1A grid
+Grid extends from solute vdw + 2.88  to  8.83
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed Na+ in x at (-1.70, 2.17, -4.69).
+(Replacing solvent molecule)
+Placed Na+ in x at (-0.25, -1.77, 6.59).
+(Replacing solvent molecule)
+Placed Na+ in x at (-2.93, -11.66, -10.19).
+(Replacing solvent molecule)
+Placed Na+ in x at (10.23, 4.18, 8.53).
+(Replacing solvent molecule)
+Placed Na+ in x at (-10.89, 9.02, 0.65).
+(Replacing solvent molecule)
+Placed Na+ in x at (8.77, -10.76, -6.30).
+(Replacing solvent molecule)
+Placed Na+ in x at (-9.73, -5.19, -2.55).
+(Replacing solvent molecule)
+Placed Na+ in x at (9.36, -7.98, 9.96).
+(Replacing solvent molecule)
+Placed Na+ in x at (-1.70, 12.74, 6.66).
+(Replacing solvent molecule)
+Placed Na+ in x at (5.01, -0.64, -10.98).
+(Replacing solvent molecule)
+Placed Na+ in x at (-8.63, 4.18, 8.53).
+(Replacing solvent molecule)
+Placed Na+ in x at (12.16, 0.57, 0.19).
+
+Done adding ions.
+Adding 12 counter ions to "x" using 1A grid
+Grid extends from solute vdw + 6.49  to  12.43
+Resolution:      1.00 Angstrom.
+Solvent present: replacing closest with ion
+	 when steric overlaps occur
+Calculating grid charges
+(Replacing solvent molecule)
+Placed Cl- in x at (7.04, 2.99, -4.28).
+(Replacing solvent molecule)
+Placed Cl- in x at (-7.92, -3.16, 5.92).
+(Replacing solvent molecule)
+Placed Cl- in x at (10.51, -8.05, 1.14).
+(Replacing solvent molecule)
+Placed Cl- in x at (-0.91, 4.22, 10.56).
+(Replacing solvent molecule)
+Placed Cl- in x at (-8.13, 2.03, -7.21).
+(Replacing solvent molecule)
+Placed Cl- in x at (2.44, -7.82, -13.36).
+(Replacing solvent molecule)
+Placed Cl- in x at (-9.50, 10.89, 9.96).
+(Replacing solvent molecule)
+Placed Cl- in x at (15.47, -1.81, 8.32).
+(Replacing solvent molecule)
+Placed Cl- in x at (-3.15, 12.50, -0.68).
+(Replacing solvent molecule)
+Placed Cl- in x at (-7.10, -13.07, -2.10).
+(Replacing solvent molecule)
+Placed Cl- in x at (6.24, -1.65, 13.63).
+(Replacing solvent molecule)
+Placed Cl- in x at (-19.38, -6.37, -7.71).
+
+Done adding ions.
+Checking Unit.
+
+/home/abir/devel/git/Programs/Amber18_lbsr_dev_10272020/bin/teLeap: Note.
+Ignoring the warnings from Unit Checking.
+
+Building topology.
+Building atom parameters.
+Building bond parameters.
+Building angle parameters.
+Building proper torsion parameters.
+Building improper torsion parameters.
+ total 26 improper torsions applied
+Building H-Bond parameters.
+Incorporating Non-Bonded adjustments.
+Not Marking per-residue atom chain types.
+Marking per-residue atom chain types.
+ (no restraints)
+	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 1; Notes = 1.
