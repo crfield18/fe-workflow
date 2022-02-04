@@ -2,7 +2,7 @@
 function parse_input {
         if [ ! -z "$1" ]; then
                 if [ "$1" == "-h" ] || [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ] ; then
-                        cat << EOFN > input.template
+                        cat << EOFN > ${path}/input.template
 #######################################################################
 # 1. NAME OF SYSTEM, INPUT STRUCTURES, and TYPE OF CALCULATION
 #######################################################################
@@ -199,11 +199,16 @@ EOFN
                         exit 0
                 fi
         else
-                if [ ! -f input ]; then echo "Script expects a file named \"input\" in working directory. Run script with -h/-help to generate template input file" && exit 0; fi
+                if [ ! -f ${path}/input ]; then 
+			printf "Script expects a file named \"input\" in \$pathTOWRKDIR directory\n" 
+			printf "currently set to ${path}\n" 
+			printf "Run script with -h/-help to generate template input file \n" 
+			exit 0 
+		fi
         fi
 
         # read input file
-        read_input input
+        read_input ${pathTOWRKDIR}/input
 	
         # check if AMBERHOME is set
         if [ -z "${AMBERHOME}" ]; then printf "\n\nAMBERHOME is not set\n\n" && exit 0; fi
