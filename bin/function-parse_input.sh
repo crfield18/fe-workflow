@@ -208,7 +208,7 @@ EOFN
         fi
 
         # read input file
-        read_input ${pathTOWRKDIR}/input
+        read_input ${path}/input
 	
         # check if AMBERHOME is set
         if [ -z "${AMBERHOME}" ]; then printf "\n\nAMBERHOME is not set\n\n" && exit 0; fi
