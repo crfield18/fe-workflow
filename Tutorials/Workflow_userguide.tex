@@ -34,6 +34,8 @@
 \usepackage{pdflscape}
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{tabto}
+\usepackage{mdframed}
 
 \newcolumntype{d}[1]{D{+}{\pm}{#1}}
 \newcolumntype{.}{D{.}{.}{-1}}
@@ -70,6 +72,8 @@
 %%\titleformat{\section}[block]{\bfseries\Large\filright}{}{0em}{}
 %\titleformat{\section}[block]{\bfseries\Large\filright}
 
+\newcommand{\FEToolKit}{\texttt{FE-ToolKit}}
+
 %For removing brackets around bibliography list numbers
 \makeatletter
 \renewcommand\@biblabel[1]{#1.}
@@ -84,6 +88,21 @@
 \newenvironment{itpars}
   {\par\itshape}
   {\par}
+
+
+
+% tabbing within fbox
+\newsavebox{\ftabbingbox}
+\newenvironment{ftabbing}
+  {\begin{lrbox}{\ftabbingbox}
+   \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}
+   \begin{tabbing}}
+  {\end{tabbing}
+   \end{minipage}
+   \end{lrbox}
+   \setlength{\fboxrule}{2pt}
+   \setlength{\fboxsep}{2pt}
+   \fbox{\usebox{\ftabbingbox}}}
 
 % End of format commands
 %%%%%%%
@@ -156,7 +175,8 @@ The \textit{Alchemical\_fe} folder contains the following sub-folders:
 
 %%\setlength{\parindent}{20pt}
 
-We are also in the process of putting documentation up on the Wiki site that will be updated on a regular basis - \url{https://gitlab.com/RutgersLBSR/alchemical\_fe/-/wikis/Setup-AFE\_AMBER\_DD\_BOOST}
+We are also in the process of putting documentation up on the Wiki site that will be updated on a regular basis 
+- \url{https://gitlab.com/RutgersLBSR/alchemical\_fe/-/wikis/Setup-AFE\_AMBER\_DD\_BOOST}
 
 \vspace{0.1cm}
 \section {Installation of AMBER Drug Discovery Boost}
@@ -165,6 +185,60 @@ We are also in the process of putting documentation up on the Wiki site that wil
 The installation process of AMBER DD Boost is identical to that of 
 AMBER20, and detailed instructions can be found here 
 https://ambermd.org/Installation.php
+
+%%\vspace{0.1cm}
+%%\setlength{\fboxrule}{2pt}
+%%\setlength{\fboxsep}{2pt}
+%%\fbox{%
+%%        \parbox{\textwidth} {%
+\begin{center}
+\begin{ftabbing}
+	\centerline{\textbf{AMBER DD Boost Installation Tip}} \\
+	\\
+	Set the following three path variables: \\
+	export AMBER\_SRC=path-to-amber-drug-discovery-boost-folder \\
+	export AMBER\_BUILD=path-to-where-build-directory-will-be-kept \\
+	export AMBER\_INSTALLED=path-to-where-AmberDDBoost-will-be-installed \\
+	\\
+	mkdir -p \${AMBER\_BUILD} \${AMBER\_INSTALLED} \\
+	\\
+	cd \$AMBER\_BUILD \\
+	\\
+	install serial pmemd.cuda by issuing the following command - \\
+	\\
+	cmake 	-DCMAKE\_INSTALL\_PREFIX=\${AMBER\_INSTALLED} \textbackslash \\
+	\hspace{1cm}	-DCOMPILER=GNU \textbackslash \\
+	\hspace{1cm}	-DMPI=FALSE \textbackslash \\
+	\hspace{1cm}	-DINSTALL\_TESTS=TRUE \\
+	\hspace{1cm}	-DCUDA=TRUE \textbackslash \\
+	\hspace{1cm}	-DBUILD\_GUI=FALSE \textbackslash \\
+	\hspace{1cm}	-DBUILD\_PYTHON=TRUE \textbackslash \\
+	\hspace{1cm}	-DDOWNLOAD\_MINICONDA=TRUE \textbackslash \\
+	\hspace{1cm}	-DMINICONDA\_USE\_PY3=TRUE \textbackslash \\
+	\hspace{1cm}	\${AMBER\_SRC} \\
+	
+	\\
+	install parallel pmemd.cuda.MPI by setting -DMPI=TRUE and
+	re-running the above command.
+%%        }
+%%}
+\end{ftabbing}
+\end{center}
+\vspace{0.1cm}
+
+\vspace{0.1cm}
+\section{Installation of FE-ToolKit}
+\vspace{0.1cm}
+
+FE-ToolKit can be installed by running the \textit{INSTALL.sh} script located 
+inside FE-ToolKit directory.
+
+\vspace{0.1cm}
+\textbf{Note:} FE-ToolKit installation is recommended prior the use of the Workflow Tools. 
+Execution of \textit{setup\_fe} (see later) without FE-ToolKit installed will result in errors. 
+\textit{In order to use the  Workflow Tools without installing FE-Toolkit, create a fake 
+directory named "local" inside the FE-ToolKit directory.}
+\vspace{0.1cm}
 
 \vspace{0.1cm}
 \section{Purpose of the Workflow Tools}
@@ -191,7 +265,7 @@ specified transformations) must be provided.
 The Workflow Tools can then be used to generate a hierarchy of directories 
 containing relevant parameter, coordinate, and AMBER input files and job submission scripts. 
 The Workflow Tools can also be used 
-to analyze the free energy simulations using \textit{FE-ToolKit}
+to analyze the free energy simulations using \textit{FE-ToolKit}.
 
 
 \vspace{0.1cm}
@@ -210,6 +284,7 @@ Following conditions must be met before using the Workflow Tools -
 		\end{itemize}
 	\item{\textit{python3} needs to be installed and available in \$PATH}
 	\item{\textit{bin} subdirectory within \textit{Alchemical\_fe} folder needs to be available in \$PATH}
+	\item{FE-ToolKit needs to be installed and \textit{local} subdirectory within \textit{FE-ToolKit} folder must be present.}
 	\item{\textit{RDKit} needs to be installed and python3 bindings to \textit{RDKit} needs to be available in \$PYTHONPATH}
 	\begin{itemize}
 		\item{\textit{RDKit} can be installed with a package manager}
