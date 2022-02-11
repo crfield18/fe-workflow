@@ -394,6 +394,11 @@ EOFN
 
 	# analysis keywords
 	if [ "${stage}" == "analysis" ]; then
+                if [ ! -d ${pathTOFEToolKit}/local/bin ]; then
+                        printf "%s\n\n" "!!! ERROR !!!"
+                        printf "%s\n" "${pathTOFEToolKit}/local/bin is missing. The location of \"\${pathTOFEToolKit}\" may not be correct. Exiting analysis."
+                        exit 0
+                fi
 		if [ ! -d "${path_to_data}" ]; then 
 			printf "\n\n!!!! ERROR !!!!\n\n"
 			printf "\n\n!!!! ${path_to_data} does not exist \n\n"
