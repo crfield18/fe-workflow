@@ -1,105 +1,120 @@
 #!/bin/bash
-
-# check if ${pathTOWRKDIR}, ${pathTOWFToolKit}, ${pathTOFEToolKit} paths are set
-
-if [ -z ${pathTOWRKDIR} ]; then
-	cat << EOF
-
-***** The variable \${pathTOWRKDIR} has not been set. It should be set to the intended working directory
-By default, \${pathTOWRKDIR} is set to the path of current directory.
-
-To change the path of working directory, either re-run this make script after setting \${pathTOWRKDIR}, OR,
-Manually change the variable 'path' at the top of the 'setup_fe' script
-
-EOF
-	pathTOWRKDIR=`pwd`
-else
-	cat << EOF
-
-***** The current working directory (\${pathTOWRKDIR}) is set to ${pathTOWRKDIR}
-
-To change the path of working directory, either re-run this make script after setting \${pathTOWRKDIR}, OR,
-Manually change the variable 'path' at the top of the 'setup_fe' script.
-
-EOF
-
-fi
+#  This script helps prepare the executable setup_fe
+#  It is recommended that all three repositories of the AMBER DD Boost package
+# FE-MDEngine, FE-ToolKit, and FE-WorkflowTools 
+# are placed in a single folder, for example GitLab
+#
+#  For additional help reach out 
+#  to abir.ganguly@rutgers.edu 
 
 
-if [ -z ${pathTOWFToolKit} ]; then
-	cat << EOF
+path=`pwd`
 
-***** The variable \${pathTOWFToolKit} has not been set. 
-\${pathTOWFToolKit} should be set to the path of the 'alchemical_fe' folder available within the AMBER_DD_BOOST package.
-By default, \${pathTOWFToolKit} is set to the path of current directory.
+#####################################################################
+# function to read compile directives
+# the list "varlist" contains the variables that are defined from the input file
+function read_input {
 
-To change the path of working directory, either re-run this make script after setting \${pathTOWFToolKit}, OR,
-Manually change the variable 'pathTOWFToolKit' at the top of the 'setup_fe' script
-
-EOF
-	pathTOWFToolKit=`pwd`
-else
-        cat << EOF
-
-***** The current path to workflow toolkit (\${pathTOWFToolKit}) is set to ${pathTOWFToolKit}
-\${pathTOWFToolKit} should be set to the path of the 'alchemical_fe' folder available within the AMBER_DD_BOOST package.
-
-To change the path to workflow toolkit (alchemical_fe) either re-run this make script after setting \${pathTOWFToolKit}, OR,
-Manually change the variable 'pathTOWFToolKit' at the top of the 'setup_fe' script
-
-EOF
-
-fi
+while read line; do
+        varlist=(MDEngine ToolKit WorkflowTools)
+        IFS=$'\t| |=' read -ra args <<< $line
+        if [[ "${args[0]}" =~ ^#.* ]]; then continue; fi
+        keyword=${args[0]}; value=${args[1]}
+        for var in ${varlist[@]}; do
+                declare -n arr="$var"
+                if [ "$var" == "$keyword" ]; then
+                        arr=$value
+                fi
+        done
 
 
-if [ -z ${pathTOFEToolKit} ]; then
-        cat << EOF
+done < $1
+}
+######################################################################
 
-***** The variable \${pathTOFEToolKit} has not been set.
-\${pathTOFEToolKit} should be set to the path of the 'FE-ToolKit' folder available within the AMBER_DD_BOOST package.
-By default, \${pathTOFEToolKit} is set to the path of current directory.
 
-To change the path of working directory, either re-run this make script after setting \${pathTOFEToolKit}, OR,
-Manually change the variable 'pathTOFEToolKit' at the top of the 'setup_fe' script
+# MAIN
 
-EOF
-        pathTOWFToolKit=`pwd`
-else
-        cat << EOF
+path=`pwd`
+# check if the file "setup_directives" is absent in the current directory
+# if yes, write the default options
+if [ ! -f "${path}/setup_directives" ]; then
 
-***** The current path to FE-ToolKit (\${pathTOFEToolKit}) is set to ${pathTOFEToolKit}
-\${pathTOFEToolKit} should be set to the path of the 'FE-ToolKit' folder available within the AMBER_DD_BOOST package.
-
-To change the path to FE-ToolKit either re-run this make script after setting \${pathTOFEToolKit}, OR,
-Manually change the variable 'pathTOFEToolKit' at the top of the 'setup_fe' script
-
-EOF
+	# default locations
+	dir=$(basename $(dirname $(dirname `pwd`)))
+	if [ -d $(dirname $(dirname `pwd`))/FE-MDEngine ]; then
+		MDEngine=$(dirname $(dirname `pwd`))/FE-MDEngine/install_serial
+	else
+		read -p "Where is FE-MDEngine installed (serial)? " MDEngine
+	fi
+	if [ -d $(dirname $(dirname `pwd`))/FE-ToolKit ]; then
+		ToolKit=$(dirname $(dirname `pwd`))/FE-ToolKit
+	else
+		read -p "What is FE-ToolKit installed? " ToolKit	
+	fi
+	WorkflowTools=$(dirname `pwd`)
+        cat << EOF2 > ${path}/setup_directives
+MDEngine ${MDEngine}
+ToolKit ${ToolKit}
+WorkflowTools ${WorkflowTools}
+EOF2
 
 fi
 
 
-if [ ! -d $pathTOWFToolKit/bin ] ||  [ ! -d $pathTOFEToolKit/local/bin ]; then
-	printf "!!! ERROR bin directories located in \$pathTOWFToolKit OR \$pathTOFEToolKit/local are missing! \n"
-	printf "!!! ERROR check paths and re-run make script again. \n"
+# read setup directives
+read_input setup_directives
 
+# double check settings with user
+printf "%s \n" "*************************************************************************"
+printf "%s \n" "The location of MDEngine (serial installation)			is set to    ${MDEngine}"
+printf "%s \n" "The location of ToolKit  					is set to    ${ToolKit}"
+printf "%s \n" "The location of WorkflowTools			 		is set to    ${WorkflowTools}"
+printf "%s \n\n"
+printf "%s \n" "If these settings do not look correct, please modify \"${path}/setup_directives\" accordingly and re-run this script."
+printf "%s \n" "*************************************************************************"
+
+read -p "Would you like to continue (Y/N)" cont
+if [ "${cont}" != "Y" ] && [ "${cont}" != "y" ]; then exit 0; fi
+
+if [ -f ${MDEngine}/amber.sh ]; then
+	amberhome=${MDEngine}
+elif [ ! -z ${AMBERHOME} ]; then
+	amberhome=${AMBERHOME}
+	printf "%s \n" "The amber.sh file at ${MDEngine} is missing." 
+	printf "%s \n" "AMBERHOME is currently set to ${AMBERHOME}."
+	printf "%s \n" "If these settings do not look correct, please modify \"${path}/setup_directives\" accordingly and re-run this script."
 else
-	# write setup_fe
-	cat << EOF > setup_fe
+	read -p "The amber.sh file at ${MDEngine} is missing and AMBERHOME is currently not defined. Please provide an alternate location where AMBER is installed. " amberhome
+	if [ ! -f ${amberhome}/amber.sh ]; then
+		printf "%s \n" "The amber.sh file at ${amberhome} seems to be missing."
+		printf "%s \n" "AMBER seems to be not installed at ${amberhome}"
+		printf "%s \n" "Please install AMBER (${MDEngine} is recommended) and re-try setup"
+		printf "%s \n" "Exiting"
+		exit 0
+	fi
+fi
+
+# write setup_fe
+cat << EOF2 > setup_fe
 #!/bin/bash
 
 ##########################################
 pathhere=\`pwd\`
-path=${pathTOWRKDIR}
-pathTOWFToolKit=${pathTOWFToolKit}
-pathTOFEToolKit=${pathTOFEToolKit}
-export PATH="\$PATH:\${pathTOWFToolKit}/bin"
+path=\`pwd\`
+pathTOWFToolKit=${WorkflowTools}
+pathTOFEToolKit=${ToolKit}
+export PATH="\$PATH:\${WorkflowTools}/bin"
+
+# set AMBERHOME
+source ${amberhome}/amber.sh
 ###########################################
 
 ##########################################
 # load modules
 source \${pathTOWFToolKit}/bin/function-read_input.sh 					# read input file
 source \${pathTOWFToolKit}/bin/function-parse_input.sh					# parse input file
-source \${pathTOWFToolKit}/bin/function-gen_lambda.sh					# generate lambda values
+source \${pathTOWFToolKit}/bin/function-gen_lambda.sh						# generate lambda values
 source \${pathTOWFToolKit}/bin/function-write_template_rbfe.sh				# template for rbfe calculations
 source \${pathTOWFToolKit}/bin/function-write_template_rsfe.sh				# template for rsfe calculations
 source \${pathTOWFToolKit}/bin/function-createbox.sh
@@ -167,8 +182,14 @@ cd \$path
 	#################################
 cd \$pathhere
 
-EOF
+EOF2
 
-	chmod a+x setup_fe
-fi
+chmod a+x setup_fe
+export PATH=$PATH:${WorkflowTools}/bin
+source ${MDEngine}/amber.sh
+
+printf "%s \n" "Consider adding these line to your login startup script, e.g. ~/.bashrc"
+printf "%s \n" "export PATH=\$PATH:${WorkflowTools}/bin"
+printf "%s \n" "source ${MDEngine}/amber.sh"
+
 
