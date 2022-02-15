@@ -36,6 +36,7 @@
 \usepackage{enumitem}
 \usepackage{tabto}
 \usepackage{mdframed}
+\usepackage{bibentry}
 
 \newcolumntype{d}[1]{D{+}{\pm}{#1}}
 \newcolumntype{.}{D{.}{.}{-1}}
@@ -75,7 +76,7 @@
 %\newcommand{\FEToolKit}{\texttt{FE-ToolKit}}
 \newcommand{\addb}{\texttt{FE-MDEngine}}
 \newcommand{\tk}{\texttt{FE-ToolKit}}
-\newcommand{\wf}{\texttt{FE-WorkflowTools}}
+\newcommand{\wf}{\texttt{FE-Workflow}}
 
 %For removing brackets around bibliography list numbers
 \makeatletter
@@ -95,10 +96,11 @@
 
 
 % tabbing within fbox
+   %%%%\begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}
 \newsavebox{\ftabbingbox}
 \newenvironment{ftabbing}
   {\begin{lrbox}{\ftabbingbox}
-   \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}
+   \begin{minipage}{0.5\linewidth}
    \begin{tabbing}}
   {\end{tabbing}
    \end{minipage}
@@ -119,6 +121,7 @@
 
 \begin{document}
 
+\nobibliography*
 \maketitle
 
 \section {The AMBER Drug Discovery Boost package}
@@ -144,8 +147,16 @@ free energy (RBFE), relative solvation free energy (RSFE), and
 absolute solvation free energy (ASFE)) using \addb{}, and 
 analysis of such simulations using \wf{}. 
 
-Below is a list of references related to the AMBER DD Boost package, 
-as of \date. 
+Below is a list of recent references related to the different 
+features within AMBER DD Boost package, as of \today. 
+\begin{enumerate}
+	\item{\bibentry{Lee_ACSSympSer_2021_v1397_p161}}
+	\item{\bibentry{Cournia_ACSSympSer_2021_v1397_p1}}
+	\item{\bibentry{Giese_JChemTheoryComput_2021_v17_p1326}}
+	\item{\bibentry{Lee_JChemInfModel_2020_v60_p5595}}
+	\item{\bibentry{Lee_JChemTheoryComput_2020_v16_p5512}}
+	\item{\bibentry{Tsai_JChemInfModel_2020_v60_p5296}}
+\end{enumerate}
 
 
 \vspace{0.1cm}
@@ -173,11 +184,18 @@ GitLab account to: Abir Ganguly at abir.ganguly@rutgers.edu or Darrin York
 at Darrin.York@rutgers.edu in order to be added to the GitLab repositories.
 
 \vspace{0.2cm}
-\begin{ftabbing}
-\textit{Note}: if you have created a new GitLab account through a social media
-account such as Google \\ or Facebook, you will need to manually set up your
-GitLab password in order for git clone to work.
-\end{ftabbing}
+\noindent
+\begin{center}
+\setlength{\fboxrule}{2pt}
+\setlength{\fboxsep}{10pt}
+\fcolorbox{red}{white}{%
+	\begin{minipage}{0.60\linewidth}
+		\textit{Note}: if you have created a new GitLab account through a social media
+		account such as Google or Facebook, you will need to manually set up your
+		GitLab password in order for git clone to work.
+	\end{minipage}
+}
+\end{center}
 \vspace{0.2cm}
 
 Once added, the user will receive three separate notification
@@ -206,10 +224,17 @@ Without ssh-key setup in GitLab: \\
 \vspace{0.1cm}
 
 \vspace{0.2cm}
-\begin{ftabbing}
-\textit{Note}: We recommend that you create one directory, e.g. GitLab, and clone
-all three repositories inside that directory.
-\end{ftabbing}
+\noindent
+\begin{center}
+\setlength{\fboxrule}{2pt}
+\setlength{\fboxsep}{10pt}
+\fcolorbox{red}{white}{%
+        \begin{minipage}{0.60\linewidth}
+                \textit{Note}: We recommend that you create one directory, e.g. GitLab, and clone
+		all three repositories inside that directory.
+        \end{minipage}
+}
+\end{center}
 \vspace{0.2cm}
 
 
@@ -218,8 +243,9 @@ all three repositories inside that directory.
 \vspace{0.1cm}
 
 The installation process of \addb{} is identical to that of 
-AMBER20, and can be installed by running the \textit{install\_\addb.sh}
-script located in the \addb directory.
+AMBER20, and can be installed by running the script
+\textcolor{green}{\textit{install\_\addb.sh}}
+located in the \addb directory.
 Further instructions can be found here 
 https://ambermd.org/Installation.php
 
@@ -228,17 +254,17 @@ https://ambermd.org/Installation.php
 \section{Installation of FE-ToolKit}
 \vspace{0.1cm}
 
-\tk can be installed by running the \textit{INSTALL.sh} script located 
-inside \tk directory.
+\tk{} can be installed by running the \textcolor{green}{\textit{INSTALL.sh}}
+script located inside \tk{} directory.
 
 \vspace{0.1cm}
-\section{Purpose of the Workflow Tools}
+\section{Purpose of the \wf{}}
 \vspace{0.1cm}
 
-Workflow Tools are a set of scripts that are designed to 
+\wf{} are a set of scripts that are designed to 
 facilitate the setup, execution, and analysis of alchemical 
-free energy (AFE) simulations using AMBER DD Boost. Currently, the 
-Workflow Tools can be used to perform relative binding
+free energy (AFE) simulations using AMBER DD Boost. Currently, 
+\wf{} can be used to perform relative binding
 free energy (RBFE), relative solvation free energy (RSFE), and 
 absolute solvation free energy (ASFE) calculations. The scripts
 use a
@@ -253,28 +279,24 @@ b) key simulation settings can be specified, and
 c) initial configuration files (MD equilibrated parameter (parm) and 
 coordinate (rst) files associated with the system and
 specified transformations) must be provided. 
-The Workflow Tools can then be used to generate a hierarchy of directories 
+\wf{} can then be used to generate a hierarchy of directories 
 containing relevant parameter, coordinate, and AMBER input files 
 and job submission scripts. 
-The Workflow Tools can also be used 
-to analyze the free energy simulations using \textit{FE-ToolKit}.
+\wf{} can also be used 
+to analyze the free energy simulations using \tk{}.
 
 
 \vspace{0.1cm}
-\section{Contents of the Alchemical\_fe repository}
+\section{Contents of the \wf{} repository}
 \vspace{0.1cm}
 
-The \textit{Alchemical\_fe} repository contains the following folders:
+The \wf{} repository contains the following folders:
 \begin{itemize}
-        \item{\textit{Documentation} - containing documentation specific 
-		to AMBER Drug Discovery Boost}
         \item{\textit{Tutorials} - containing tutorials for setting up 
-		alchemical free energy simulations using AMBER DD Boost}
+		AFE with \addb{} using \wf{}}
         \item{\textit{Examples} - containing test cases for RBFE and 
 		RSFE calculations}
-        \item{\textit{bin} - containing scripts related to workflow tools 
-		to help set up alchemical free energy simulations 
-		using Amber Drug Discovery Boost}
+	\item{\textit{bin} - containing scripts related to \wf{}}
 \end{itemize}
 
 %%\setlength{\parindent}{20pt}
@@ -285,22 +307,25 @@ that will be updated on a regular basis
 
 
 \vspace{0.1cm}
-\section{Initial requirements of using the Workflow Tools}
+\section{Initial requirements of using the \wf{}}
 \vspace{0.1cm}
 
-Following conditions must be met before using the Workflow Tools -
+Following conditions must be met before using the \wf{} -
 \begin{itemize}
-	\item {\textit{AMBERHOME needs to be set}}
-	\item{\textit{cpptraj}(available as part of AmberTools) needs to be installed and available in \$PATH}
-	\item{\textit{parmed}(available as part of AmberTools) needs to be installed and available in \$PATH}
+	\item{AMBER should be installed and \textit{AMBERHOME} should be defined. The AmberTools \\
+		\textit{cpptraj} and \textit{parmed} are used by \wf{} during the setup process.}
 		\begin{itemize}
+			\item We recommend installing \addb{} that comes with AmberTools21, however \\
+				a standalone installation of AmberTools21 should also work.
 			\item For instructions related to download and installation of AmberTools, see \\
 				\url{https://ambermd.org/AmberTools.php}
 		\end{itemize}
+	\item{\textit{bin} subdirectories within \wf{} and \tk{} should be available in \$PATH}
+	\item{\tk{} must be installed when using \wf in "analysis" mode.}
 	\item{\textit{python3} needs to be installed and available in \$PATH}
-	\item{\textit{bin} subdirectory within \textit{Alchemical\_fe} folder needs to be available in \$PATH}
-	\item{\textit{FE-ToolKit} must be installed when using \wf in "analysis" mode.}
-	\item{\textit{RDKit} needs to be installed and python3 bindings to \textit{RDKit} needs to be available in \$PYTHONPATH}
+	\item{The software \textit{RDKit} must be installed and python3 bindings to \textit{RDKit} should \\ 
+		be available in \$PYTHONPATH. \textit{RDKit} is a popular open-source cheminformatics \\
+		software, and is used by the atom-mapping algorithms within \wf{}.}
 	\begin{itemize}
 		\item{\textit{RDKit} can be installed with a package manager}
 		\begin{itemize}
@@ -326,36 +351,46 @@ Following conditions must be met before using the Workflow Tools -
 \end{itemize}
 
 \vspace{0.1cm}
-\section{Usage of the Workflow Tools}
+\section{Usage of the \wf{}}
 \vspace{0.1cm}
 
-The \textit{setup\_fe} script represents the main executable of the Workflow Tools, 
-and can be 
-created by running the script \textit{makesetup\_fe.sh} located in the \textit{bin} subdirectory
-of the \textit{Alchemical\_fe} folder. 
+The \textcolor{green}{\textit{setup\_fe}} script represents the main executable of the \wf{}, 
+and can be created by running the script \textcolor{green}{\textit{makesetup\_fe.sh}} located 
+in the \textcolor{purple}{bin} subdirectory of the \wf{} repository. 
+
 
 \vspace{0.1cm}
 \centerline{\textcolor{blue}{./makesetup\_fe.sh}}
 \vspace{0.1cm}
 
-\textit{makesetup\_fe.sh} help set the following three variables : \${pathTOWRKDIR}, 
-\${pathTOWFToolKit}, and \${pathTOFEToolKit} within \textit{setup\_fe}. 
-\begin{enumerate}
-	\item{\${pathTOWRKDIR} should be set to the intended working directory.}
-	\item{\${pathTOWFToolKit} should be set to the path of the \textit{Alchemical\_fe} folder.}
-	\item{\${pathTOFEToolKit} should be set to the path of the \textit{FE-ToolKit} folder.}
-\end{enumerate}
-By defaults, these variables are set to the path of the \textit{current working directory}. Alternatively, these variables 
-can be modified manually in \textit{setup\_fe}. 
-\textit{setup\_fe} expects a inputfile named \textit{input} in \${pathTOWRKDIR}
+\textcolor{green}{\textit{makesetup\_fe.sh}} creates in the same \textcolor{purple}{bin} 
+directory a bashrc file named \wf{}.bashrc that should be sourced before using executing 
+\textcolor{green}{\textit{setup\_fe}}.  
+In the default setup, 
+\textcolor{green}{\textit{setup\_fe}}
+is meant to be kept in the \wf{}/bin directory and, since \wf{}/bin is added to the \$PATH variable, 
+\textcolor{green}{\textit{setup\_fe}} should be available as a command line program. In most 
+cases, this should be the most convenient way of using \textcolor{green}{\textit{setup\_fe}}. 
+However, if needed,
+the location of \textcolor{green}{\textit{setup\_fe}} can be changed by changing 
+the  "\$path" variable in \textcolor{green}{\textit{setup\_fe}} accordingly.
+
 
 \vspace{0.1cm}
 \section{Input file for \textit{setup\_fe}}
 \vspace{0.1cm}
 
-\textit{setup\_fe} requires an input file named \textit{input} that contains key settings of the
+\textcolor{green}{\textit{setup\_fe}} expects a inputfile named \textit{input} in the directory 
+where \textcolor{green}{\textit{setup\_fe}} is executed (or, the directory pointed by the
+"\$path" variable in \textcolor{green}{\textit{setup\_fe}} that contains key settings of the
 alchemical free energy simulations that are going to be set up. A template input file can be
-generated by running the script with a flag \textit{-h} or \textit{-help}. A typical input file looks like the
+generated by running the script with a flag \textit{-h} or \textit{-help}.
+
+\vspace{0.1cm}
+\centerline{\textcolor{blue}{setup\_fe -h}}
+\vspace{0.1cm}
+
+A typical input file looks like the
 following -
 
 \vspace{1cm}
@@ -437,51 +472,27 @@ Table 1 provides a detailed description of keywords that are specific to this in
 \textit{setup\_fe}. 
 For keywords/flags that are specific to AMBER20 and AMBER-DD Boost refer to the 
 \href{https://ambermd.org/doc12/Amber20.pdf}{AMBER20 reference manual}
-and \textit{AMBER DD Boost Documentation}.
+and Table 2.
 
 \vspace{0.1cm}
-\section{File infrastructure created by \textit{setup\_fe}}
+\section{File infrastructure created by \textcolor{green}{\textit{setup\_fe}}}
 \vspace{0.1cm}
 
-With the \textit{input} file present in \$pathTOWRKDIR, \textit{setup\_fe} can be executed as 
-
-\vspace{0.1cm}
-\centerline{./setup\_fe}
-\vspace{0.1cm}
-
-
-\vspace{0.1cm}
-\setlength{\fboxrule}{2pt}
-\setlength{\fboxsep}{2pt}
-\fbox{%
-	\parbox{\textwidth} {%
-				\textbf{Setup Tip}: Add \${pathTOWFToolKit} to your \$PATH 
-				variable. Keep \textit{setup\_fe} inside \${pathTOWFToolKit}, 
-				and manually modify the variable \textit{"path"} in the 
-				beginning of \textit{setup\_fe} to \textit{\textasciigrave pwd\textasciigrave}. Then go to 
-				your working directory and type 
-
-				\vspace{0.1cm}
-				\centerline{setup\_fe  -h}
-				\vspace{0.1cm}
-	}
-}
-\vspace{0.1cm}
-
-
-
-In \textit{"setup"} mode, \textit{setup\_fe} creates a folder named \textit{"system"}, as defined 
-in the \textit{input} file in \$pathTOWRKDIR. 
-The \textit{"system"} folder will have two subdirectories, \textit{setup} and \textit{run}. The folder
-\textit{setup} will house the  various intermediate files that were generated and used in creating 
-the final input files. The folder \textit{run} will contain independent subdirectories corresponding 
+In \textbf{setup mode} (keyword \textit{stage} set to 'setup' in input), 
+\textcolor{green}{\textit{setup\_fe}} creates a folder named \textcolor{purple}{"system"}, as defined 
+in the \textit{input} file. 
+The \textcolor{purple}{"system"} folder will have two subdirectories, \textcolor{purple}{setup} 
+and \textcolor{purple}{run}. \textcolor{purple}{"setup"} will house the  various intermediate 
+files that were generated and used in creating 
+the final input files. \textcolor{purple}{"run"} will contain independent subdirectories corresponding 
 to each entry (transformation) in the keyword \textit{"translist"} in the \textit{input} file. These 
 subdirectories that will have the same naming convention as provided in the \textit{input} file, 
-will further contain subdirectories named \textit{"com"} and \textit{"aq"} for RBFE calculations, or 
-only the subdirectory \textit{"aq"} for RSFE and ASFE calculations. The \textit{"com"} and \textit{"aq"}
+will further contain subdirectories named \textcolor{purple}{com} and \textcolor{purple}{aq} for 
+RBFE calculations, or only the subdirectory \textcolor{purple}{aq} for RSFE and ASFE calculations. 
+The \textcolor{purple}{com} and \textcolor{purple}{aq}
 subdirectories correspond to complex and aqueous simulations, respectively, and will contain 
 the final merged TI parameter and coordinate input files, template submission slurm scripts, a folder
-named \textit{inputs} containing relevant AMBER input files, and production sub-folders corresponding 
+named \textcolor{purple}{inputs} containing relevant AMBER input files, and production sub-folders corresponding 
 to each specified independent trial that will house the production simulation data. 
 
 \vspace{0.1cm}
@@ -497,98 +508,43 @@ In phase II, from the equilibrated end-point structures, all other intermediate
 $\lambda$ windows are generated and further equilibrated, again using a series of short minimization
 and constant NPT simulations to generate the starting structures for the production TI simulations.
 The equilibration protocol, that is the order in which various equilibration steps are intended to be 
-carried out can be found inside the \textit{run\_alltrials.slurm} script (assigned to the 
-\textit{eqstage} variable), generated in the \textit{"system"/run/com} and \textit{"system"/run/aq folders}.
+carried out can be found inside the \textcolor{green}{\textit{run\_alltrials.slurm}} script (assigned to the 
+\textit{eqstage} variable), generated in the \textcolor{purple}{"system"/run/"com"} and 
+\textcolor{purple}{"system"/run/"aq"} folders.
 
 \vspace{0.1cm}
 
-In \textit{"analysis"} mode, \textit{setup\_fe} creates a folder named \textit{results} in \$pathTOWRKDIR. 
-The \textit{results} folder will contain a subdirectory \textit{data} that will have a nested directory 
+In \textbf{analysis mode} (keyword \textit{stage} set to 'analysis' in input), 
+\textcolor{green}{\textit{setup\_fe}} creates a folder named 
+\textcolor{purple}{results} in the directory in which \textcolor{green}{\textit{setup\_fe}} is executed. 
+The \textcolor{purple}{results} folder will contain a subdirectory \textcolor{purple}{data} that will 
+have a nested directory 
 structure containing Energy and DV/DL data from the various simulations in the transformation network 
-being analyzed. The \textit{results} folder will also contain the graphmbar input file named
-\textit{graphmbar.inp} for \textit{FE-Toolkit}, a python script named \textit{gmbar.py} that facilitates 
+being analyzed. The \textcolor{purple}{results} folder will also contain the graphmbar input file named
+\textit{graphmbar.inp} for \tk{}, a python script named \textcolor{green}{\textit{gmbar.py}} that facilitates 
 the generation of the graphmbar input file, the graphmbar output file named \textit{graphmbar.out} 
-generated by \textit{FE-Toolkit}, and a simplified output file named \textit{out} summarizing the final 
+generated by \tk{}, and a simplified output file named \textit{out} summarizing the final 
 free energy results of the entire transformation network.
 
 \vspace{0.1cm}
-\section{An example usage of the Workflow Tools}
+\section{An example usage of the \wf{}}
 \vspace{0.1cm}
 
-The following section illustrates an example application of the workflow tools to setup 
-relative binding free energy (RBFE) calculations. Herein, we assume that the
-initial requirements of using the Workflow Tools described earlier in section 4 have been met, and
-for the sake of simplicity, the Alchemical\_fe repository has been cloned inside /home/user/GitLab, where
-the directory GitLab has been created in /home/user separately. 
+Once \addb{} and \tk{} have been installed, and \textcolor{green}{\textit{setup\_fe}} has been 
+created using the instructions above, you can test the \wf{} by creating a test working directory 
+and copying an example input file provided in \textcolor{purple}{Examples} subdirectory 
+within the \wf{} repository. Go to the test directory, rename the specific \textit{input.*} to input, 
+modify the variable \textit{path\_to\_input} in input to the location of the \textcolor{purple}{initial}
+subdirectory within the \wf{} repository, source the \wf{}.bashrc file in \textcolor{purple}{bin}
+subdirectory within the \wf{} repository, and execute \textcolor{green}{\textit{setup\_fe}}.
 
-
-\begin{itemize}
-	\item Create and configure \textit{setup\_fe}\newline
-		\begin{itemize}
-			\setlength{\itemindent}{3em}
-
-			\item[] \textcolor{blue}{cd /home/user/GitLab/Alchemical\_fe/bin} \\
-			\item[] \textcolor{blue}{export pathTOWFToolKit=/home/user/GitLab/Alchemical\_fe} \\
-			\item[] \textcolor{blue}{export pathTOFEToolKit=/home/user/GitLab/FE-ToolKit} \\
-			\item[] \textcolor{blue}{./makesetup\_fe.sh} \\
-		\end{itemize}
-		Open \textit{setup\_fe} in a text editor and manually change the "path" variable to
-		path=\textit{\textasciigrave pwd\textasciigrave} \\
-
-
-	\item Choose a working directory
-		\begin{itemize}
-			\setlength{\itemindent}{3em}
-
-			\item[] \textcolor{blue}{mkdir /home/user/rbfe} \\
-		\end{itemize}
-
-
-	\item Copy the template input file \textit{input.CDK2} from Alchemical\_fe/Examples/rbfe folder to working directory and rename to \textit{input}
-		\begin{itemize}
-			\setlength{\itemindent}{3em}
-
-			\item[] \textcolor{blue}{cp /home/user/GitLab/Alchemical\_fe/Examples/rbfe/input.CDK2 /home/user/rbfe/input} \\
-		\end{itemize}
-		Open /home/user/rbfe/input in text editor and manually change the "path\_to\_input" to /home/user/GitLab/Alchemical\_fe/Examples/initial
-
-	\item Go the working directory and execute \textit{setup\_fe}
-                \begin{itemize}
-                        \setlength{\itemindent}{3em}
-
-                        \item[] \textcolor{blue}{cd  /home/user/rbfe} \\
-                        \item[] \textcolor{blue}{setup\_fe} \\
-                \end{itemize}
-	
-\end{itemize}
-
-This example illustrates the setup of RBFE calculations (\textit{ticalc}=rbfe) 
-of two CDK2 transformations, namely 1h1q$\rightarrow$1h1r and 1h1r$\rightarrow$1h1s, 
-as indicated by the keyword \textit{translist}. The MCS mapping algorithm is used to perform the
-1-to-1 atom mapping between the ligands and identify the TS and TC regions, as indicated by the
-keyword \textit{mapmethod=0}. The TI simulations will consist of 25 $\lambda$ windows (\textit{nlambda=25}), with an 
-user-defined $\lambda$ schedule specified by \textit{lams}. 
-The file infrastructure will be generated for 3 independent trials (\textit{ntrials=3}), 
-the 2-state model will be used for simulation setup (\textit{twostate=true}), and 
-production TI runs will be carried out using the ACES approach, as specified by the combination of 
-the use of replica exchange and \textit{gti\_add\_sc=5}. Total number of replica exchanges is set to 250,0000 
-(\textit{numexchgti=250000}) and exchanges will be attempted every 20 steps (\textit{nstlimti=20}), resulting in 
-a total simulation time of 5~ns for every $\lambda$ window.
-
-After \textit{setup\_fe} is succesfully executed, a folder "CDK2" should be created in /home/user/rbfe/ 
-containing two subdirectories "setup" and "unified". The "setup" folder will contain the various intermediate
-files that were generated and used during the setup process. The "unified" folder will contain a subdirectory
-"run" that will have a nested directory structure. The folder "run" will contain 
-two subdirectories "1h1q~1h1r" and "1h1r~1h1s", corresponding to the two CDK2 transformations.
-Each of these folders will further contain subdirectories "com" and "aq", 
-corresponding to files related to complex and aqueous phase simulations. The "com" and "aq" folders
-will contain a subdirectory "inputs" containing the various AMBER input files, subdirectories "t1", "t2", "t3", 
-that will house the simulation output files for the three independent trials, and a slurm script 
-named \textit{run\_alltrials.slurm} that can automate the running of the entire set of equilibration 
-simulations followed by production simulations of all three trials in the order they are intended. This 
-slurm script is intended to be a template for running these simulations, and should be modified 
-as needed based on the HPC architecture where the simulations will be run eventually. 
-
+\vspace{0.1cm}
+\flushleft{\textcolor{blue}{mkdir -p test-run}}
+\flushleft{\textcolor{blue}{cd test-run}}
+\flushleft{\textcolor{blue}{cp path-to-\wf{}/Examples/rbfe/input.CDK2 ./input}}
+\flushleft{\textcolor{blue}{vi input} \#change path\_to\_input=path-to-\wf{}/Examples/intial}
+\flushleft{\textcolor{blue}{setup\_fe}}
+\vspace{0.1cm}
 
 \newcolumntype{P}[1]{>{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}}
 \begin{footnotesize}
@@ -728,5 +684,7 @@ showallcycles      & string          & Specifies if the output should show infor
 \end{landscape}
 \end{footnotesize}
 
+\bibliographystyle{plainnat}
+\bibliography{YorkLib,TmpLib}
 
 \end{document}
