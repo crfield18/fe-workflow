@@ -74,7 +74,7 @@ printf "%s \n\n"
 printf "%s \n" "If these settings do not look correct, please modify \"${path}/setup_directives\" accordingly and re-run this script."
 printf "%s \n" "*************************************************************************"
 
-read -p "Would you like to continue (Y/N)" cont
+read -p "Would you like to continue (Y/N)? " cont
 if [ "${cont}" != "Y" ] && [ "${cont}" != "y" ]; then exit 0; fi
 
 if [ -f ${MDEngine}/amber.sh ]; then
@@ -185,11 +185,16 @@ cd \$pathhere
 EOF2
 
 chmod a+x setup_fe
-export PATH=$PATH:${WorkflowTools}/bin
-source ${MDEngine}/amber.sh
+printf "%s \n" "source ${MDEngine}/amber.sh" 			>  ${path}/FE-WorkflowTools.bashrc
+printf "%s \n" "export PATH=\$PATH:${WorkflowTools}/bin"	>> ${path}/FE-WorkflowTools.bashrc
+printf "%s \n" "export PATH=\$PATH:${ToolKit}/local/bin" 	>> ${path}/FE-WorkflowTools.bashrc
 
-printf "%s \n" "Consider adding these line to your login startup script, e.g. ~/.bashrc"
-printf "%s \n" "export PATH=\$PATH:${WorkflowTools}/bin"
-printf "%s \n" "source ${MDEngine}/amber.sh"
+
+printf "%s \n" " "
+printf "%s \n" "***************************************************************************************************************************"
+printf "%s \n" "Issue the following command before using the FE-WorkflowTools (consider adding this line to your login startup script, e.g. ~/.bashrc)"
+printf "%s \n" "source ${path}/FE-WorkflowTools.bashrc"
+printf "%s \n" "***************************************************************************************************************************"
+printf "%s \n" " "
 
 
