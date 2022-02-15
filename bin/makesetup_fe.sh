@@ -1,7 +1,7 @@
 #!/bin/bash
 #  This script helps prepare the executable setup_fe
 #  It is recommended that all three repositories of the AMBER DD Boost package
-# FE-MDEngine, FE-ToolKit, and FE-WorkflowTools 
+# FE-MDEngine, FE-ToolKit, and FE-Workflow 
 # are placed in a single folder, for example GitLab
 #
 #  For additional help reach out 
@@ -16,7 +16,7 @@ path=`pwd`
 function read_input {
 
 while read line; do
-        varlist=(MDEngine ToolKit WorkflowTools)
+        varlist=(MDEngine ToolKit Workflow)
         IFS=$'\t| |=' read -ra args <<< $line
         if [[ "${args[0]}" =~ ^#.* ]]; then continue; fi
         keyword=${args[0]}; value=${args[1]}
@@ -52,11 +52,11 @@ if [ ! -f "${path}/setup_directives" ]; then
 	else
 		read -p "What is FE-ToolKit installed? " ToolKit	
 	fi
-	WorkflowTools=$(dirname `pwd`)
+	Workflow=$(dirname `pwd`)
         cat << EOF2 > ${path}/setup_directives
 MDEngine ${MDEngine}
 ToolKit ${ToolKit}
-WorkflowTools ${WorkflowTools}
+Workflow ${Workflow}
 EOF2
 
 fi
@@ -69,7 +69,7 @@ read_input setup_directives
 printf "%s \n" "*************************************************************************"
 printf "%s \n" "The location of MDEngine (serial installation)			is set to    ${MDEngine}"
 printf "%s \n" "The location of ToolKit  					is set to    ${ToolKit}"
-printf "%s \n" "The location of WorkflowTools			 		is set to    ${WorkflowTools}"
+printf "%s \n" "The location of Workflow			 		is set to    ${Workflow}"
 printf "%s \n\n"
 printf "%s \n" "If these settings do not look correct, please modify \"${path}/setup_directives\" accordingly and re-run this script."
 printf "%s \n" "*************************************************************************"
@@ -102,9 +102,9 @@ cat << EOF2 > setup_fe
 ##########################################
 pathhere=\`pwd\`
 path=\`pwd\`
-pathTOWFToolKit=${WorkflowTools}
+pathTOWFToolKit=${Workflow}
 pathTOFEToolKit=${ToolKit}
-export PATH="\$PATH:\${WorkflowTools}/bin"
+export PATH="\$PATH:\${Workflow}/bin"
 
 # set AMBERHOME
 source ${amberhome}/amber.sh
@@ -185,15 +185,15 @@ cd \$pathhere
 EOF2
 
 chmod a+x setup_fe
-printf "%s \n" "source ${MDEngine}/amber.sh" 			>  ${path}/FE-WorkflowTools.bashrc
-printf "%s \n" "export PATH=\$PATH:${WorkflowTools}/bin"	>> ${path}/FE-WorkflowTools.bashrc
-printf "%s \n" "export PATH=\$PATH:${ToolKit}/local/bin" 	>> ${path}/FE-WorkflowTools.bashrc
+printf "%s \n" "source ${MDEngine}/amber.sh" 			>  ${path}/FE-Workflow.bashrc
+printf "%s \n" "export PATH=\$PATH:${Workflow}/bin"		>> ${path}/FE-Workflow.bashrc
+printf "%s \n" "export PATH=\$PATH:${ToolKit}/local/bin" 	>> ${path}/FE-Workflow.bashrc
 
 
 printf "%s \n" " "
 printf "%s \n" "***************************************************************************************************************************"
-printf "%s \n" "Issue the following command before using the FE-WorkflowTools (consider adding this line to your login startup script, e.g. ~/.bashrc)"
-printf "%s \n" "source ${path}/FE-WorkflowTools.bashrc"
+printf "%s \n" "Issue the following command before using the FE-Workflow (consider adding this line to your login startup script, e.g. ~/.bashrc)"
+printf "%s \n" "source ${path}/FE-Workflow.bashrc"
 printf "%s \n" "***************************************************************************************************************************"
 printf "%s \n" " "
 
