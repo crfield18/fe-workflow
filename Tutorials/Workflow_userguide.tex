@@ -72,7 +72,10 @@
 %%\titleformat{\section}[block]{\bfseries\Large\filright}{}{0em}{}
 %\titleformat{\section}[block]{\bfseries\Large\filright}
 
-\newcommand{\FEToolKit}{\texttt{FE-ToolKit}}
+%\newcommand{\FEToolKit}{\texttt{FE-ToolKit}}
+\newcommand{\addb}{\texttt{FE-MDEngine}}
+\newcommand{\tk}{\texttt{FE-ToolKit}}
+\newcommand{\wf}{\texttt{FE-WorkflowTools}}
 
 %For removing brackets around bibliography list numbers
 \makeatletter
@@ -107,138 +110,126 @@
 % End of format commands
 %%%%%%%
 
-\title
-{\bf Workflow Tools for automated Production Free Energy Simulation Setup and Analysis (\textit{ProFESSA}) using AMBER Drug Discovery Boost - User Guide}
+\title{%
+{\bf AMBER Drug Discovery Boost Package} \\
+\Large User Guide}
+
+\author{Laboratory for Biomolecular Simulation Research \\
+\large Rutgers University}
 
 \begin{document}
 
 \maketitle
 
-%\section*{An user guide for using the workflow tools alchemical free energy simulations using AMBER20 with AMBER-DD boost}
-%\vspace{1cm}
+\section {The AMBER Drug Discovery Boost package}
+\vspace{0.1cm}
+
+The AMBER Drug Discovery Boost package consists of three components, 
+1) \addb{}, 2) \tk{}, and 3) \wf{}. \addb{} consists of the 
+current release version of
+AmberTools21 and a specialized version of AMBER20 (the pmemd package) 
+that contains the newest technologies related to alchemical free 
+energy methods that are not yet available in the current 
+release version of AMBER (AMBER20). 
+The AMBER License and “patch” code mechanism enables anyone
+with a current AMBER license to gain advanced access to  
+the AMBER DD Boost package for beta testing and 
+validation prior to their official integration into AMBER (which occurs 
+on a 2-year cycle).
+\tk{} consists of a collection of programs that 
+implement the latest approaches for analyzing free energy simulations, 
+and \wf{} consists of a collection of programs that are useful
+for the setup of alchemical free energy simulations (relative binding
+free energy (RBFE), relative solvation free energy (RSFE), and 
+absolute solvation free energy (ASFE)) using \addb{}, and 
+analysis of such simulations using \wf{}. 
+
+Below is a list of references related to the AMBER DD Boost package, 
+as of \date. 
+
 
 \vspace{0.1cm}
 \section {Availability of the AMBER Drug Discovery Boost package}
 \vspace{0.1cm}
 
-The AMBER Drug Discovery Boost package consists of the current release version of
-AmberTools21, which can be downloaded directly from AmberMD.org, and the specialized
-version of AMBER20 (the pmemd package). The AMBER20 part of AMBER Drug Discovery
-Boost package is only available to AMBER20 license holders.  Active Amber developers can
-access the package  directly through the Amber development GitLab repository.  For other
-AMBER20 license holders, the primary mode for accessing the AMBER Drug Discovery Boost
-package is through GitLab repository set up through the laboratory for Biomolecular
-Simulation Research (LBSR) at Rutgers, which mirrors the AMBER Drug Discovery Boost
-package in the Amber development GitLab repository.
+The AMBER DD Boost package can be accessed from GitLab repositories
+set up through the Laboratory for Biomolecular Simulation Research (LBSR)
+at Rutgers (details are provided below). 
+As mentioned earlier, \addb{} consists 
+of AmberTools21 and a specialized version of AMBER20. AmberTools21 is 
+free of charge, and can also be downloaded directly from AmberMD.org. 
+The AMBER20 part of \addb{} is available only to AMBER20
+license holders. \tk{} and \wf{} are available to LBSR GitLab members 
+(beta testers) and is currently available at no cost for non-commercial use.
+Active Amber developers can also access \addb{} 
+through the Amber development GitLab repository, which mirrors 
+\addb{} in the LBSR GitLab repository.
 
-A verified AMBER20 license holder will need a GitLab account in order to access the
-AMBER Drug Discovery Boost GitLab repository. A new GitLab
-account can easily be obtained at www.GitLab.com.  The user first need to send the
-e-mail address/username associated with the GitLab account to: Abir Ganguly at
-abir.ganguly@rutgers.edu or Darrin York at Darrin.York@rutgers.edu in order to be added to
-the AMBER Drug Discovery Boost  GitLab projects.
-\textit{Note}: if you have created a new GitLab account through a social media account
-such as Google or Facebook, you will need to manually set up your GitLab password in order
-for git clone to work. Once added, the user will receive three separate notification
-emails confirming that the user has been added to the following three projects:\\
+In order to access the LBSR GitLab repositories housing the AMBER DD Boost 
+package, a verified AMBER20 license holder will need an active GitLab account.
+A new GitLab ccount can easily be obtained at www.GitLab.com.
+The user first needs to send the e-mail address/username associated with the 
+GitLab account to: Abir Ganguly at abir.ganguly@rutgers.edu or Darrin York 
+at Darrin.York@rutgers.edu in order to be added to the GitLab repositories.
 
+\vspace{0.2cm}
+\begin{ftabbing}
+\textit{Note}: if you have created a new GitLab account through a social media
+account such as Google \\ or Facebook, you will need to manually set up your
+GitLab password in order for git clone to work.
+\end{ftabbing}
+\vspace{0.2cm}
+
+Once added, the user will receive three separate notification
+emails confirming that the user has been added to the following three projects:
 \flushleft{
-Laboratory for Biomolecular Simulation Research / AMBER Drug Discovery Boost \\
-Laboratory for Biomolecular Simulation Research / Alchemical\_FE \\
-Laboratory for Biomolecular Simulation Research / FE-ToolKit \\
+Laboratory for Biomolecular Simulation Research / \addb{} \\
+Laboratory for Biomolecular Simulation Research / \tk{} \\
+Laboratory for Biomolecular Simulation Research / \wf{} \\
 }
-\vspace{0.1cm}
-Upon this confirmation the user will be able to check out the packages as follows: \\
+\vspace{0.2cm}
 
+Upon this confirmation the user will be able to check out the packages as follows:
 \flushleft{
 With ssh-key setup in GitLab (recommended):  \\
-git clone git@gitlab.com:RutgersLBSR/amber-drug-discovery-boost.git \\
-git clone git@gitlab.com:RutgersLBSR/Alchemical\_fe.git \\
-git clone git@gitlab.com:RutgersLBSR/FE-ToolKit.git \\
+\textcolor{blue} {git clone git@gitlab.com:RutgersLBSR/\addb.git} \\
+\textcolor{blue} {git clone git@gitlab.com:RutgersLBSR/\wf.git} \\
+\textcolor{blue} {git clone git@gitlab.com:RutgersLBSR/\tk.git} \\
 }
 
 \flushleft{
 Without ssh-key setup in GitLab: \\
-git clone https://gitlab.com/RutgersLBSR/amber-drug-discovery-boost.git \\
-git clone https://gitlab.com/RutgersLBSR/Alchemical\_fe.git \\
-git clone https://gitlab.com/RutgersLBSR/FE-ToolKit.git \\
+\textcolor{blue} {git clone https://gitlab.com/RutgersLBSR/\addb.git} \\
+\textcolor{blue} {git clone https://gitlab.com/RutgersLBSR/\wf.git} \\
+\textcolor{blue} {git clone https://gitlab.com/RutgersLBSR/\tk.git} \\
 }
 \vspace{0.1cm}
 
-The \textit{Alchemical\_fe} folder contains the following sub-folders:
-\begin{itemize}
-        \item{\textit{Documentation} - containing documentation specific to AMBER Drug Discovery Boost}
-        \item{\textit{Tutorials} - containing tutorials for setting up alchemical free energy simulations using AMBER Drug Discovery Boost}
-        \item{\textit{Examples} - containing test cases for relative binding free energy (RBFE) and relative solvation free energy (RSFE) calculations}
-        \item{\textit{bin} - containing scripts related to workflow tools to help set up alchemical free energy simulations using Amber Drug Discovery Boost}
-\end{itemize}
+\vspace{0.2cm}
+\begin{ftabbing}
+\textit{Note}: We recommend that you create one directory, e.g. GitLab, and clone
+all three repositories inside that directory.
+\end{ftabbing}
+\vspace{0.2cm}
 
-%%\setlength{\parindent}{20pt}
-
-We are also in the process of putting documentation up on the Wiki site that will be updated on a regular basis 
-- \url{https://gitlab.com/RutgersLBSR/alchemical\_fe/-/wikis/Setup-AFE\_AMBER\_DD\_BOOST}
 
 \vspace{0.1cm}
 \section {Installation of AMBER Drug Discovery Boost}
 \vspace{0.1cm}
 
-The installation process of AMBER DD Boost is identical to that of 
-AMBER20, and detailed instructions can be found here 
+The installation process of \addb{} is identical to that of 
+AMBER20, and can be installed by running the \textit{install\_\addb.sh}
+script located in the \addb directory.
+Further instructions can be found here 
 https://ambermd.org/Installation.php
 
-%%\vspace{0.1cm}
-%%\setlength{\fboxrule}{2pt}
-%%\setlength{\fboxsep}{2pt}
-%%\fbox{%
-%%        \parbox{\textwidth} {%
-\begin{center}
-\begin{ftabbing}
-	\centerline{\textbf{AMBER DD Boost Installation Tip}} \\
-	\\
-	Set the following three path variables: \\
-	export AMBER\_SRC=path-to-amber-drug-discovery-boost-folder \\
-	export AMBER\_BUILD=path-to-where-build-directory-will-be-kept \\
-	export AMBER\_INSTALLED=path-to-where-AmberDDBoost-will-be-installed \\
-	\\
-	mkdir -p \${AMBER\_BUILD} \${AMBER\_INSTALLED} \\
-	\\
-	cd \$AMBER\_BUILD \\
-	\\
-	install serial pmemd.cuda by issuing the following command - \\
-	\\
-	cmake 	-DCMAKE\_INSTALL\_PREFIX=\${AMBER\_INSTALLED} \textbackslash \\
-	\hspace{1cm}	-DCOMPILER=GNU \textbackslash \\
-	\hspace{1cm}	-DMPI=FALSE \textbackslash \\
-	\hspace{1cm}	-DINSTALL\_TESTS=TRUE \\
-	\hspace{1cm}	-DCUDA=TRUE \textbackslash \\
-	\hspace{1cm}	-DBUILD\_GUI=FALSE \textbackslash \\
-	\hspace{1cm}	-DBUILD\_PYTHON=TRUE \textbackslash \\
-	\hspace{1cm}	-DDOWNLOAD\_MINICONDA=TRUE \textbackslash \\
-	\hspace{1cm}	-DMINICONDA\_USE\_PY3=TRUE \textbackslash \\
-	\hspace{1cm}	\${AMBER\_SRC} \\
-	
-	\\
-	install parallel pmemd.cuda.MPI by setting -DMPI=TRUE and
-	re-running the above command.
-%%        }
-%%}
-\end{ftabbing}
-\end{center}
-\vspace{0.1cm}
 
 \vspace{0.1cm}
 \section{Installation of FE-ToolKit}
 \vspace{0.1cm}
 
-FE-ToolKit can be installed by running the \textit{INSTALL.sh} script located 
-inside FE-ToolKit directory.
-
-\vspace{0.1cm}
-\textbf{Note:} FE-ToolKit installation is recommended prior the use of the Workflow Tools. 
-Execution of \textit{setup\_fe} (see later) without FE-ToolKit installed will result in errors. 
-\textit{In order to use the  Workflow Tools without installing FE-Toolkit, create a fake 
-directory named "local" inside the FE-ToolKit directory.}
-\vspace{0.1cm}
+\tk can be installed by running the \textit{INSTALL.sh} script located 
+inside \tk directory.
 
 \vspace{0.1cm}
 \section{Purpose of the Workflow Tools}
@@ -249,7 +240,7 @@ facilitate the setup, execution, and analysis of alchemical
 free energy (AFE) simulations using AMBER DD Boost. Currently, the 
 Workflow Tools can be used to perform relative binding
 free energy (RBFE), relative solvation free energy (RSFE), and 
-absolute solvation free energy (RSFE) calculations. The scripts
+absolute solvation free energy (ASFE) calculations. The scripts
 use a
 simplified input file, which is described in detail later in the 
 user-guide, that provides top-level control on various important 
@@ -263,9 +254,34 @@ c) initial configuration files (MD equilibrated parameter (parm) and
 coordinate (rst) files associated with the system and
 specified transformations) must be provided. 
 The Workflow Tools can then be used to generate a hierarchy of directories 
-containing relevant parameter, coordinate, and AMBER input files and job submission scripts. 
+containing relevant parameter, coordinate, and AMBER input files 
+and job submission scripts. 
 The Workflow Tools can also be used 
 to analyze the free energy simulations using \textit{FE-ToolKit}.
+
+
+\vspace{0.1cm}
+\section{Contents of the Alchemical\_fe repository}
+\vspace{0.1cm}
+
+The \textit{Alchemical\_fe} repository contains the following folders:
+\begin{itemize}
+        \item{\textit{Documentation} - containing documentation specific 
+		to AMBER Drug Discovery Boost}
+        \item{\textit{Tutorials} - containing tutorials for setting up 
+		alchemical free energy simulations using AMBER DD Boost}
+        \item{\textit{Examples} - containing test cases for RBFE and 
+		RSFE calculations}
+        \item{\textit{bin} - containing scripts related to workflow tools 
+		to help set up alchemical free energy simulations 
+		using Amber Drug Discovery Boost}
+\end{itemize}
+
+%%\setlength{\parindent}{20pt}
+
+We are also in the process of putting documentation up on the Wiki site 
+that will be updated on a regular basis
+- \url{https://gitlab.com/RutgersLBSR/alchemical\_fe/-/wikis/Setup-AFE\_AMBER\_DD\_BOOST}
 
 
 \vspace{0.1cm}
@@ -273,18 +289,17 @@ to analyze the free energy simulations using \textit{FE-ToolKit}.
 \vspace{0.1cm}
 
 Following conditions must be met before using the Workflow Tools -
-\renewcommand{\labelenumi}{\Roman{enumi}}
-\begin{enumerate}
+\begin{itemize}
 	\item {\textit{AMBERHOME needs to be set}}
 	\item{\textit{cpptraj}(available as part of AmberTools) needs to be installed and available in \$PATH}
 	\item{\textit{parmed}(available as part of AmberTools) needs to be installed and available in \$PATH}
 		\begin{itemize}
 			\item For instructions related to download and installation of AmberTools, see \\
-				https://ambermd.org/AmberTools.php
+				\url{https://ambermd.org/AmberTools.php}
 		\end{itemize}
 	\item{\textit{python3} needs to be installed and available in \$PATH}
 	\item{\textit{bin} subdirectory within \textit{Alchemical\_fe} folder needs to be available in \$PATH}
-	\item{\textit{FE-ToolKit} needs to be installed and \textit{local} subdirectory within \textit{FE-ToolKit} folder must be present.}
+	\item{\textit{FE-ToolKit} must be installed when using \wf in "analysis" mode.}
 	\item{\textit{RDKit} needs to be installed and python3 bindings to \textit{RDKit} needs to be available in \$PYTHONPATH}
 	\begin{itemize}
 		\item{\textit{RDKit} can be installed with a package manager}
@@ -308,7 +323,7 @@ Following conditions must be met before using the Workflow Tools -
 				associated ligand(s). \\
 				For further details related to input format please refer to Table~1 \\
 		\end{itemize}
-\end{enumerate}
+\end{itemize}
 
 \vspace{0.1cm}
 \section{Usage of the Workflow Tools}
