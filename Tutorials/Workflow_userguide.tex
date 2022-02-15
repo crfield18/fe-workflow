@@ -292,8 +292,8 @@ to analyze the free energy simulations using \tk{}.
 
 The \wf{} repository contains the following folders:
 \begin{itemize}
-        \item{\textit{Tutorials} - containing tutorials for setting up 
-		AFE with \addb{} using \wf{}}
+	\item{\textit{UserGuide} - containing an user guide (this document) 
+		for setting up AFE with \addb{} using \wf{}}
         \item{\textit{Examples} - containing test cases for RBFE and 
 		RSFE calculations}
 	\item{\textit{bin} - containing scripts related to \wf{}}
@@ -468,11 +468,11 @@ showallcycles=true 				\\
 
 \end{itquote}
 
-Table 1 provides a detailed description of keywords that are specific to this input file for 
+Table~1 provides a detailed description of keywords that are specific to this input file for 
 \textit{setup\_fe}. 
 For keywords/flags that are specific to AMBER20 and AMBER-DD Boost refer to the 
 \href{https://ambermd.org/doc12/Amber20.pdf}{AMBER20 reference manual}
-and Table 2.
+and Table~2.
 
 \vspace{0.1cm}
 \section{File infrastructure created by \textcolor{green}{\textit{setup\_fe}}}
@@ -551,7 +551,7 @@ subdirectory within the \wf{} repository, and execute \textcolor{green}{\textit{
 \begin{landscape}
 \begin{center}
 \begin{longtable}[1]{p{3cm}|p{0.5cm}|p{11cm}|p{4cm}}
-\caption{Keywords associated with the \textit{ProFESSA} workflow} \label{table:keywords} \\
+\caption{Keywords associated with the \textit{ProFESSA} workflow} \label{table:WFKeywords} \\
 
 \hline \multicolumn{1}{c|}{\textbf{Keyword}} & \multicolumn{1}{c|}{\textbf{Value}} & \multicolumn{1}{c|}{\textbf{Description}} & \multicolumn{1}{c}{\textbf{Example}} \\ \hline
 \endfirsthead
@@ -683,6 +683,46 @@ showallcycles      & string          & Specifies if the output should show infor
 \end{center}
 \end{landscape}
 \end{footnotesize}
+
+
+\begin{table}
+\centering
+\caption{The following table lists the keywords that are specific to \addb{}. Brief descriptions are provided. For additional details refer to AMBER20 Reference Manual.}
+\label{table:MDEKeywords}
+\begin{tabular}{|c|c|l|}
+\toprule
+\textbf{Flags}    & \textbf{Entry}       & \multicolumn{1}{c|}{\textbf{Description}}                                                                                                                                                                                                                                                                                                                                                                                               \\
+\hline
+scalpha           & \textit{real number} & \begin{tabular}[c]{@{}l@{}}The $\alpha$ parameter in equations 23.5 and 23.6 in~\\AMBER20 Manual. Default value is 0\end{tabular}                                                                                                                                                                                                                                                                                     \\
+\hline
+scbeta            & \textit{real number} & \begin{tabular}[c]{@{}l@{}}The parameter $\beta$ in equations 23.7 in AMBER20 Manual. \\Default value is 12 A\end{tabular}                                                                                                                                                                                                                                                                                            \\
+\hline
+gti\_add\_sc      & \textit{int}         & \begin{tabular}[c]{@{}l@{}}Flag to control the non-bonded interactions between the~\\common and softcore regions, and within the softcore regions.\\1. AMBER18 default\\2. AMBER20 default\\5. AMBER20 with torsion term scaled\end{tabular}                                                                                                                                                                       \\
+\hline
+        gti\_scale\_beta  & \textit{int}         & \begin{tabular}[c]{@{}l@{}}Flag to control \textit{scbeta} behavior.\\0: default, original \textit{scbeta} behavior\\1. scbeta is defined as unit-less and scaled by $\sigma_{ij}$\end{tabular}                                                                                                                                                                                                                          \\
+\hline
+gti\_cut          & \textit{int}         & \begin{tabular}[c]{@{}l@{}}0: default in versions prior to AMBER20.\\1: default, the non-bond cutoff, defined by \textit{cutoff}, will not have\\effect on the internal softcore non-bonded terms.\end{tabular}                                                                                                                                                                                                    \\
+\hline
+gti\_cut\_sc\_on  & \textit{real number} & \begin{tabular}[c]{@{}l@{}}Threshold distance for switching on of softcore smoothing. If~\\undefined, \textit{gti\_cut\_sc\_on} is set to \textit{cutoff} - 2~\AA. Must be smaller\\than the value of\textit{ gti\_cut\_sc\_off}.\end{tabular}                                                                                                                                                                       \\
+\hline
+gti\_cut\_sc\_off & \textit{real number} & \begin{tabular}[c]{@{}l@{}}Threshold distance for switching off of softcore smoothing.\\Must be smaller than the value of \textit{gti\_cut\_sc\_off}.\end{tabular}                                                                                                                                                                                                                                                 \\
+\hline
+gti\_lam\_sch     & \textit{int}         & \begin{tabular}[c]{@{}l@{}}Flag for $\lambda$-scheduling.\\0: Default, $\lambda$-scheduling is disabled.\\1: $\lambda$-scheduling is enabled.\end{tabular}                                                                                                                                                                                                                                                                           \\
+\hline
+gti\_ele\_sc      & \textit{int}         & \begin{tabular}[c]{@{}l@{}}Flag for the electrostatic softcore potentials.\\0: Default when \textit{gti\_lam\_sch=}0, smoothstep function is not~utilized.\\1: SSC(2) is utilized for vdW interactions.\end{tabular}                                                                                                                                                                                               \\
+\hline
+gti\_cut\_sc      & \textit{int}         & \begin{tabular}[c]{@{}l@{}}Flag to determine if tail smoothing will be applied to softcore potentials.\\0: Default, no tail smoothing to SC\\1: add smoothing to SC-vdW, beginning at \textit{gti\_cut\_sc\_on} and ending at~\\\textit{gti\_cut\_sc\_off}, using SSC(2).\\2: add smoothing to SC-vdW and SC-elec, beginning at\textit{ gti\_cut\_sc\_on}\\and ending at \textit{gti\_cut\_sc\_off}.\end{tabular}  \\
+\hline
+        gti\_ele\_exp     & \textit{int}         & The exponent of $r_{elec,sc}(m)$ in the softcore function; the default value is 2.                                                                                                                                                                                                                                                                                                                                      \\
+\hline
+        gti\_vdw\_exp     & \textit{int}         & The exponent of $r_{vdw,sc}(n)$ in the softcore function; the default value is 6.                                                                                                                                                                                                                                                                                                                                      \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+
 
 \bibliographystyle{plainnat}
 \bibliography{YorkLib,TmpLib}
