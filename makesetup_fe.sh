@@ -42,18 +42,18 @@ if [ ! -f "${path}/setup_directives" ]; then
 
 	# default locations
 	dir=$(basename $(dirname $(dirname `pwd`)))
-	if [ -d `pwd`/FE-MDEngine ]; then
-		MDEngine=`pwd`/FE-MDEngine/install_serial
+	if [ -d $(dirname `pwd`)/FE-MDEngine ]; then
+		MDEngine=$(dirname `pwd`)/FE-MDEngine/install_serial
 	else
 		read -p "Where is FE-MDEngine installed (serial)? " MDEngine
 	fi
-	if [ -d `pwd`/FE-ToolKit ]; then
-		ToolKit=`pwd`/FE-ToolKit
+	if [ -d $(dirname `pwd`)/FE-ToolKit ]; then
+		ToolKit=$(dirname `pwd`)/FE-ToolKit
 	else
 		read -p "What is FE-ToolKit installed? " ToolKit	
 	fi
-        if [ -d `pwd`/FE-Workflow ]; then
-                Workflow=`pwd`/FE-Workflow
+	if [ -d $(dirname `pwd`)/FE-Workflow ]; then
+		Workflow=$(dirname `pwd`)/FE-Workflow
         else
                 read -p "What is FE-Workflow installed? " Workflow
         fi
