@@ -42,17 +42,24 @@ if [ ! -f "${path}/setup_directives" ]; then
 
 	# default locations
 	dir=$(basename $(dirname $(dirname `pwd`)))
-	if [ -d $(dirname $(dirname `pwd`))/FE-MDEngine ]; then
-		MDEngine=$(dirname $(dirname `pwd`))/FE-MDEngine/install_serial
+	if [ -d `pwd`/FE-MDEngine ]; then
+		MDEngine=`pwd`/FE-MDEngine/install_serial
 	else
 		read -p "Where is FE-MDEngine installed (serial)? " MDEngine
 	fi
-	if [ -d $(dirname $(dirname `pwd`))/FE-ToolKit ]; then
-		ToolKit=$(dirname $(dirname `pwd`))/FE-ToolKit
+	if [ -d `pwd`/FE-ToolKit ]; then
+		ToolKit=`pwd`/FE-ToolKit
 	else
 		read -p "What is FE-ToolKit installed? " ToolKit	
 	fi
-	Workflow=$(dirname `pwd`)
+        if [ -d `pwd`/FE-Workflow ]; then
+                Workflow=`pwd`/FE-Workflow
+        else
+                read -p "What is FE-Workflow installed? " Workflow
+        fi
+	MDEngine=$(echo "$(cd "$(dirname "${MDEngine}")"; pwd)/$(basename "${MDEngine}")")
+	ToolKit=$(echo "$(cd "$(dirname "${ToolKit}")"; pwd)/$(basename "${ToolKit}")")
+	Workflow=$(echo "$(cd "$(dirname "${Workflow}")"; pwd)/$(basename "${Workflow}")")
         cat << EOF2 > ${path}/setup_directives
 MDEngine ${MDEngine}
 ToolKit ${ToolKit}
@@ -185,10 +192,32 @@ cd \$pathhere
 EOF2
 
 chmod a+x setup_fe
-printf "%s \n" "source ${MDEngine}/amber.sh" 			>  ${path}/FE-Workflow.bashrc
-printf "%s \n" "export PATH=\$PATH:${Workflow}/bin"		>> ${path}/FE-Workflow.bashrc
-printf "%s \n" "export PATH=\$PATH:${ToolKit}/local/bin" 	>> ${path}/FE-Workflow.bashrc
+#printf "%s \n" "source ${MDEngine}/amber.sh" 			>  ${path}/FE-Workflow.bashrc
+#printf "%s \n" "export PATH=\$PATH:${Workflow}/bin"		>> ${path}/FE-Workflow.bashrc
+#printf "%s \n" "export PATH=\$PATH:${ToolKit}/local/bin" 	>> ${path}/FE-Workflow.bashrc
 
+cat << EOF3 > ${path}/FE-Workflow.bashrc
+#!/bin/bash
+
+printf "%s \n\n" "Adding ${Workflow}/bin to \\\$PATH..."
+export PATH=\$PATH:${Workflow}/bin
+
+printf "%s \n\n" "Sourcing amber.sh available in ${MDEngine}..."
+source ${MDEngine}/amber.sh
+
+if [ -f "\$MODULEPATH/fetoolkit.module" ]; then 
+	printf "%s \n\n" "Loading fetoolkit.module available in \$MODULEPATH..."
+	module load fetoolkit
+elif [ -f ${ToolKit}/fetoolkit.bashrc ]; then
+	printf "%s \n\n" "Sourcing fetoolkit.bashrc available in ${ToolKit}..."
+	source ${ToolKit}/fetoolkit.bashrc
+else
+	printf "%s \n" "Unable to load ${ToolKit} environment. Currently ${ToolKit} is unusable."
+	printf "%s \n" "After successful ${ToolKit} installation, a ${ToolKit}/fetoolkit.bashrc file is created."
+	printf "%s \n" "The ${ToolKit}/fetoolkit.bashrc file will also have information on how use ${ToolKit} as a module."
+	printf "%s \n" "In that case, the file fetoolkit.module should be available in \$MODULEPATH."
+fi
+EOF3
 
 printf "%s \n" " "
 printf "%s \n" "***************************************************************************************************************************"
