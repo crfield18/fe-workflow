@@ -192,9 +192,6 @@ cd \$pathhere
 EOF2
 
 chmod a+x ${Workflow}/bin/setup_fe
-#printf "%s \n" "source ${MDEngine}/amber.sh" 			>  ${path}/FE-Workflow.bashrc
-#printf "%s \n" "export PATH=\$PATH:${Workflow}/bin"		>> ${path}/FE-Workflow.bashrc
-#printf "%s \n" "export PATH=\$PATH:${ToolKit}/local/bin" 	>> ${path}/FE-Workflow.bashrc
 
 cat << EOF3 > ${path}/FE-Workflow.bashrc
 #!/bin/bash
