@@ -103,7 +103,7 @@ else
 fi
 
 # write setup_fe
-cat << EOF2 > setup_fe
+cat << EOF2 > ${Workflow}/bin/setup_fe
 #!/bin/bash
 
 ##########################################
@@ -191,7 +191,7 @@ cd \$pathhere
 
 EOF2
 
-chmod a+x setup_fe
+chmod a+x ${Workflow}/bin/setup_fe
 #printf "%s \n" "source ${MDEngine}/amber.sh" 			>  ${path}/FE-Workflow.bashrc
 #printf "%s \n" "export PATH=\$PATH:${Workflow}/bin"		>> ${path}/FE-Workflow.bashrc
 #printf "%s \n" "export PATH=\$PATH:${ToolKit}/local/bin" 	>> ${path}/FE-Workflow.bashrc
