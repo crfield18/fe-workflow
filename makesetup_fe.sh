@@ -196,23 +196,25 @@ chmod a+x ${Workflow}/bin/setup_fe
 cat << EOF3 > ${path}/FE-Workflow.bashrc
 #!/bin/bash
 
-printf "%s \n\n" "Adding ${Workflow}/bin to \\\$PATH..."
+printf "\n\n%s \n\n" "ADDING ${Workflow}/bin to \\\$PATH..."
 export PATH=\$PATH:${Workflow}/bin
 
-printf "%s \n\n" "Sourcing amber.sh available in ${MDEngine}..."
+printf "%s \n\n" "SOURCING amber.sh AVAILABLE IN ${MDEngine}..."
 source ${MDEngine}/amber.sh
 
 if [ -f "\$MODULEPATH/fetoolkit.module" ]; then 
-	printf "%s \n\n" "Loading fetoolkit.module available in \$MODULEPATH..."
-	module load fetoolkit
+	printf "%s \n\n" "fetoolkit.module IS AVAILABLE TO LOAD IN \$MODULEPATH..."
+	printf "%s \n\n" "IF USING ${Workflow} FOR ANALYSIS, ISSUE THE FOLLOWING COMMAND"
+	printf "%s \n\n" "module load fetoolkit"
 elif [ -f ${ToolKit}/fetoolkit.bashrc ]; then
-	printf "%s \n\n" "Sourcing fetoolkit.bashrc available in ${ToolKit}..."
-	source ${ToolKit}/fetoolkit.bashrc
+	printf "%s \n\n" "fetoolkit.bashrc IS AVAILABLE TO SOURCE IN ${ToolKit}..."
+	printf "%s \n\n" "IF USING ${Workflow} FOR ANALYSIS, ISSUE THE FOLLOWING COMMAND"
+	printf "%s \n\n" "source ${ToolKit}/fetoolkit.bashrc"
 else
-	printf "%s \n" "Unable to load ${ToolKit} environment. Currently ${ToolKit} is unusable."
-	printf "%s \n" "After successful ${ToolKit} installation, a ${ToolKit}/fetoolkit.bashrc file is created."
-	printf "%s \n" "The ${ToolKit}/fetoolkit.bashrc file will also have information on how use ${ToolKit} as a module."
-	printf "%s \n" "In that case, the file fetoolkit.module should be available in \$MODULEPATH."
+	printf "%s \n" "AFTER SUCCESSFUL ${ToolKit} INSTALLATION, A ${ToolKit}/fetoolkit.bashrc FILE IS CREATED."
+	printf "%s \n" "${ToolKit}/fetoolkit.bashrc SHOULD BE SOURCED BEFORE USING ${Workflow} FOR ANALYSIS."
+	printf "%s \n" "The ${ToolKit}/fetoolkit.bashrc FILE WILL ALSO HAVE INFORMATION ON HOW TO USE ${ToolKit} AS A MODULE."
+	printf "%s \n" "IN THAT CASE, THE FILE fetoolkit.module SHOULD BE AVAILABLE IN \$MODULEPATH and SHOULD BE LOADED BEFORE ANALYSIS."
 fi
 EOF3
 
