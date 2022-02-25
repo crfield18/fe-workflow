@@ -614,7 +614,11 @@ translist          & list of strings & A list of desired transformations or edge
 \hline
 ticalc             & string          & Specifies nature of calculation. Acceptable values - \textit{rbfe}, \textit{rsfe}, \textit{asfe}.   & ticalc=rbfe  \\ 
 \hline
-nlambda            & integer         & Number of lambda windows in TI calculation. Acceptable values - positive integers.   & nlambda=21   \\ 
+nlambda            & integer         & Number of lambda windows in TI calculation. Acceptable values - positive integers.   & nlambda=5   \\ 
+\hline
+	lamschedule        & string          & Specifies if user-defined $\lambda$ schedule will be used. Acceptable values - \textit{yes}, \textit{no}.   & lamschedule=yes   \\ 
+\hline
+	lams        & list of floats          & Specifies the specific $\lambda$ values that will be used when \textit{lamschedule} is set to \textit{yes}.  & lams=(0 0.25 0.5 0.75 1)   \\ 
 \hline
 protocol           & string          & Protocol for running TI simulations. Acceptable value - \textit{unified}.     & protocol=unified     \\ 
 \hline
