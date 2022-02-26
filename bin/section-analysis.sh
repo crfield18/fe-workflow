@@ -57,7 +57,7 @@ for i in "${translist[@]}";do
 	done
 done
 rm -rf mdouts2dats.py
-exit 0
+
 
 if [ "${exptdatafile}" == "skip" ]; then
         truncate -s0 Expt.dat
