@@ -72,14 +72,14 @@ cp ${exptdatafile} results/
 cd results
 	write_gmbar ${ticalc}
 
-	#######################################
-	export PATH="$PATH:${pathTOFEToolKit}/local/bin"
-	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pathTOFEToolKit}/local/lib"
-	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pathTOFEToolKit}/local/lib64"
-	export PYTHONPATH="${pathTOFEToolKit}/local/lib/python3.8/site-packages"
-	echo "${PYTHONPATH}"
-	source ${pathTOFEToolKit}/local/bin/activate
-	#######################################
+### #######################################
+### export PATH="$PATH:${pathTOFEToolKit}/local/bin"
+### export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pathTOFEToolKit}/local/lib"
+### export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pathTOFEToolKit}/local/lib64"
+### export PYTHONPATH="${pathTOFEToolKit}/local/lib/python3.8/site-packages"
+### echo "${PYTHONPATH}"
+ 	source ${pathTOFEToolKit}/local/conda/bin/activate
+### #######################################
 
 	if [ "${bidirection}" == "true" ]; then ntrials=$(($ntrials*2)); fi
 
@@ -87,10 +87,9 @@ cd results
 	graphmbarargs=(--nboot=1 --fc=10 --guess=2)
 	#graphmbarargs=(--nboot=200 --fc=10 --guess=2)
 
-	if [ "${ccc}" == "true" ] && [ "${ccc_ddG}" == "true" ]; then gmbarargs=("--ddG" "${gmbarargs[@]}"); fi
+	if [ "${ccc}" == "true" ]; then gmbarinpargs=("-c" "${gmbarargs[@]}"); else gmbarinpargs=("${gmbarargs[@]}"); fi
 	if [ "${bar}" == "true" ]; then gmbarargs=("--bar" "${gmbarargs[@]}"); fi
-	if [ "${showallcycles}" == "true" ]; then gmbarargs=("--super" "${gmbarargs[@]}"); fi
-	if [ "${ccc}" == "false" ]; then gmbarinpargs=("--nocyc" "${gmbarargs[@]}"); else gmbarinpargs=("${gmbarargs[@]}"); fi
+
 
 	#echo "python3 ./gmbar.py $(echo ${gmbarargs[*]}) -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) > graphmbar.inp" 
 	python3 ./gmbar.py $(echo ${gmbarinpargs[*]}) -t $(seq 1 ${ntrials} | xargs -n ${ntrials} echo) > graphmbar.inp

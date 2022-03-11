@@ -710,15 +710,11 @@ bar                & string          & Specifies if BAR is going to be used for 
 \hline
 ccc                & string          & Specifies if cycle closure corrections are to be applied during analysis. Acceptable values - \textit{true}, \textit{false}. & ccc=true  \\ 
 \hline
-ccc\_ddG           & string          & Specifies if cycle closures will be applied to \textit{"complex" - "aqueous"} delta delta Gs instead of \textit{"complex"} and \textit{"aqueous"} delta Gs, independently. Acceptable values - \textit{true}, \textit{false}. & ccc\_ddG=true  \\ 
-\hline
 start              & float           & Specifies the percentage of data to ignore from the beginning of TI production runs. Acceptable values - float numbers ranging from 0 to 100, and less than \textit{stop}.  & start=20.0  \\ 
 \hline
 stop               & float           & Specifies the percentage of data to read from the start of TI production runs. Acceptable values - float numbers ranging from 0 to 100, and greater than \textit{start}.  & stop=100.00   \\ 
 \hline
 check\_convergence & string          & Specifies if check of data convergence will be carried out during analysis. Acceptable values - \textit{true}, \textit{false}.\newline If \textit{check\_convergence} is set to \textit{true}, the analysis is carried out multiple times, for a range of \textit{start} and \textit{stop} values. & check\_convergence=true  \\
-\hline
-showallcycles      & string          & Specifies if the output should show information on all possible cycles within the given transformation network. Acceptable values - \textit{true}, \textit{false}. & showallcycles=true  \\
 \hline
 \end{longtable}
 \end{center}

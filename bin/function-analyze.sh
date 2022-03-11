@@ -299,121 +299,116 @@ function write_gmbar {
 	#nlambda=$1; shift
 	ticalc=$1; shift
 
+
+        cat << EOF > gmbar.py
+#!/usr/bin/env python3
+
+import graphmbar as gmbar
+
+
+class MySetup(gmbar.Analyzer):
+
+    def __init__(self,args):
+        super().__init__(args.expt,args.archive,args.bar,args.trials)
+        self.SetRefMol(args.lead)
+        self.SetExptEdgeConstraints(args.exptcon)
+
+
+    # ######################################################################
+    #
+    # These routines are specific to the directory structure of this project
+    #
+    # ######################################################################
+
+
+    def getdir( self, transform, env, stage, trial ):
+        """
+        transform -- string, name of the A->B transformation
+        env -- string, the environment. This is either: "solvated" or "complex"
+        stage -- string, the transformation step; e.g., "recharge", 
+                 "decharge", "vdw"
+        trial -- string, the independent trial
+        
+        returns a directory name where the efep_*_*.dat files are located
+        """
+EOF
 	if [ "${ticalc}" == "rbfe" ]; then
-        	cat << EOF > gmbar.py
-#!/usr/bin/env python3
-
-# ######################################################################
-#
-# These routines are specific to the directory structure of this project
-#
-# ######################################################################
-
-
-def getdir( transform, env, stage, trial ):
-    """
-    transform -- string, name of the A->B transformation
-    env -- string, the environment. This is either: "solvated" or "complex"
-    stage -- string, the transformation step; e.g., "recharge", "decharge", "vdw"
-    trial -- string, the independent trial
-
-    returns a directory name where the efep_*_*.dat files are located
-    """
-    if env == "complex":
-        myenv = "com"
-    elif env == "solvated":
-        myenv = "aq"
-    return "data/%s/%s/%i/"%(transform,myenv,int(trial))
+		cat << EOF >> gmbar.py
+        if env == "complex":
+            myenv = "com"
+        elif env == "solvated":
+            myenv = "aq"
+        return "data/%s/%s/%i/"%(transform,myenv,int(trial))
 EOF
-
 	elif [ "${ticalc}" == "rsfe" ]; then
-                cat << EOF > gmbar.py
-#!/usr/bin/env python3
-
-# ######################################################################
-#
-# These routines are specific to the directory structure of this project
-#
-# ######################################################################
-
-
-def getdir( transform, env, stage, trial ):
-    """
-    transform -- string, name of the A->B transformation
-    env -- string, the environment. This is either: "solvated" or "complex"
-    stage -- string, the transformation step; e.g., "recharge", "decharge", "vdw"
-    trial -- string, the independent trial
-
-    returns a directory name where the efep_*_*.dat files are located
-    """
-    if env == "complex":
-        myenv = "aq"
-    elif env == "solvated":
-        myenv = "vac"
-    return "data/%s/%s/%i/"%(transform,myenv,int(trial))
+		cat << EOF >> gmbar.py
+        if env == "complex":
+            myenv = "aq"
+        elif env == "solvated":
+            myenv = "vac"
+        return "data/%s/%s/%i/"%(transform,myenv,int(trial))
 EOF
 
-    	fi
-	
+        fi
 
 
 	cat << EOF >> gmbar.py
 
-
-def getedges( arcfiles ):
-    """
-    arcfiles -- dict, keys are filenames and values are file sizes
+    def getedges( self, arcfiles ):
+        """
+        arcfiles -- dict, keys are filenames and values are file sizes
                 If an archive was not read, then this dict is empty
                 and the files should be examined on the OS filesystem
 
-    returns a list (strings) of transformation names using the format: A~B
-    for the transformation A->B
-    """
+        returns a list (strings) of transformation names using the format: A~B
+        for the transformation A->B
+        """
 
-    import glob
-    import os.path
-    import re
+        import glob
+        import os.path
+        import re
 
-    edges=[]
+        edges=[]
 
-    if len([fname for fname in arcfiles]) > 0:
-        #
-        # Look at files in archive
-        #
-        p = re.compile(r"dats/1/free_energy/(.*)_ambest/.*")
-        for fname in arcfiles:
-            m = p.match(fname)
-            if m:
-                if m.group(1) not in edges:
-                    edges.append(m.group(1))
-    else:
-        #
-        # Look at files on OS filesystem
-        #
-        fs = glob.glob( "data/*~*" )
-        for f in fs:
-            cs = f.split("/")
-            c = cs[-1]
-            c = c.replace("-","~")
-            edges.append(c)
-    edges.sort()
-    return edges
+        if len([fname for fname in arcfiles]) > 0:
+            #
+            # Look at files in archive
+            #
+            p = re.compile(r"dats/1/free_energy/(.*)_ambest/.*")
+            for fname in arcfiles:
+                m = p.match(fname)
+                if m:
+                    if m.group(1) not in edges:
+                        edges.append(m.group(1))
+        else:
+            #
+            # Look at files on OS filesystem
+            #
+            fs = glob.glob( "data/*~*" )
+            for f in fs:
+                cs = f.split("/")
+                c = cs[-1]
+                c = c.replace("-","~")
+                edges.append(c)
+        edges.sort()
+        return edges
 
 
-def getstagedlambdas():
-    """
-    returns a dict. The dict value is a list. The list elements are
-    strings. The strings are values/labels for the lambda values used
-    for the transformation. The keys you choose here are the "stage"
-    values in getdir(), above
-    """
-    lams = {}
+
+    def getstagedlambdas(self):
+         """
+         returns a dict. The dict value is a list. The list elements are
+         strings. The strings are values/labels for the lambda values used
+         for the transformation. The keys you choose here are the "stage"
+         values in getdir(), above
+         """
+         lams = {}
 EOF
 
 
 #lams=($(gen_lambdas ${nlambda}))
 
-printf '    lams["unified"] = [ ' >> gmbar.py
+printf '         lams["unified"] = [ ' >> gmbar.py
 
 c=0
 
@@ -433,7 +428,7 @@ done
 printf "\n" >> gmbar.py
 
 cat << EOF >> gmbar.py
-    return lams
+         return lams
 
 
 
@@ -453,48 +448,41 @@ if __name__ == "__main__":
     import pickle
     from collections import OrderedDict as odict
     from collections import defaultdict as ddict
-    import graphmbar as gmb
 
-    parser = argparse.ArgumentParser \\
+    parser = argparse.ArgumentParser \
         ( formatter_class=argparse.RawDescriptionHelpFormatter,
           description="""
 graphmbar input file generator and output file analyzer
 """ )
 
-    parser.add_argument \\
-        ("-n","--nocyc",
-         help="If present, then no cycle constraints",
-         action='store_true',
-         required=False )
-
-    parser.add_argument \\
+    parser.add_argument \
         ("-f","--expt",
          help="Filename containing experimental dG values",
          type=str,
          required=True )
 
-    parser.add_argument \\
+    parser.add_argument \
         ("-x","--exptcon",
          help="If present, then apply experimental ddG constraint between the two specified molecule names. Each instance of --exptcon takes two arguments.",
          nargs=2,
          type=str,
          action='append' )
 
-    parser.add_argument \\
+    parser.add_argument \
         ("-l","--lead",
          help="string, name of lead ligand. If empty "", then the molecule with the most negative experimental free energy is chosen as the lead ligand.",
          type=str,
          default="",
          required=False )
 
-    parser.add_argument \\
+    parser.add_argument \
         ("-a","--analyze",
          help="If present, then analyze the output file, otherwise, write an input file",
          type=str,
          default="",
          required=False)
 
-    parser.add_argument \\
+    parser.add_argument \
         ("-t","--trials",
          help="a list of trials (strings) to analyze. Default: [\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]",
          type=str,
@@ -502,110 +490,59 @@ graphmbar input file generator and output file analyzer
          default=["1","2","3","4","5","6","7","8","9","10"],
          required=False)
 
-    parser.add_argument \\
+    parser.add_argument \
         ("-b","--bar",
          help="If present, then only check for files necessary for BAR calculations, otherwise make sure all files necessary for MBAR are available",
          default=False,
          action='store_true',
          required=False)
 
-    parser.add_argument \\
+    parser.add_argument \
         ("-z","--archive",
          help="If present, then read files from the compressed archive",
          type=str,
          default="",
          required=False)
 
-    parser.add_argument \\
-        ("-p","--pickle",
-         help="If present, then read (if file exists) or write (if file does not exist) the information necessary to avoid examining the OS filesystem nor archive. Only useful if you plan on running the script on the same data many times",
-         type=str,
-         default="",
-         required=False)
+    #################################
 
-
-    parser.add_argument \\
-        ("-W","--wang",
-         help="If present, then output analysis should also include constraint enforcement based on the maximum likelihood optimization described in Wang, L.; Deng, Y.; Knight, J. L.; Wu, Y.; Kim, B.; Sherman, W.; Shelly, J. C.; Lin, T.; Abel, R.; J. Chem. Theory Comput. 2013, 9, 1282-1293.",
-         default=False,
+    parser.add_argument \
+        ("-r","--rescyc",
+         help="If present, then explicitly restraint minimum-length cycle constraints",
          action='store_true',
-         required=False)
+         required=False )
 
-
-    parser.add_argument \\
-        ("-d","--ddG",
-         help="If present, then ddG cycle restraints are used (complexed-solvated) rather than separate cycle conditions for each phase)",
-         default=False,
+    parser.add_argument \
+        ("-c","--concyc",
+         help="If present, then implicitly constrain all cycles using slack variables",
          action='store_true',
-         required=False)
+         required=False )
 
 
-    parser.add_argument \\
-        ("-s","--super",
-         help="If present, include all possible cycles, not just those that do not encircle smaller cycles",
-         default=False,
-         action='store_true',
-         required=False)
+    # parser.add_argument \
+    #     ("-p","--pickle",
+    #      help="If present, then read (if file exists) or write (if file does not exist) the information necessary to avoid examining the OS filesystem nor archive. Only useful if you plan on running the script on the same data many times",
+    #      type=str,
+    #      default="",
+    #      required=False)
 
+
+    # parser.add_argument \
+    #     ("-W","--wang",
+    #      help="If present, then output analysis should also include constraint enforcement based on the maximum likelihood optimization described in Wang, L.; Deng, Y.; Knight, J. L.; Wu, Y.; Kim, B.; Sherman, W.; Shelly, J. C.; Lin, T.; Abel, R.; J. Chem. Theory Comput. 2013, 9, 1282-1293.",
+    #      default=False,
+    #      action='store_true',
+    #      required=False)
 
 
     args = parser.parse_args()
 
+    ana = MySetup(args)
 
-    stagedlams = getstagedlambdas()
-
-    pickleexists = False
-    if len(args.pickle) > 0:
-        if os.path.exists(args.pickle):
-            pickleexists = True
-
-
-
-    arcfiles = {}
-    if pickleexists:
-
-        arr = pickle.load( open( args.pickle, "rb" ) )
-        edges = arr[0]
-        exptvalues = arr[1]
-        trials = arr[2]
-
+    if args.analyze:
+        ana.AnalyzeOutput( args.analyze )
     else:
-
-        if len(args.archive) > 0:
-            arcfiles = gmb.ReadArchive(args.archive)
-
-        edges = getedges(arcfiles)
-
-        exptvalues = gmb.GetExpt(edges,args.expt)
-
-        trials = gmb.FindAvailableTrials(edges,stagedlams,\\
-                                         args.trials,getdir,\\
-                                         args.bar,arcfiles)
-        foo = {}
-        for a in trials:
-            foo[a] = {}
-            for b in trials[a]:
-                foo[a][b] = trials[a][b]
-        if len(args.pickle) > 0:
-            pickle.dump( [edges,exptvalues,foo], open( args.pickle, "wb" ) )
-
-
-
-
-    if args.analyze == "":
-
-        gmb.WriteInp(edges,stagedlams,trials,getdir,\\
-                     args.nocyc,args.exptcon,exptvalues,\\
-                     ddG=args.ddG,withsupercyc=args.super)
-
-
-    else:
-
-        vs = gmb.ProcessOut(args.analyze,edges,stagedlams,trials,\\
-                            args.nocyc,args.exptcon,exptvalues,\\
-                            args.lead,args.wang,\\
-                            ddG=args.ddG,withsupercyc=args.super)
-
+        ana.WriteInput(sys.stdout,args.rescyc,args.concyc)
 
 
 #print(getstagedlambdas())

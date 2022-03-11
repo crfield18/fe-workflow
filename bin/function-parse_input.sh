@@ -187,11 +187,9 @@ path_to_data=data
 exptdatafile=cdk2_expt.dat
 bar=true
 ccc=true
-ccc_ddG=true
 start=0.0
 stop=100.0
 check_convergence=true
-showallcycles=true
 #######################################################################
 
 EOFN
@@ -417,10 +415,6 @@ EOFN
                         printf "\n\n!!!! ERROR !!!!\n\n"
                         printf "\n\n${ccc} must be set to \"true\" or \"false\"\n\n"
                 fi
-                if [ "${ccc_ddG}" != "true" ] && [ "${ccc_ddG}" != "false" ]; then
-                        printf "\n\n!!!! ERROR !!!!\n\n"
-                        printf "\n\n${ccc_ddG} must be set to \"true\" or \"false\"\n\n"
-                fi
 
 		if (( $(echo "$start < 0" | bc -l) )) || (( $(echo "$stop < 0" | bc -l) )) || (( $(echo "$start > 100" | bc -l) )) || (( $(echo "$stop > 100" | bc -l) )) || (( $(echo "$start > $stop" | bc -l) )); then
 			printf "\n\n!!!! ERROR !!!!\n\n"
@@ -430,10 +424,6 @@ EOFN
                 if [ "${check_convergence}" != "true" ] && [ "${check_convergence}" != "false" ]; then
                         printf "\n\n!!!! ERROR !!!!\n\n"
                         printf "\n\n${check_convergence} must be set to \"true\" or \"false\"\n\n"
-                fi
-                if [ "${showallcycles}" != "true" ] && [ "${showallcycles}" != "false" ]; then
-                        printf "\n\n!!!! ERROR !!!!\n\n"
-                        printf "\n\n${showallcycles} must be set to \"true\" or \"false\"\n\n"
                 fi
 		if [ "${ticalc}" == "rbfe" ]; then 
 			slist=(com aq)
