@@ -283,7 +283,12 @@ if [ "${setupmode}" == 0 ]; then
 			for i in "${!translist[@]}";do
                                 stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
 				for s in ${slist[@]}; do
-					for dir in "${stA}~${stB}" "${stB}~${stA}"; do
+					if [ "${ticalc}" != "asfe" ]; then
+						folders=("${stA}~${stB}" "${stB}~${stA}")
+					else
+						folders=("${translist[$i]}")
+					fi
+					for dir in "${folders[@]}"; do
 						if [ -d "${path}/${system}/${protocol}/run/${dir}/${s}" ]; then
 							cd ${path}/${system}/${protocol}/run/${dir}/${s}
 
