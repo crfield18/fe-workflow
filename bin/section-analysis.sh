@@ -87,6 +87,7 @@ cd results
 	graphmbarargs=(--nboot=1 --fc=10 --guess=2)
 	#graphmbarargs=(--nboot=200 --fc=10 --guess=2)
 
+	if [ "${lead_ligand}" != "default" ]; then gmbarargs=("-l ${lead_ligand}" "${gmbarargs[@]}"); fi
 	if [ "${ccc}" == "true" ]; then gmbarinpargs=("-c" "${gmbarargs[@]}"); else gmbarinpargs=("${gmbarargs[@]}"); fi
 	if [ "${bar}" == "true" ]; then gmbarargs=("--bar" "${gmbarargs[@]}"); fi
 

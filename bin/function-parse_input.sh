@@ -190,6 +190,7 @@ ccc=true
 start=0.0
 stop=100.0
 check_convergence=true
+lead_ligand=default
 #######################################################################
 
 EOFN
@@ -279,29 +280,31 @@ EOFN
 	if [ "${bidirection_aq}" != "true" ] && [ "${bidirection_aq}" != "false" ]; then printf "\n\n\"bidirection_aq\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	if [ "${bidirection_com}" != "true" ] && [ "${bidirection_com}" != "false" ]; then printf "\n\n\"bidirection_com\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	
+
+	########################
+	# parse intended transformations and identify unique ligands
+	if [ "${ticalc}" == "rbfe" ] || [ "${ticalc}" == "rsfe" ]; then
+		for i in "${!translist[@]}";do
+	        	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
+	        	listA+=("${stA}"); listB+=("${stB}")
+			translistrev+=("${stB}~${stA}")
+		done
+		listligs+=(${listA[@]} ${listB[@]})
+		uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+	else
+		for i in "${!translist[@]}";do
+			if grep -q '~' <<< "${translist[$i]}"; then printf "\n\n The character '~' is present is ${translist[$i]}. For \"ticalc\"=asfe, translist should contain a list of ligand molecules.\n\n" && exit 0; fi
+			listligs+=("${translist[$i]}")
+			uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+		done
+	fi
+	########################
+
 	if [ "${stage}" == "setup" ]; then
 
 		# ensure path_to_input is absolute and check if input directories are present
 		if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
 		
-		########################
-		########################
-		# check input files
-		if [ "${ticalc}" == "rbfe" ] || [ "${ticalc}" == "rsfe" ]; then
-			for i in "${!translist[@]}";do
-		        	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
-		        	listA+=("${stA}"); listB+=("${stB}")
-				translistrev+=("${stB}~${stA}")
-			done
-			listligs+=(${listA[@]} ${listB[@]})
-			uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-		else
-			for i in "${!translist[@]}";do
-				if grep -q '~' <<< "${translist[$i]}"; then printf "\n\n The character '~' is present is ${translist[$i]}. For \"ticalc\"=asfe, translist should contain a list of ligand molecules.\n\n" && exit 0; fi
-				listligs+=("${translist[$i]}")
-				uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-			done
-		fi
 		########################
 		
 		if [ "${ticalc}" == "rbfe" ]; then
@@ -431,6 +434,15 @@ EOFN
 			slist=(aq vac)
 		else
 			slist=(aq)
+		fi
+		if [ "${lead_ligand}" == "default" ]; then
+			printf "\n\nLigand free energies will be expressed with respect to ligand with lowest free energy \n\n"
+		elif [[ ! " ${uniqueligs[*]} " =~ " ${lead_ligand} " ]]; then
+			printf "\n\nLead ligand provided \"${lead_ligand}\" is not present in the list of transformations specified by the variable \"translist\" \n"
+			printf "Ligand free energies will be expressed with respect to ligand with lowest free energy \n\n"
+			lead_ligand="default"
+		else
+			printf "\n\nLigand free energies will be expressed with respect to ligand \"${lead_ligand}\" \n\n"
 		fi
 	fi
 
