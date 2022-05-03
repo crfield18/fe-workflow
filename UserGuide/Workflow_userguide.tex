@@ -335,7 +335,7 @@ Following conditions must be met before using the \wf{} -
 	\item{AMBER should be installed and \textit{AMBERHOME} should be defined. The AmberTools \\
 		\textit{cpptraj} and \textit{parmed} are used by \wf{} during the setup process.}
 		\begin{itemize}
-			\item We recommend installing \addb{} that comes with AmberTools21, however \\
+			\item We recommend installing AmberTools21 that comes with \addb{}, however \\
 				a standalone installation of AmberTools21 should also work.
 			\item For instructions related to download and installation of AmberTools, see \\
 				\url{https://ambermd.org/AmberTools.php}
@@ -438,7 +438,7 @@ lff=gaff2					\\
 wm=tip4pew					\\
 mdboxshape=cubic				\\
 
-nlambda=11  					\\
+nlambda=25  					\\
 lamschedule=yes					\\
 lams=(0 0.176834 0.229764 0.269379 0.302697 0.33229 0.359436 0.384886 0.40913 0.432518 0.455318 0.477748 0.5 0.522252 0.544682 0.567482 0.59087 0.615114 0.640564 0.66771 0.697303 0.730621 0.770236 0.823166 1) \\
 protocol=unified 				\\
@@ -478,11 +478,9 @@ path\_to\_data=data 				\\
 exptdatafile=skip 				\\
 bar=true 					\\
 ccc=false 					\\
-ccc\_ddG=true 					\\
 start=0.0 					\\
 stop=100.0 					\\
 check\_convergence=true 			\\
-showallcycles=true 				\\
 
 }
 
@@ -504,7 +502,7 @@ in the \textit{input} file.
 The \textcolor{purple}{"system"} folder will have two subdirectories, \textcolor{purple}{setup} 
 and \textcolor{purple}{run}. The former (\textcolor{purple}{setup}) will house the  various intermediate 
 files that were generated and used in creating 
-the final input files, while the latter (\textcolor{purple}{"run"}) will contain 
+the final input files, while the latter (\textcolor{purple}{run}) will contain 
 independent subdirectories corresponding 
 to each entry (transformation) in the keyword \textit{"translist"} in the \textit{input} file. These 
 subdirectories that will have the same naming convention as provided in the \textit{input} file, 
