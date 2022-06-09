@@ -1,17 +1,17 @@
 !!index array str
  "LIG"
 !entry.LIG.unit.atoms table  str name  str type  int typex  int resx  int flags  int seq  int elmnt  dbl chg
- "C1" "c3" 0 1 131072 1 6 -0.108400
- "H2" "hc" 0 1 131072 2 1 0.027100
- "H3" "hc" 0 1 131072 3 1 0.027100
- "H4" "hc" 0 1 131072 4 1 0.027100
- "H5" "hc" 0 1 131072 5 1 0.027100
+ "C" "c3" 0 1 131072 1 6 -0.108800
+ "H" "hc" 0 1 131072 2 1 0.026700
+ "H1" "hc" 0 1 131072 3 1 0.026700
+ "H2" "hc" 0 1 131072 4 1 0.026700
+ "H3" "hc" 0 1 131072 5 1 0.026700
 !entry.LIG.unit.atomspertinfo table  str pname  str ptype  int ptypex  int pelmnt  dbl pchg
- "C1" "c3" 0 -1 0.0
+ "C" "c3" 0 -1 0.0
+ "H" "hc" 0 -1 0.0
+ "H1" "hc" 0 -1 0.0
  "H2" "hc" 0 -1 0.0
  "H3" "hc" 0 -1 0.0
- "H4" "hc" 0 -1 0.0
- "H5" "hc" 0 -1 0.0
 !entry.LIG.unit.boundbox array dbl
  -1.000000
  0.0
@@ -38,15 +38,15 @@
 !entry.LIG.unit.name single str
  "LIG"
 !entry.LIG.unit.positions table  dbl x  dbl y  dbl z
- 15.4037 15.8066 15.3655
- 16.4967 15.8046 15.3505
- 15.0317 14.9206 14.8465
- 15.0347 16.7036 14.8645
- 15.0547 15.7966 16.3995
+ 0.0 0.0 0.0
+ -0.057000 1.087000 -0.086000
+ 0.620000 -0.397000 -0.807000
+ -1.004000 -0.424000 -0.070000
+ 0.442000 -0.267000 0.963000
 !entry.LIG.unit.residueconnect table  int c1x  int c2x  int c3x  int c4x  int c5x  int c6x
- 1 5 0 0 0 0
+ 0 0 0 0 0 0
 !entry.LIG.unit.residues table  str name  int seq  int childseq  int startatomx  str restype  int imagingx
- "LIG" 1 6 1 "?" 1
+ "LIG" 1 6 1 "?" 0
 !entry.LIG.unit.residuesPdbSequenceNumber array int
  0
 !entry.LIG.unit.solventcap array dbl

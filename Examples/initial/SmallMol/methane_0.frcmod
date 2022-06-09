@@ -1,4 +1,4 @@
-modified parameters
+Remark line goes here
 MASS
 
 BOND
@@ -9,5 +9,7 @@ DIHE
 
 IMPROPER
 
-NONB
+NONBON
+
+
 

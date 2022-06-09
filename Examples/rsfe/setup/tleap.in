@@ -1,0 +1,20 @@
+source leaprc.protein.ff14SB
+loadamberparams frcmod.ff14SB
+source leaprc.gaff2
+source leaprc.water.tip4pew
+loadamberparams frcmod.tip4pew
+loadAmberParams frcmod.ionsjc_tip4pew
+loadoff tip4pewbox.off
+loadamberparams 7-cyclopentanylindole_0.frcmod
+loadoff 7-cyclopentanylindole_0.lib
+loadamberparams 2-cyclopentanylindole_0.frcmod
+loadoff 2-cyclopentanylindole_0.lib
+x = loadPdbUsingSeq merged_7-cyclopentanylindole~2-cyclopentanylindole.pdb { L03 L00 }
+solvateBox x TIP4PEWBOX 20
+addions x Na+ 0
+addions x Cl- 0
+addions x Na+ 7
+addions x Cl- 7
+saveamberparm x merged.parm7 merged.rst7
+
+quit
