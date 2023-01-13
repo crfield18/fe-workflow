@@ -213,7 +213,7 @@ if [ "${setupmode}" == 0 ]; then
                                                         	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
                                                 	fi
 
-							sh TEMPLATE.sh; sleep 1
+							bash TEMPLATE.sh; sleep 1
 						cd $path/${system}/setup
 
 
@@ -250,7 +250,7 @@ if [ "${setupmode}" == 0 ]; then
                                                                 	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
                                                         	fi
 
-                                                        	sh TEMPLATE.sh; sleep 1
+                                                        	bash TEMPLATE.sh; sleep 1
                                                 	cd $path/${system}/setup
 
 
@@ -272,7 +272,7 @@ if [ "${setupmode}" == 0 ]; then
 
 						cd ${path}/${system}/${protocol}/run/${translist[$i]}/${s}
 							 writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate}
-							 sh TEMPLATE.sh; sleep 1
+							 bash TEMPLATE.sh; sleep 1
 						cd $path/${system}/setup
 					done
 				done
