@@ -1,7 +1,7 @@
 function getambermask {
 	parm=$1; mask=$2
 	cat << EOF > getmask.py
-#!/usr/bin/python
+#!/usr/bin/env python3
 import parmed
 import argparse
 

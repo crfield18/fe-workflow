@@ -3,7 +3,7 @@
 function write_analyze {
 
 	cat << EOF > mdouts2dats.py
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 import sys,os
 import re
 
@@ -275,7 +275,7 @@ EOF
 
 function gen_lambdas {
         cat <<EOF > gen_lambda.py
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import numpy as np
 import sys
