@@ -34,8 +34,11 @@ done < $1
 
 
 # MAIN
+
 #check if required python packages are installed and install each if not
 python_packages=(simtk numpy scipy pdb4amber parmed rdkit)
+echo 'checking required python packages...'
+echo 'will install missing packages with pip'
 for pp in ${python_packages[@]};do
 	pip list | grep $pp
 	if [ $? -ne 0 ]; then
@@ -45,6 +48,7 @@ for pp in ${python_packages[@]};do
 		continue
 	fi
 done
+
 path=`pwd`
 # check if the file "setup_directives" is absent in the current directory
 # if yes, write the default options
