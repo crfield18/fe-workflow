@@ -250,8 +250,14 @@ EOFN
 
         if [ "${notrajectory}" != "true" ] && [ "${notrajectory}" != "false" ]; then printf "\n\n\"notrajectory\" should be set to \"true\" or \"false\"\n\n"   && exit 0; fi
 
-        if [ "${gti_add_sc}" -lt 1 ] || [ "${gti_add_sc}" -gt 5 ] || [ "${gti_add_sc}" -ne 25 ] ; then printf "\n\nAcceptable values for \"gti_add_sc\" are 1, 2(Recommended), 3, 4, 5 and 25\n\n" && exit 0; fi
-
+#        if [ "${gti_add_sc}" -lt 1 ] || [ "${gti_add_sc}" -gt 5 ] ; then printf "\n\nAcceptable values for \"gti_add_sc\" are 1, 2(Recommended), 3, 4, 5 and 25\n\n" && exit 0; fi
+	case ${gti_add_sc} in
+		1|2|3|4|5|25)
+			;;
+		*)
+			printf "\n\nAcceptable values for \"gti_add_sc\" are 1, 2(Recommended), 3, 4, 5 and 25\n\n" && exit 0;
+			;;
+	esac
         if [ "${gti_lam_sch}" != 0 ] && [ "${gti_lam_sch}" != 1 ]; then printf "\n\nAcceptable values of \"gti_lam_sch\" are 0(default) and 1\n\n" && exit 0; fi
 
         if [ "${gti_lam_sch}" -eq 1 ]; then
