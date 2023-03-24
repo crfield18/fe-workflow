@@ -171,6 +171,7 @@ if [ "${setupmode}" == 0 ]; then
 
         if [ "${protocol}" == "unified" ]; then
                 cd $path/$system/setup
+
 			if [ "${ticalc}" != "asfe" ]; then
                         	for i in "${!translist[@]}";do
                                 	stA=$(basename ${translist[$i]}); stB="${stA##*~}"; stA="${stA%~*}"
@@ -179,10 +180,11 @@ if [ "${setupmode}" == 0 ]; then
 						if [ "${twostate}" == "false" ]; then
 							cp ${stA}~${stB}_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
 							cp ${stA}~${stB}_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
-						else
-                                        		cp ${stA}~${stB}-1_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
-                                        		cp ${stA}~${stB}-1_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
-                                        		cp ${stA}~${stB}-2_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateB.rst7
+						else                		
+
+              cp ${stA}~${stB}-1_${s}.parm7  ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/unisc.parm7
+              cp ${stA}~${stB}-1_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateA.rst7
+            		cp ${stA}~${stB}-2_${s}.rst7   ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/stateB.rst7
 						fi
 
 						scmask1=$(cat "${stA}~${stB}".scmask1)
@@ -362,5 +364,264 @@ if [ "${setupmode}" == 0 ]; then
         fi
 
 fi
+################################################
+#starting to fix the box size to be the same as
+#a post-process after generating all the box
+#after the workflow. The step is to find the biggest box
+#dimension in each environment (biggest dimension, not the biggest box)
+#and replace all the box with the biggest dimension
+#It's better to build all the edges (including self-ACES to 
+#create the reservoirs) at once, to avoid manual change
+#to the eqNTP4 stage. Recommendation: build all the
+#self-ACES transformations along with the edges
+#you want, which will definitely have exact same
+#box for future use.
+################################################
+
+      echo "fix box"
+      cd $path/$system/setup
+      #FIXME, read in the last line of *rst7 file and find the maximum box
+     if [ -f "fix_box_aq_size.txt" ]
+     then
+	     read -r max_a < fix_box_aq_size.txt
+	     read -r max_b < <(sed -n 2p fix_box_aq_size.txt)
+	     read -r max_c < <(sed -n 3p fix_box_aq_size.txt)
+     else
+			max_a=$(awk '{print $1}' *-1_aq*rst7 | tail -n 1 | sort -n | tail -n 1)
+			max_b=$(awk '{print $2}' *-1_aq*rst7 | tail -n 1 | sort -n | tail -n 1)
+			max_c=$(awk '{print $3}' *-1_aq*rst7 | tail -n 1 | sort -n | tail -n 1)
+			echo $max_a >> fix_box_aq_size.txt
+			echo $max_b >> fix_box_aq_size.txt
+			echo $max_c >> fix_box_aq_size.txt
+     fi
+   for aq_file in *-1_aq*rst7;do
+     
+     FILENAME_WITHOUT_EXT=$(echo "$aq_file" | sed 's/-[0-9]\+_aq.rst7$//')
+     BEFORE_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f1)
+     AFTER_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f2)
+     
+     for num in 1 2;do
+     cat <<EOF > fix_box_aq_cpptraj.in
+     parm ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.parm7
+     trajin ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.rst7
+     trajout ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.pdb pdb include_ep
+     go
+     quit
+EOF
+     
+     cpptraj -i fix_box_aq_cpptraj.in
+     
+           # assign protein forcefield
+        if [ "${pff}" == "ff14SB" ]; then
+                printf "source leaprc.protein.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        fi
+	
+
+        # assign ligand forcefield
+        if [ "${lff}" == "gaff2" ]; then
+                printf "source leaprc.gaff2\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        elif [ "${lff}" == "gaff" ]; then
+                printf "source leaprc.gaff\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        fi
+
+        # assign water model
+        if [ "${wm}" == "tip4pew" ]; then
+                printf "source leaprc.water.tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadAmberParams frcmod.ionsjc_tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadoff tip4pewbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                boxkey="TIP4PEWBOX"
+        elif [ "${wm}" == "tip3p" ]; then
+                printf "source leaprc.water.tip3p\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                boxkey="TIP3PBOX"
+        fi
+
+        # check and load non-standard residue parameter files
+        #i=0
+#	numnonstd=$(($numnonstd+0))
+#        while [ "$i" -lt "${numnonstd}" ]; do
+#                printf "loadamberparams ${lig1}_${i}.frcmod\n" >> tleap.in
+#                printf "loadoff ${lig1}_${i}.lib\n" >> tleap.in
+#                i=$(($i+1))
+#        done
+
+        # load ligand 2 parameter files
+#        printf "loadamberparams ${lig2}_0.frcmod\n" >> tleap.in
+#        printf "loadoff ${lig2}_0.lib\n" >> tleap.in
+
+        printf "loadamberparams ${BEFORE_TILDE}_0.frcmod\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        printf "loadoff ${BEFORE_TILDE}_0.lib\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        printf "loadamberparams ${AFTER_TILDE}_0.frcmod\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        printf "loadoff ${AFTER_TILDE}_0.lib\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+
+        # assign MD box
+        if [ "${mdboxshape}" == "cubic" ]; then
+                boxcmd="solvateBox"
+        elif [ "${mdboxshape}" == "oct" ]; then
+                boxcmd="solvateOct"
+        fi
+
+        # load pdb, pdb with sequence, or mol2
+#        if [ "${load}" == "pdb" ]; then
+                printf "x = loadPdb ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.pdb\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+#        elif [ "${load}" == "pdbseq" ]; then
+#                printf "x = loadPdbUsingSeq ${inpfile}.pdb { $(cat ${inpfile}.seq) }\n" >> tleap.in
+#        else
+#                printf "x = loadmol2  ${inpfile}_0.mol2\n" >> tleap.in
+#        fi
+
+        # add S-S cysteine linkkages if present
+#        if [ -f ${inpfile}_sslinks ] && [ "$(cat ${inpfile}_sslinks | wc -l)" -gt 0 ]; then
+#                while read line; do
+#                        IFS=' ' read -ra args <<< $line
+#                        printf "bond x.${args[0]}.SG x.${args[1]}.SG\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+#                done < ${inpfile}_sslinks
+#        fi
+
+        # build box and neutralize with Na+ Cl-
+#        if [ "${boxbuild}" == 0 ] && [ "${s}" == "com" ]; then
+#                printf "setbox x vdw \n" >> tleap.in
+#        else
+        printf "set x box {$max_a $max_b $max_c}\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+	printf "saveamberparm x fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.rst7\n\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        printf "quit\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        
+        tleap -s -f fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in >> fix_box_aq_log
+  done
+
+              cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7  ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/unisc.parm7
+              cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7
+              cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7
+	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t1/0.00000000_init.rst7
+	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t1/1.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t2/0.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t2/1.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t3/0.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t3/1.00000000_init.rst7
+
+done
+
+  if [ -f "fix_box_com_size.txt" ]
+     then
+             read -r max_a < fix_box_com_size.txt
+	     read -r max_b < <(sed -n 2p fix_box_com_size.txt)
+	     read -r max_c < <(sed -n 3p fix_box_com_size.txt)
+     else
+
+                        max_a=$(awk '{print $1}' *-1_com*rst7 | tail -n 1 | sort -n | tail -n 1)
+                        max_b=$(awk '{print $2}' *-1_com*rst7 | tail -n 1 | sort -n | tail -n 1)
+                        max_c=$(awk '{print $3}' *-1_com*rst7 | tail -n 1 | sort -n | tail -n 1)
+   			echo $max_a >> fix_box_com_size.txt
+                        echo $max_b >> fix_box_com_size.txt
+                        echo $max_c >> fix_box_com_size.txt
+  fi
+
+for com_file in *-1_com*rst7;do
+     
+     FILENAME_WITHOUT_EXT=$(echo "$com_file" | sed 's/-[0-9]\+_com.rst7$//')
+     BEFORE_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f1)
+     AFTER_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f2)
+     
+     for num in 1 2;do
+     cat <<EOF > fix_box_com_cpptraj.in
+     parm ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.parm7
+     trajin ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.rst7
+     trajout ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.pdb pdb include_ep
+     go
+     quit
+EOF
+     
+     cpptraj -i fix_box_com_cpptraj.in
+     
+           # assign protein forcefield
+        if [ "${pff}" == "ff14SB" ]; then
+                printf "source leaprc.protein.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadamberparams frcmod.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        fi
+	
+
+        # assign ligand forcefield
+        if [ "${lff}" == "gaff2" ]; then
+                printf "source leaprc.gaff2\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        elif [ "${lff}" == "gaff" ]; then
+                printf "source leaprc.gaff\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        fi
+
+        # assign water model
+        if [ "${wm}" == "tip4pew" ]; then
+                printf "source leaprc.water.tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadamberparams frcmod.tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadAmberParams frcmod.ionsjc_tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadoff tip4pewbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                boxkey="TIP4PEWBOX"
+        elif [ "${wm}" == "tip3p" ]; then
+                printf "source leaprc.water.tip3p\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                boxkey="TIP3PBOX"
+        fi
+
+        # check and load non-standard residue parameter files
+        #i=0
+#	numnonstd=$(($numnonstd+0))
+#        while [ "$i" -lt "${numnonstd}" ]; do
+#                printf "loadamberparams ${lig1}_${i}.frcmod\n" >> tleap.in
+#                printf "loadoff ${lig1}_${i}.lib\n" >> tleap.in
+#                i=$(($i+1))
+#        done
+
+        # load ligand 2 parameter files
+#        printf "loadamberparams ${lig2}_0.frcmod\n" >> tleap.in
+#        printf "loadoff ${lig2}_0.lib\n" >> tleap.in
+
+        printf "loadamberparams ${BEFORE_TILDE}_0.frcmod\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        printf "loadoff ${BEFORE_TILDE}_0.lib\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        printf "loadamberparams ${AFTER_TILDE}_0.frcmod\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        printf "loadoff ${AFTER_TILDE}_0.lib\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+
+        # assign MD box
+        if [ "${mdboxshape}" == "cubic" ]; then
+                boxcmd="solvateBox"
+        elif [ "${mdboxshape}" == "oct" ]; then
+                boxcmd="solvateOct"
+        fi
+
+        # load pdb, pdb with sequence, or mol2
+#        if [ "${load}" == "pdb" ]; then
+                printf "x = loadPdb ${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.pdb\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+#        elif [ "${load}" == "pdbseq" ]; then
+#                printf "x = loadPdbUsingSeq ${inpfile}.pdb { $(cat ${inpfile}.seq) }\n" >> tleap.in
+#        else
+#                printf "x = loadmol2  ${inpfile}_0.mol2\n" >> tleap.in
+#        fi
+
+        # add S-S cysteine linkkages if present
+        if [ -f ${inpfile}_sslinks ] && [ "$(cat ${inpfile}_sslinks | wc -l)" -gt 0 ]; then
+                while read line; do
+                        IFS=' ' read -ra args <<< $line
+                        printf "bond x.${args[0]}.SG x.${args[1]}.SG\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                done < ${inpfile}_sslinks
+        fi
+
+        # build box and neutralize with Na+ Cl-
+#        if [ "${boxbuild}" == 0 ] && [ "${s}" == "com" ]; then
+                printf "setbox x vdw \n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+#        else
+        printf "set x box {$max_a $max_b $max_c}\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        printf "saveamberparm x fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.rst7\n\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        printf "quit\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+        
+        tleap -s -f fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in >> fix_box_com_log
+  done
+              cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.parm7  ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/unisc.parm7
+              cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7
+              cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t1/0.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t1/1.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t2/0.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t2/1.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t3/0.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t3/1.00000000_init.rst7
+
+done
 # END of setupmode=0
 
