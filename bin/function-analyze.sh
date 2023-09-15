@@ -51,27 +51,29 @@ odir = Path("analysis")
 EOF
 
         if [ "${ticalc}" == "rbfe" ]; then
-
         cat << EOF >> DiscoverEdges.py
-s = r"data/{edge}/{env}/{stage}/{trial}/dats/efep_{traj}_{ene}.dat"
+s = r"data/{edge}/{env}/{stage}/{trial}/efep_{traj}_{ene}.dat"
+exclusions=None
 edges = edgembar.DiscoverEdges(s,exclude_trials=exclusions,
                                target="complex",
                                reference="solvated" )
 EOF
         elif [ "${ticalc}" == "rsfe" ]; then
         cat << EOF >> DiscoverEdges.py
-s = r"data/{edge}/{env}/{stage}/{trial}/dats/efep_{traj}_{ene}.dat"
+s = r"data/{edge}/{env}/{stage}/{trial}/efep_{traj}_{ene}.dat"
+exclusions=None
 edges = edgembar.DiscoverEdges(s,exclude_trials=exclusions,
                                target="complex",
                                reference="solvated" )
 EOF
 
-        elif [ "${ticalc}" == "rsfe" ]; then
+        elif [ "${ticalc}" == "asfe" ]; then
         cat << EOF >> DiscoverEdges.py
-s = r"data/{edge}/{env}/{trial}/dats/efep_{traj}_{ene}.dat"
+s = r"data/{edge}/{env}/{trial}/efep_{traj}_{ene}.dat"
+exclusions=None
 edges = edgembar.DiscoverEdges(s,exclude_trials=exclusions,
                                target="aq",
-                               reference="vac" )
+                               reference="vac")
 EOF
         fi
         cat << EOF >> DiscoverEdges.py
