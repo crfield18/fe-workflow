@@ -1247,110 +1247,133 @@ EOF2
 
 
 	cat << EOFP > extract.py
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-def OpenParm( fname, xyz=None ):
+def OpenParm(fname, xyz=None):
     import parmed
-    from parmed.constants import IFBOX
+    #from parmed.constants import IFBOX
+    from parmed.constants import PrmtopPointers
     if ".mol2" in fname:
-        param = parmed.load_file( fname, structure=True )
-        #help(param)
+        param = parmed.load_file(fname, structure=True)
     else:
-        param = parmed.load_file( fname,xyz=xyz )
+        param = parmed.load_file(fname, xyz=xyz)
         if xyz is not None:
             if ".rst7" in xyz:
                 param.load_rst7(xyz)
+
     if param.box is not None:
-        if abs(param.box[3]-109.471219)<1.e-4 and \
-           abs(param.box[4]-109.471219)<1.e-4 and \
-           abs(param.box[5]-109.471219)<1.e-4:
-            param.parm_data["POINTERS"][IFBOX]=2
-            param.pointers["IFBOX"]=2
+        if (
+            abs(param.box[3] - 109.471219) < 1.e-4
+            and abs(param.box[4] - 109.471219) < 1.e-4
+            and abs(param.box[5] - 109.471219) < 1.e-4
+        ):
+            param.parm_data["POINTERS"][PrmtopPointers.IFBOX] = 2
+            param.pointers["IFBOX"] = 2
+
     return param
 
-def CopyParm( parm ):
+def CopyParm(parm):
     import copy
+
     try:
         parm.remake_parm()
     except:
         pass
-    p = copy.copy( parm )
-    p.coordinates = copy.copy( parm.coordinates )
-    p.box = copy.copy( parm.box )
+
+    p = copy.copy(parm)
+    p.coordinates = copy.copy(parm.coordinates)
+    p.box = copy.copy(parm.box)
+
     try:
-        p.hasbox = copy.copy( parm.hasbox )
+        p.hasbox = copy.copy(parm.hasbox)
     except:
         p.hasbox = False
+
     return p
 
-def Strip( parm, mask ):
-    p = CopyParm( parm )
-    p.strip( "%s"%(mask) )
+def Strip(parm, mask):
+    p = CopyParm(parm)
+    p.strip("%s" % (mask))
     return p
 
-def Extract( parm, mask ):
-    return Strip( parm, "!(%s)"%(mask) )
+def Extract(parm, mask):
+    return Strip(parm, "!(%s)" % (mask))
 
-def SaveParmRst( param, fname ):
-    from parmed.constants import IFBOX
+def SaveParmRst(param, fname):
+    #from parmed.constants import IFBOX
+    from parmed.constants import PrmtopPointers
     for a in param.atoms:
-        param.parm_data["CHARGE"][ a.idx ] = a.charge
+        param.parm_data["CHARGE"][a.idx] = a.charge
+
     if param.box is not None:
-       if abs(param.box[3]-109.471219)<1.e-4 and \
-          abs(param.box[4]-109.471219)<1.e-4 and \
-          abs(param.box[5]-109.471219)<1.e-4:
-           param.parm_data["POINTERS"][IFBOX]=2
-           param.pointers["IFBOX"]=2
+        if (
+            abs(param.box[3] - 109.471219) < 1.e-4
+            and abs(param.box[4] - 109.471219) < 1.e-4
+            and abs(param.box[5] - 109.471219) < 1.e-4
+        ):
+            param.parm_data["POINTERS"][PrmtopPointers.IFBOX] = 2
+            param.pointers["IFBOX"] = 2
+
     try:
-        param.save( "{}.parm7".format(fname), overwrite=True )
-        #param.save( fname, overwrite=True )
+        param.save("{}.parm7".format(fname), overwrite=True)
     except:
-        param.save( "{}.parm7".format(fname) )
-        #param.save( fname )
-    rst = parmed.amber.Rst7(natom=len(param.atoms),title="BLAH")
+        param.save("{}.parm7".format(fname))
+
+    rst = parmed.amber.Rst7(natom=len(param.atoms), title="BLAH")
     rst.coordinates = param.coordinates
-    rst.box = [param.box[0], param.box[1], param.box[2], param.box[3], param.box[4], param.box[5]]
-    rst.write( "{}.rst7".format(fname) )
+    rst.box = [
+        param.box[0],
+        param.box[1],
+        param.box[2],
+        param.box[3],
+        param.box[4],
+        param.box[5],
+    ]
+    rst.write("{}.rst7".format(fname))
 
 if __name__ == "__main__":
-
     import argparse
     import parmed
     import re
     import sys
 
-    parser = argparse.ArgumentParser \\
-    ( formatter_class=argparse.RawDescriptionHelpFormatter,
-      description="Extracts Amber parameters from a parm7 file" )
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="Extracts Amber parameters from a parm7 file",
+    )
 
-    parser.add_argument("-p","--parm",
-                        help="Amber parm7 file",
-                        type=str,
-                        required=True)
+    parser.add_argument(
+        "-p", "--parm", help="Amber parm7 file", type=str, required=True
+    )
 
-    parser.add_argument("-c","--crd",
-                        help="Amber rst7 file",
-                        type=str,
-                        required=True)
+    parser.add_argument(
+        "-c", "--crd", help="Amber rst7 file", type=str, required=True
+    )
 
-    parser.add_argument("-m","--mask",
-                        help="Amber selection mask. Only residues within this mask will be extracted",
-                        type=str,
-                        default="@*",
-                        required=False )
+    parser.add_argument(
+        "-m",
+        "--mask",
+        help="Amber selection mask. Only residues within this mask will be extracted",
+        type=str,
+        default="@*",
+        required=False,
+    )
 
-    parser.add_argument("-o","--output",
-                        help="Output file basename if -n/--name is specified",
-                        type=str,
-                        required=False)
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Output file basename if -n/--name is specified",
+        type=str,
+        required=False,
+    )
 
     args = parser.parse_args()
 
-    p    = OpenParm(args.parm,xyz=args.crd)
+    p = OpenParm(args.parm, xyz=args.crd)
 
     if args.mask is not None:
         if len(args.mask) > 0:
-            q    = Extract(p,args.mask)
+            q = Extract(p, args.mask)
             SaveParmRst(q, args.output)
 
 EOFP
