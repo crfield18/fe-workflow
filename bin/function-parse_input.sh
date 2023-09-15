@@ -433,7 +433,7 @@ EOFN
 		elif [ "${ticalc}" == "rsfe" ]; then
 			slist=(aq vac)
 		else
-			slist=(aq)
+			slist=(aq vac)
 		fi
 		if [ "${lead_ligand}" == "default" ]; then
 			printf "\n\nLigand free energies will be expressed with respect to ligand with lowest free energy \n\n"
