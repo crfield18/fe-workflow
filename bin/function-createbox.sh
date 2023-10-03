@@ -117,6 +117,9 @@ function write_tleap_merged {
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
+        elif [ "${pff}" == "ff19SB" ]; then
+                printf "source leaprc.protein.ff19SB\n" >> tleap.in
+                printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 
         # assign ligand forcefield
@@ -137,6 +140,12 @@ function write_tleap_merged {
 		printf "source leaprc.water.tip3p\n" >> tleap.in
 		printf "loadamberparams frcmod.tip3p\n" >> tleap.in
 		boxkey="TIP3PBOX"
+        elif [ "${wm}" == "opc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_opc\n" >> tleap.in
+                printf "loadoff opcbox.off\n" >> tleap.in
+                boxkey="OPCBOX"
         fi
 
         # check and load non-standard residue parameter files
@@ -220,6 +229,9 @@ function write_tleap_merged_head {
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
+        elif [ "${pff}" == "ff19SB" ]; then
+                printf "source leaprc.protein.ff19SB\n" >> tleap.in
+                printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 	
 
@@ -239,7 +251,14 @@ function write_tleap_merged_head {
                 boxkey="TIP4PEWBOX"
         elif [ "${wm}" == "tip3p" ]; then
                 printf "source leaprc.water.tip3p\n" >> tleap.in
+                printf "loadoff tip3pbox.off\n" >> tleap.in
                 boxkey="TIP3PBOX"
+        elif [ "${wm}" == "opc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_opc\n" >> tleap.in
+                printf "loadoff opcbox.off\n" >> tleap.in
+                boxkey="OPCBOX"
         fi
 
         # check and load non-standard residue parameter files
@@ -406,6 +425,9 @@ function write_tleap_asfe {
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
+        elif [ "${pff}" == "ff19SB" ]; then
+                printf "source leaprc.protein.ff19SB\n" >> tleap.in
+                printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 
         # assign ligand forcefield
@@ -426,9 +448,13 @@ function write_tleap_asfe {
                 printf "source leaprc.water.tip3p\n" >> tleap.in
                 printf "loadamberparams frcmod.tip3p\n" >> tleap.in
                 boxkey="TIP3PBOX"
+        elif [ "${wm}" == "opc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_opc\n" >> tleap.in
+                printf "loadoff opcbox.off\n" >> tleap.in
+                boxkey="OPCBOX"
         fi
-
-
 
         # assign MD box
         if [ "${mdboxshape}" == "cubic" ]; then
@@ -483,6 +509,9 @@ function write_tleap_head_asfe {
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
+        elif [ "${pff}" == "ff19SB" ]; then
+                printf "source leaprc.protein.ff19SB\n" >> tleap.in
+                printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 
 
