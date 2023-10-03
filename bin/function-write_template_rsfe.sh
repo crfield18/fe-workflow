@@ -5,7 +5,7 @@ function writetemplate_rsfe
 {
         #echo "$#"
         local args=$*; args=($args)
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate boxbufaq)
         local i=0
         for a in "${varlist[@]}"; do
                 declare -n arr="$a"
@@ -892,6 +892,65 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+        cat << EOF > inputs/\${preTIbox}.mdin
+&cntrl
+imin            = 0
+nstlim          = 20000
+dt              = 0.001
+irest           = 0
+ntx             = 1
+ntxo            = 1
+ntp             = 4
+ntc             = 2
+ntf             = 1
+ntwx            = 20
+ntwr            = 20
+cut             = 10
+iwrap           = 1
+
+ntb             = 2
+temp0           = 298.
+ntt             = 3
+gamma_ln        = 2.
+tautp           = 1
+barostat        = 2
+
+ig              = -1
+
+ifsc            = 1
+icfe            = 1
+
+noshakemask     = ${NOSHAKEMASK}
+
+clambda         = \${lam}
+timask1         = ${TIMASK1}
+timask2         = ${TIMASK2}
+crgmask         = ""
+scmask1         = ${SCMASK1}
+scmask2         = ${SCMASK2}
+scalpha         = ${SCALPHA}
+scbeta          = ${SCBETA}
+
+gti_cut         = ${GTICUT}
+gti_output      = 1
+gti_add_sc      = ${GTISC}
+gti_scale_beta  = ${GTIBETA}
+gti_cut_sc_on   = ${GTISCON}
+gti_cut_sc_off  = ${GTISCOFF}
+gti_lam_sch     = ${GTILAMSCH}
+gti_ele_sc      = ${GTISCELE}
+gti_vdw_sc      = ${GTISCVDW}
+gti_cut_sc      = ${GTISCCUT}
+gti_ele_exp     = ${GTIEXPELE}
+gti_vdw_exp     = ${GTIEXPVDW}
+gti_syn_mass    = 0
+
+/
+ &ewald  target_n = 500,  target_a = $((${boxbufaq}*2+4)),  target_b = $((${boxbufaq}*2+4)),  target_c = $((${boxbufaq}*2+4))
+/
+EOF
+
+
         cat<< EOF >inputs/\${ti}.mdin
 &cntrl
 imin            = 0
@@ -1084,6 +1143,7 @@ for lam in \${lams[@]};do
         eqP0TI=\${lam}_eqP0TI
 	eqATI=\${lam}_eqATI
 	preTI=\${lam}_preTI
+        preTIbox=\${lam}_preTIbox
 	ti=\${lam}_ti
 
 	cat<<EOF>> inputs/eqATI.groupfile
@@ -1388,11 +1448,13 @@ EOFP
 	mkdir -p ../vac/t\\\${trial} ../vac/inputs
 	for lam in \\\${lams[@]};do
         	./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
-        	sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = ${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
-        	sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp.*/d' -e '/pres0.*/d' -e '/taup.*/d' -e '/numexchg/d' -e '/gremd_acyc/d' -e 's/nstlim.*/nstlim          = 1000000/g' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+        	sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
+
+                cp inputs/\\\${lam}_preTIbox.mdin ../vac/inputs/\\\${lam}_preTIbox.mdin                
+                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' -e  inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
 	done
-	cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
+        sed -e 's/preTI/preTIbox/g' inputs/t\\\${trial}_ti.groupfile > ../vac/inputs/t\\\${trial}_ti.groupfile
 
 	cd ../vac
         	cd t\\\${trial}
@@ -1409,6 +1471,16 @@ EOFP
         	wait
 	cd ../
 
+        cd vac
+                stage=preTIbox; laststage=preTI
+                EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+                LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
+                for lam in \\\${lams[@]};do # Do 6
+                        \\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
+                done # Do 6
+                wait
+        cd ../
+
 	for dir in aq vac; do
 		cd \\\${dir}
 			stage=ti; laststage=preTI
@@ -1419,12 +1491,17 @@ EOFP
         			echo "running replica ti"
         			mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 			else
-        			LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-        			EXE=\\\${AMBERHOME}/bin/pmemd.cuda
-				for lam in \\\${lams[@]};do
-						\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
-				done
-				wait
+                                # run production
+                                EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
+                                echo "running replica ti"
+                                mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+
+        			#LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
+        			#EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+				#for lam in \\\${lams[@]};do
+				#		\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
+				#done
+				#wait
 			fi
 		cd ../
 	done
@@ -1785,8 +1862,10 @@ EOFP
         mkdir -p ../vac/t\\\${trial} ../vac/inputs
         for lam in \\\${lams[@]};do
                 ./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
-                sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = ${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
+                sed -e 's/nstlim.*/nstlim          = 2000000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
                 sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp.*/d' -e '/pres0.*/d' -e '/taup.*/d' -e '/numexchg/d' -e '/gremd_acyc/d' -e 's/nstlim.*/nstlim          = 1000000/g' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' -e  inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+
 
         done
         cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
