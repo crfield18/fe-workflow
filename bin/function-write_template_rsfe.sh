@@ -1451,7 +1451,7 @@ EOFP
         	sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
 
                 cp inputs/\\\${lam}_preTIbox.mdin ../vac/inputs/\\\${lam}_preTIbox.mdin                
-                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' -e  inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d'  inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
 	done
         sed -e 's/preTI/preTIbox/g' inputs/t\\\${trial}_ti.groupfile > ../vac/inputs/t\\\${trial}_ti.groupfile
