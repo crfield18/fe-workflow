@@ -56,6 +56,7 @@ for lam in \${endstates[@]};do
         eqV=\${lam}_eqV
         eqP=\${lam}_eqP
         eqA=\${lam}_eqA
+        preTIbox=\${lam}_preTIbox
         ti=\${lam}_ti
 
         cat<<EOF>inputs/\${min1}.mdin
@@ -559,6 +560,7 @@ for lam in \${lams[@]}; do
         eqP0TI=\${lam}_eqP0TI
         eqATI=\${lam}_eqATI
         preTI=\${lam}_preTI
+        preTIbox=\${lam}_preTIbox
         ti=\${lam}_ti
         anal=\${lam}_analyze
 
@@ -1864,7 +1866,7 @@ EOFP
                 ./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
                 sed -e 's/nstlim.*/nstlim          = 2000000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
                 sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp.*/d' -e '/pres0.*/d' -e '/taup.*/d' -e '/numexchg/d' -e '/gremd_acyc/d' -e 's/nstlim.*/nstlim          = 1000000/g' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
-                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' -e  inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d'  inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
 
         done
