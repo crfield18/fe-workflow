@@ -426,6 +426,10 @@ function write_tleap_asfe {
                 printf "source leaprc.water.tip3p\n" >> tleap.in
                 printf "loadamberparams frcmod.tip3p\n" >> tleap.in
                 boxkey="TIP3PBOX"
+        elif [ "${wm}" == "opc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                boxkey="OPCBOX" 
         fi
 
 
