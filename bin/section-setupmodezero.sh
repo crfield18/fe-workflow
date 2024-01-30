@@ -7,7 +7,12 @@ import argparse
 
 def OpenParm( fname, xyz=None ):
     import parmed
-    from parmed.constants import IFBOX
+    if parmed.__version__ >= "4.0.0":
+        from parmed.constants import PrmtopPointers
+        IFBOX = PrmtopPointers.IFBOX
+    else: 
+        from parmed.constants import IFBOX
+
     if ".mol2" in fname:
         param = parmed.load_file( fname, structure=True )
         #help(param)
@@ -161,7 +166,7 @@ if __name__ == "__main__":
 
 EOF
 	chmod a+x getmask.py
-	echo $(./getmask.py -p ${parm} -m ${mask})
+	echo $(python3 getmask.py -p ${parm} -m ${mask})
 
 }
 
