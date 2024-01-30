@@ -59,17 +59,17 @@ if [ ! -f "${path}/setup_directives" ]; then
 	if [ -d $(dirname `pwd`)/FE-MDEngine ]; then
 		MDEngine=$(dirname `pwd`)/FE-MDEngine/install_serial
 	else
-		read -p "Where is FE-MDEngine installed (serial)? " MDEngine
+		read -p "Where is FE-MDEngine installed (serial)? Input the absolute path to where the "amber.sh" is located:" MDEngine
 	fi
 	if [ -d $(dirname `pwd`)/FE-ToolKit ]; then
 		ToolKit=$(dirname `pwd`)/FE-ToolKit
 	else
-		read -p "What is FE-ToolKit installed? " ToolKit	
+		read -p "Where is FE-ToolKit installed? " ToolKit	
 	fi
 	if [ -d $(dirname `pwd`)/FE-Workflow ]; then
 		Workflow=$(dirname `pwd`)/FE-Workflow
         else
-                read -p "What is FE-Workflow installed? " Workflow
+                read -p "Where is FE-Workflow installed? " Workflow
         fi
 	MDEngine=$(echo "$(cd "$(dirname "${MDEngine}")"; pwd)/$(basename "${MDEngine}")")
 	ToolKit=$(echo "$(cd "$(dirname "${ToolKit}")"; pwd)/$(basename "${ToolKit}")")
