@@ -43,7 +43,7 @@ for pp in ${python_packages[@]};do
 	pip list | grep $pp
 	if [ $? -ne 0 ]; then
 		echo "$pp is not installed, installing $pp by pip now"
-	      	pip install $pp
+	      	pip3 install $pp
 	else
 		continue
 	fi
