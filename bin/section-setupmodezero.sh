@@ -420,6 +420,9 @@ EOF
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+        elif [ "${pff}" == "ff19SB" ]; then
+                printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
         fi
 	
 
@@ -440,6 +443,12 @@ EOF
         elif [ "${wm}" == "tip3p" ]; then
                 printf "source leaprc.water.tip3p\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 boxkey="TIP3PBOX"
+        elif [ "${wm}" == "opc" ]; then
+                printf "source leaprc.water.opc\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.opc\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_opc\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadoff opcbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                boxkey="OPCBOX"
         fi
 
         # check and load non-standard residue parameter files
