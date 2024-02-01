@@ -1367,8 +1367,8 @@ EOFP
 	mkdir -p ../vac/t\\\${trial} ../vac/inputs
 	for lam in \\\${lams[@]};do
         	./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
-        	sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = ${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
-        	sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp.*/d' -e '/pres0.*/d' -e '/taup.*/d' -e '/numexchg/d' -e '/gremd_acyc/d' -e 's/nstlim.*/nstlim          = 1000000/g' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+        	sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
+        	sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
 	done
 	cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
@@ -1379,6 +1379,7 @@ EOFP
                 	rm *.parm7
         	cd ../
 
+                vacdir=\\\${PWD}
         	stage=preTI; laststage=init
         	EXE=\\\${AMBERHOME}/bin/pmemd.cuda
         	LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
@@ -1386,6 +1387,22 @@ EOFP
                 	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
         	done
         	wait
+                boxsize=(\\\$( tail -1 t\\\${trial}/\\\${lam[0]}_init.rst7 ))
+                for lam in \\\${lams[@]};do
+		        cat <<EOFV > center.in
+parm \\\${vacdir}/unisc.parm7
+trajin t\\\${trial}/\\\${lam}_preTI.rst7
+box x \\\${boxsize[0} y \\\${boxsize[1]} z \\\${boxsize[2]} alpha \\\${boxsize[3]} beta \\\${boxsize[4]} gamma \\\${boxsize[5]}
+autoimage
+trajout t$\\\{trial}/\\\${lam}_preTI_centered.rst7
+go
+quit
+EOFV
+			if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+                        cpptraj < center.in
+                        sleep 1
+			mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/$\\\{lam}_\\\${stage}.rst7	
+		done
 	cd ../
 
 	for dir in aq vac; do
@@ -1398,12 +1415,17 @@ EOFP
         			echo "running replica ti"
         			mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 			else
-        			LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-        			EXE=\\\${AMBERHOME}/bin/pmemd.cuda
-				for lam in \\\${lams[@]};do
-						\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
-				done
-				wait
+                                # run production
+                                EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
+                                echo "running replica ti"
+                                mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+
+        			#LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
+        			#EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+				#for lam in \\\${lams[@]};do
+				#		\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
+				#done
+				#wait
 			fi
 		cd ../
 	done
@@ -1745,8 +1767,8 @@ EOFP
         mkdir -p ../vac/t\\\${trial} ../vac/inputs
         for lam in \\\${lams[@]};do
                 ./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
-                sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = ${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
-                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp.*/d' -e '/pres0.*/d' -e '/taup.*/d' -e '/numexchg/d' -e '/gremd_acyc/d' -e 's/nstlim.*/nstlim          = 1000000/g' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+                sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
+                sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
         done
         cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
@@ -1757,6 +1779,7 @@ EOFP
                         rm *.parm7
                 cd ../
 
+                vacdir=\\\${PWD}
                 stage=preTI; laststage=init
                 EXE=\\\${AMBERHOME}/bin/pmemd.cuda
                 LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
@@ -1764,6 +1787,22 @@ EOFP
                         \\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
                 done
                 wait
+                boxsize=(\\\$( tail -1 t\\\${trial}/\\\${lam[0]}_init.rst7 ))
+                for lam in \\\${lams[@]};do
+		        cat <<EOFV > center.in
+parm \\\${vacdir}/unisc.parm7
+trajin t\\\${trial}/\\\${lam}_preTI.rst7
+box x \\\${boxsize[0} y \\\${boxsize[1]} z \\\${boxsize[2]} alpha \\\${boxsize[3]} beta \\\${boxsize[4]} gamma \\\${boxsize[5]}
+autoimage
+trajout t$\\\{trial}/\\\${lam}_preTI_centered.rst7
+go
+quit
+EOFV
+			if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+                        cpptraj < center.in
+                        sleep 1
+			mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/$\\\{lam}_\\\${stage}.rst7	
+		done
         cd ../
 
         for dir in aq vac; do
@@ -1777,12 +1816,18 @@ EOFP
                                 echo "running replica ti"
                                 \\\${LAUNCH} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
                         else
-                                LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-                                EXE=\\\${AMBERHOME}/bin/pmemd.cuda
-                                for lam in \\\${lams[@]};do
-                                	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
-                                done
-                                wait
+                                # run production
+                                LAUNCH="mpirun -np \\\${#lams[@]}"
+                                EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
+                                echo "running replica ti"
+                                \\\${LAUNCH} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+
+                                #LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
+                                #EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+                                #for lam in \\\${lams[@]};do
+                                #	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
+                                #done
+                                #wait
                         fi
 
                 cd ../
