@@ -28,7 +28,7 @@ if [ "${ticalc}" == "rsfe" ] || [ "${ticalc}" == "asfe" ]; then
                 		cp ${path_to_input}/${system}/${molname}_0.frcmod .
                 		cp ${path_to_input}/${system}/${molname}_0.lib .
                 		sed -i "s/LIG/${ligname}/g" ${molname}_0.mol2 ${molname}_0.frcmod ${molname}_0.lib
-
+                                sed -i "s/${molname}/${ligname}/g" ${molname}_0.lib
                 		printf "${molname} ${ligname}\n" >> molname-ligname.mapping
 			done
 		fi

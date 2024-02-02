@@ -502,20 +502,34 @@ EOF
         printf "quit\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
         
         tleap -s -f fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in >> fix_box_aq_log
+
+	# Reperform HMR if needed
+	if [ "${hmr}" == "true" ]; then
+		if [ -f hmr.parm7 ] || [ -f hmr.rst7 ]; then rm -rf hmr.parm7 hmr.rst7; fi
+			cat <<EOFM > hmr.in
+HMassRepartition
+outparm hmr.parm7 hmr.rst7
+EOFM
+	        parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7 >> output 2>&1
+		mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7
+                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7 >> output 2>&1
+                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7
+	fi
+
   done
+
 
               cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7  ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/unisc.parm7
               cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7
               cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7
-	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t1/0.00000000_init.rst7
-	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t1/1.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t2/0.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t2/1.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t3/0.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t3/1.00000000_init.rst7
+        for(( t=1;t<=${ntrials};t++));do
+        	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t${t}/0.00000000_init.rst7
+        	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/t${t}/1.00000000_init.rst7
+        done 
 
 done
 
+if [ "${ticalc}" == "rbfe" ]; then                         
   if [ -f "fix_box_com_size.txt" ]
      then
              read -r max_a < fix_box_com_size.txt
@@ -625,17 +639,29 @@ EOF
         printf "quit\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
         
         tleap -s -f fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in >> fix_box_com_log
+
+        # Reperform HMR if needed
+        if [ "${hmr}" == "true" ]; then
+                if [ -f hmr.parm7 ] || [ -f hmr.rst7 ]; then rm -rf hmr.parm7 hmr.rst7; fi
+                        cat <<EOFM > hmr.in
+HMassRepartition
+outparm hmr.parm7 hmr.rst7
+EOFM
+                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7 >> output 2>&1
+                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7
+                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7 >> output 2>&1
+                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7
+        fi
+
   done
               cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.parm7  ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/unisc.parm7
               cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7
               cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.rst7   ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t1/0.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t1/1.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t2/0.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t2/1.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t3/0.00000000_init.rst7
-        cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t3/1.00000000_init.rst7
-
+        for(( t=1;t<=${ntrials};t++));do
+        	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateA.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t${t}/0.00000000_init.rst7
+        	cp ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/stateB.rst7 ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/com/t${t}/1.00000000_init.rst7
+        done
 done
+fi
 # END of setupmode=0
 
