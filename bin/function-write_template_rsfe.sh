@@ -1387,12 +1387,12 @@ EOFP
                 	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
         	done
         	wait
-                boxsize=(\\\$( tail -1 t\\\${trial}/\\\${lam[0]}_init.rst7 ))
+                boxsize=(\\\$( tail -1 t\\\${trial}/\\\${lams[0]}_init.rst7 ))
                 for lam in \\\${lams[@]};do
 		        cat <<EOFV > center.in
 parm \\\${vacdir}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_preTI.rst7
-box x \\\${boxsize[0} y \\\${boxsize[1]} z \\\${boxsize[2]} alpha \\\${boxsize[3]} beta \\\${boxsize[4]} gamma \\\${boxsize[5]}
+box x \\\${boxsize[0]} y \\\${boxsize[1]} z \\\${boxsize[2]} alpha \\\${boxsize[3]} beta \\\${boxsize[4]} gamma \\\${boxsize[5]}
 autoimage
 trajout t$\\\{trial}/\\\${lam}_preTI_centered.rst7
 go
