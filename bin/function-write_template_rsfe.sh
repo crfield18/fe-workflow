@@ -1394,7 +1394,7 @@ parm \\\${vacdir}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_preTI.rst7
 box x \\\${boxsize[0]} y \\\${boxsize[1]} z \\\${boxsize[2]} alpha \\\${boxsize[3]} beta \\\${boxsize[4]} gamma \\\${boxsize[5]}
 autoimage
-trajout t$\\\{trial}/\\\${lam}_preTI_centered.rst7
+trajout t\\\${trial}/\\\${lam}_preTI_centered.rst7
 go
 quit
 EOFV
