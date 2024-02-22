@@ -784,10 +784,10 @@ EOF
 HMassRepartition
 outparm hmr.parm7 hmr.rst7
 EOFM
-                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7 >> output 2>&1
-                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7
-                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7 >> output 2>&1
-                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7
+                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.rst7 >> output 2>&1
+                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.rst7
+                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.rst7 >> output 2>&1
+                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.rst7
         fi
 
   done
