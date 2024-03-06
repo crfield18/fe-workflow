@@ -1481,37 +1481,37 @@ gti_syn_mass    = 0
 EOF
         cat<< EOF >inputs/\${ti}.mdin
 &cntrl
-imin            = 0
-nstlim          = ${NSTLIMTI}
-numexchg        = ${NUMEXCHGTI}
-dt              = 0.001
-irest           = 0
-ntx             = 1
-ntxo            = 1
-ntc             = 2
-ntf             = 1
-ntwx            = ${NSTLIMTI}
-ntwr            = ${NSTLIMTI}
-ntpr            = ${NSTLIMTI}
-cut             = ${CUTOFF}
-iwrap           = 1
+imin            = 0                 ! = 0, not running minimization; = 1, running minimization
+nstlim          = ${NSTLIMTI}       ! simulation steps between each exchange interval
+numexchg        = ${NUMEXCHGTI}     ! total number of exchange attempts
+dt              = 0.001             ! timestep in unit of ps, 0.001ps = 1fs, safest option
+irest           = 0                 ! = 0, not restart a simulation; = 1, restart a simulation
+ntx             = 1                 ! = 1, not read velocity from a restart file; = 5, read velocity from a restart file
+ntxo            = 1                 ! final restart file format. = 1, ASCII; = 2, netCDF
+ntc             = 2                 ! SHAKE or not. = 1, not perform; = 2, on -H; = 3, on all bonds
+ntf             = 1                 ! force evaluation. = 1, evaluate all; = 2, -H omitted; = 3, all omitted
+ntwx            = ${NSTLIMTI}       ! coordinates output frequency to the trajectory file
+ntwr            = ${NSTLIMTI}       ! restart output frequency
+ntpr            = ${NSTLIMTI}       ! energy info output frequency
+cut             = ${CUTOFF}         ! non-bonded interaction cutoff in unit of Ang
+iwrap           = 1                 ! = 1, wrap coordinates to a prime box
 
-ntb             = 2
-temp0           = 298.
-ntt             = 3
-gamma_ln        = 2.
-tautp           = 1
-ntp             = 1
-barostat        = 2
-pres0           = 1.01325
-taup            = 5.0
+ntb             = 2                 ! = 2, periodic boundary condition with constant P
+temp0           = 298.              ! reference temperature
+ntt             = 3                 ! = 3, Langevin Dynamics Temperature scaling, constant T, use with gamma_ln
+gamma_ln        = 2.                ! collision frequency in unit of ps-1
+tautp           = 1                 ! time constant for heat bath in unit of ps
+ntp             = 1                 ! = 1, constant P MD with isotropic position scaling
+barostat        = 2                 ! = 2, Monte Carlo barostat
+pres0           = 1.01325           ! reference pressure in unit of bar
+taup            = 5.0               ! pressure relaxation time in unit of ps
 
-ifsc            = 1
-icfe            = 1
+ifsc            = 1                 ! = 1, turn on softcore potential
+icfe            = 1                 ! = 1, turn on free energy calculation
 
-ifmbar          = 1
-bar_intervall   = ${NSTLIMTI}
-mbar_states     = \${#lams[@]}
+ifmbar          = 1                 ! additional output in the energy info
+bar_intervall   = ${NSTLIMTI}       ! MBAR evaluation frequency, in unit of step. CAUTION: has to less equal to nstlim!!!
+mbar_states     = \${#lams[@]}      ! number of lambda windows
 EOF
 ilam=0
 for l in \${lams[@]}; do
@@ -1521,29 +1521,29 @@ done
         cat<< EOF >> inputs/\${ti}.mdin
 
 
-clambda         = \${lam}
-timask1         = ${TIMASK1}
-timask2         = ${TIMASK2}
+clambda         = \${lam}           ! current lambda window
+timask1         = ${TIMASK1}        ! TI region 1
+timask2         = ${TIMASK2}        ! TI region 2
 crgmask         = ""
-scmask1         = ${SCMASK1}
-scmask2         = ${SCMASK2}
-scalpha         = ${SCALPHA}
-scbeta          = ${SCBETA}
+scmask1         = ${SCMASK1}        ! softcore region 1
+scmask2         = ${SCMASK2}        ! softcore region 2
+scalpha         = ${SCALPHA}        ! = 0.5 when gti_scale_beta = 1
+scbeta          = ${SCBETA}         ! = 1.0 when gti_scale_beta = 1
 
-gti_cut         = ${GTICUT}
-gti_output      = 1
-gti_add_sc      = ${GTISC}
-gti_scale_beta  = ${GTIBETA}
-gti_cut_sc_on   = ${GTISCON}
-gti_cut_sc_off  = ${GTISCOFF}
-gti_lam_sch     = ${GTILAMSCH}
-gti_ele_sc      = ${GTISCELE}
-gti_vdw_sc      = ${GTISCVDW}
-gti_cut_sc      = ${GTISCCUT}
-gti_ele_exp     = ${GTIEXPELE}
-gti_vdw_exp     = ${GTIEXPVDW}
+gti_cut         = ${GTICUT}         ! internal softcore non-bonded terms will not be cut, 'cut' has no effect
+gti_output      = 1                 ! = 1, output detailed TI results
+gti_add_sc      = ${GTISC}          ! = 25, energy terms to be scaled by lambda
+gti_scale_beta  = ${GTIBETA}        ! = 1, use the softcore potential form 25.13 in Amber Manual 2023
+gti_cut_sc_on   = ${GTISCON}        ! distance to smooth softcore potential begin at, in unit of Ang
+gti_cut_sc_off  = ${GTISCOFF}       ! distance to smooth softcore potential stop at, in unit of Ang
+gti_lam_sch     = ${GTILAMSCH}      ! = 1, lambda replaced by smoothstep lambda
+gti_ele_sc      = ${GTISCELE}       ! = 1, softcore smoothstep electrostatic potential
+gti_vdw_sc      = ${GTISCVDW}       ! = 1, softcore smoothstep vdW potential
+gti_cut_sc      = ${GTISCCUT}       ! = 2, smooth both electrostatic and vdW
+gti_ele_exp     = ${GTIEXPELE}      ! = 2, best practice
+gti_vdw_exp     = ${GTIEXPVDW}      ! = 2, best practice
 
-gremd_acyc      = 1
+gremd_acyc      = 1                 ! = 1, not exchange lambda = 0 with lambda = 1 directly
 /
  &ewald
  /
