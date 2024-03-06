@@ -95,7 +95,6 @@ restraint_wt	= 5
 ifsc            = 1
 icfe            = 1
 
-noshakemask	= ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -136,7 +135,6 @@ cut             = ${CUTOFF}
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -196,7 +194,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -256,7 +253,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -316,7 +312,6 @@ restraintmask 	= '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -372,7 +367,6 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -439,7 +433,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -500,7 +493,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -561,7 +553,6 @@ nmropt		= 1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -630,7 +621,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -674,7 +664,6 @@ restraint_wt    = 2
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -719,7 +708,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -763,7 +751,6 @@ restraint_wt    = 1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -808,7 +795,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -851,7 +837,6 @@ restraint_wt    = 0.5
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -896,7 +881,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -939,7 +923,6 @@ restraint_wt    = 0.25
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -984,7 +967,6 @@ restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1027,7 +1009,6 @@ restraint_wt    = 0.1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1068,7 +1049,6 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1189,7 +1169,6 @@ cut             = ${CUTOFF}
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1245,7 +1224,6 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1301,7 +1279,6 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1357,7 +1334,6 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1413,7 +1389,6 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1479,7 +1454,6 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1546,7 +1520,6 @@ for l in \${lams[@]}; do
 done
         cat<< EOF >> inputs/\${ti}.mdin
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
@@ -1617,7 +1590,6 @@ for l in \${lams[@]}; do
 done
         cat<< EOF >> inputs/\${anal}.mdin
 
-noshakemask     = ${NOSHAKEMASK}
 
 clambda         = \${lam}
 
