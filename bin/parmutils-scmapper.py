@@ -316,6 +316,7 @@ def MutateMap(mol2file1,mol2file2):
         for elem,num in parmed.periodic_table.AtomicNum.items():
             if num == a.atomic_number:
                 a.type = elem
+                break
     mol2str_1 = StringIO()
     mol1.save(mol2str_1,format="MOL2")
     mol2str_1 = mol2str_1.getvalue()
@@ -331,6 +332,7 @@ def MutateMap(mol2file1,mol2file2):
         for elem,num in parmed.periodic_table.AtomicNum.items():
             if num == a.atomic_number:
                 a.type = elem
+                break
     mol2str_2 = StringIO()
     mol2.save(mol2str_2,format="MOL2")
     mol2str_2 = mol2str_2.getvalue()
