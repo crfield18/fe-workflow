@@ -7,10 +7,10 @@ import argparse
 
 def OpenParm( fname, xyz=None ):
     import parmed
-    if parmed.__version__ >= "4.0.0":
+    try:
         from parmed.constants import PrmtopPointers
         IFBOX = PrmtopPointers.IFBOX
-    else: 
+    except: 
         from parmed.constants import IFBOX
 
     if ".mol2" in fname:
