@@ -116,9 +116,11 @@ function write_tleap_merged {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 
@@ -228,12 +230,13 @@ function write_tleap_merged_head {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
-	
 
         # assign ligand forcefield
         if [ "${lff}" == "gaff2" ]; then
@@ -427,9 +430,11 @@ function write_tleap_asfe {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
-                printf "source leaprc.protein.ff19SB\n" >> tleap.in 
+                printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 
@@ -511,12 +516,13 @@ function write_tleap_head_asfe {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
-
 
         # assign ligand forcefield
         if [ "${lff}" == "gaff2" ]; then
