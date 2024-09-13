@@ -278,7 +278,10 @@ EOFN
                 if [ -z "${gti_cut_sc_on}" ] || [ -z "${gti_cut_sc_off}" ]; then printf "\n\nif \"gti_cut_sc_on\" is set to 1 or 2, gti_cut_sc_on and gti_cut_sc_off must be defined.\n\n" && exit 0; fi
         fi
 
-        if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then print "\n\nShould be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" \n\n" && exit 0; fi
+	if [ "${cutoff}" -lt "${gti_cut_sc_on}" ] || [ "${cutoff}" -lt "${gti_cut_sc_off}" ] || [ "${gti_cut_sc_off}" -lt "${gti_cut_sc_on}" ]; then
+	  echo "\n\nShould be \"cutoff\" >= \"gti_cut_sc_off\" > \"gti_cut_sc_on\" \n\n"
+	    exit 0
+        fi
 
 	if [ "${ticalc}" != "rbfe" ] && [ "${ticalc}" != "rsfe" ]  && [ "${ticalc}" != "asfe" ]; then printf "\n\n\"ticalc\" should be set to either \"rbfe\" or \"rsfe\" or \"asfe\"\n\n" && exit 0; fi
 	if [ "${ticalc}" == "asfe" ] &&  [ "${twostate}" == "true" ]; then printf "\n\n\"ticalc\"=asfe is not compatible with \"twostate\"=true \n\n" && exit 0; fi 
