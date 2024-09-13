@@ -80,8 +80,8 @@ echo "Finished DiscoverEdges.py"
 for xml in analysis/*.xml; do
     if [ -e "${xml}" ]; then
         echo ""
-        echo "Running: time OMP_NUM_THREADS=4 edgembar_omp --halves --fwdrev ${xml}"
-        time OMP_NUM_THREADS=4 edgembar_omp --halves --fwdrev ${xml}
+        echo "Running: time OMP_NUM_THREADS=4 edgembar.OMP --halves --fwdrev ${xml}"
+        time OMP_NUM_THREADS=4 edgembar.OMP --halves --fwdrev ${xml}
         echo "Finished creating ${xml%.xml}.py"
     fi
 done
@@ -111,7 +111,7 @@ if  [ "${ticalc}" != "asfe" ]; then
  
 echo ""
 echo "Running: edgembar-WriteGraphHtml.py -o analysis/GraphWithExpt.html -x ExptVals.txt \$(ls analysis/*~*.py)"
-edgembar-WriteGraphHtml.py -o analysis/GraphWithExpt.html -x Expt.dat $(ls analysis/*~*.py)
+edgembar-WriteGraphHtml.py -o analysis/GraphWithExpt.html -x ${exptdatafile} $(ls analysis/*~*.py)
 echo "Finished creating analysis/GraphWithExpt.html"
 fi
 
