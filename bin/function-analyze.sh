@@ -30,19 +30,19 @@ EOF
 
         if [ "${ticalc}" == "rbfe" ]; then
         cat << EOF >> DiscoverEdges.py
-s = r"data/{edge}/{env}/{stage}/{trial}/efep_{traj}_{ene}.dat"
+s = r"data/{edge}/{env}/{trial}/efep_{traj}_{ene}.dat"
 exclusions=None
 edges = edgembar.DiscoverEdges(s,exclude_trials=exclusions,
-                               target="complex",
-                               reference="solvated" )
+                               target="com",
+                               reference="aq" )
 EOF
         elif [ "${ticalc}" == "rsfe" ]; then
         cat << EOF >> DiscoverEdges.py
-s = r"data/{edge}/{env}/{stage}/{trial}/efep_{traj}_{ene}.dat"
+s = r"data/{edge}/{env}/{trial}/efep_{traj}_{ene}.dat"
 exclusions=None
 edges = edgembar.DiscoverEdges(s,exclude_trials=exclusions,
-                               target="complex",
-                               reference="solvated" )
+                               target="com",
+                               reference="aq" )
 EOF
 
         elif [ "${ticalc}" == "asfe" ]; then

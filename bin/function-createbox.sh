@@ -116,9 +116,11 @@ function write_tleap_merged {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 
@@ -228,12 +230,13 @@ function write_tleap_merged_head {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
-	
 
         # assign ligand forcefield
         if [ "${lff}" == "gaff2" ]; then
@@ -356,6 +359,10 @@ saveamberparm m out.parm7 out.rst7
 quit
 EOF
     	tleap -s -f tleap.in >> log
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
 }
 
 function fix_solvent {
@@ -423,9 +430,11 @@ function write_tleap_asfe {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
-                printf "source leaprc.protein.ff19SB\n" >> tleap.in 
+                printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
 
@@ -507,12 +516,13 @@ function write_tleap_head_asfe {
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> tleap.in
+		printf "source leaprc.phosaa14SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
+		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
         fi
-
 
         # assign ligand forcefield
         if [ "${lff}" == "gaff2" ]; then
@@ -606,6 +616,10 @@ saveamberparm m out.parm7 out.rst7
 quit
 EOF
         tleap -s -f tleap.in >> log
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
 }
 
 function fix_solvent_asfe {
@@ -1341,7 +1355,12 @@ function create_box_rbfe {
 	###
         # write and run tleap to generate initial parm file
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbs[0]}" "${lig1s[0]}" "${nnstds[0]}" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "0" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+	tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+	    exit 1
+	fi
+	rm -rf leap.log
 
         # calculate water and number of ions necessary to reach desired ion conc
         nwat=$(calcwaterinparm merged.parm7)
@@ -1350,7 +1369,12 @@ function create_box_rbfe {
 
         # generate parm file with calculated number of ions
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbs[0]}" "${lig1s[0]}" "${nnstds[0]}" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+        tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
+	rm -rf leap.log
         mv merged.parm7 "${lig1s[0]}~${lig2s[0]}_${s}".parm7; mv merged.rst7 "${lig1s[0]}~${lig2s[0]}_${s}".rst7
 
         # calculate water and ions in final parm file for first system. Remaining systems will be built with these number of water and ions.
@@ -1371,11 +1395,19 @@ function create_box_rbfe {
 
         			write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" "${nnstds[$m]}" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
         			tleap -s -f tleap.in > output
+				if [ $? -ne 0 ]; then
+                                    echo "tLeap execution failed with an error."
+                                    exit 1
+                                fi
         			mv merged.parm7 "${lig1s[$m]}~${lig2s[$m]}_${s}".parm7; mv merged.rst7 "${lig1s[$m]}~${lig2s[$m]}_${s}".rst7
 
 				if [ "${bidirection}" == "true" ]; then
 					write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbsrev[$m]}" "${lig2s[$m]}" "${nnstdsrev[$m]}" "${lig1s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
         				tleap -s -f tleap.in > output
+					if [ $? -ne 0 ]; then
+                                            echo "tLeap execution failed with an error."
+                                            exit 1
+                                        fi
         				mv merged.parm7 "${lig2s[$m]}~${lig1s[$m]}_${s}".parm7; mv merged.rst7 "${lig2s[$m]}~${lig1s[$m]}_${s}".rst7
 				fi
 
@@ -1510,7 +1542,12 @@ function create_box_twostate {
         ###
         # write and run tleap to generate initial parm file
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${merged1pdbs[0]}" "${lig1s[0]}" "${nnstds[0]}" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "0" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+        tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
+	rm -rf leap.log
 
         # calculate water and number of ions necessary to reach desired ion conc
         nwat=$(calcwaterinparm merged.parm7)
@@ -1519,7 +1556,12 @@ function create_box_twostate {
 
         # generate parm file with calculated number of ions
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${merged1pdbs[0]}" "${lig1s[0]}" "${nnstds[0]}" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+        tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
+	rm -rf leap.log
         mv merged.parm7 "${lig1s[0]}~${lig2s[0]}-1_${s}".parm7; mv merged.rst7 "${lig1s[0]}~${lig2s[0]}-1_${s}".rst7
 
         # calculate water and ions in final parm file for first system. Remaining systems will be built with these number of water and ions.
@@ -1549,6 +1591,10 @@ function create_box_twostate {
                                 write_tleap_merged "${pff}" "${lff}" "${wm}" "${merged1pdbs[$m]}" "${lig1s[$m]}" "${nnstds[$m]}" "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
 
                                 tleap -s -f tleap.in > output
+				if [ $? -ne 0 ]; then
+                                    echo "tLeap execution failed with an error."
+                                    exit 1
+                                fi
                                 mv merged.parm7 "${lig1s[$m]}~${lig2s[$m]}-1_${s}".parm7; mv merged.rst7 "${lig1s[$m]}~${lig2s[$m]}-1_${s}".rst7
         			nwat=$(calcwaterinparm ${lig1s[$m]}~${lig2s[$m]}-1_${s}.parm7)
         			nsodium=$(calcsodiuminparm ${lig1s[$m]}~${lig2s[$m]}-1_${s}.parm7)
@@ -1648,7 +1694,12 @@ function create_box_rsfe {
         ###
         # write and run tleap to generate initial parm file
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbs[0]}" "${lig1s[0]}" "1" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "0" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+        tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
+	rm -rf leap.log
 
         # calculate water and number of ions necessary to reach desired ion conc
         nwat=$(calcwaterinparm merged.parm7)
@@ -1657,7 +1708,12 @@ function create_box_rsfe {
 
         # generate parm file with calculated number of ions
         write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbs[0]}" "${lig1s[0]}" "1" "${lig2s[0]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+        tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
+	rm -rf leap.log
         mv merged.parm7 "${lig1s[0]}~${lig2s[0]}_${s}".parm7; mv merged.rst7 "${lig1s[0]}~${lig2s[0]}_${s}".rst7
 
         # calculate water and ions in final parm file for first system. Remaining systems will be built with these number of water and ions.
@@ -1677,12 +1733,20 @@ function create_box_rsfe {
                         for m in "${!mergedpdbs[@]}";do
                                 write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbs[$m]}" "${lig1s[$m]}" 1 "${lig2s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
                                 tleap -s -f tleap.in > output
+				if [ $? -ne 0 ]; then
+                                    echo "tLeap execution failed with an error."
+                                    exit 1
+                                fi
                                 mv merged.parm7 "${lig1s[$m]}~${lig2s[$m]}_${s}".parm7; mv merged.rst7 "${lig1s[$m]}~${lig2s[$m]}_${s}".rst7
 
 				
 				if [ "${bidirection}" == "true" ]; then
 					write_tleap_merged "${pff}" "${lff}" "${wm}" "${mergedpdbsrev[$m]}" "${lig2s[$m]}" 1 "${lig1s[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
 					tleap -s -f tleap.in > output
+					if [ $? -ne 0 ]; then
+                                            echo "tLeap execution failed with an error."
+                                            exit 1
+                                        fi
 					mv merged.parm7 "${lig2s[$m]}~${lig1s[$m]}_${s}".parm7; mv merged.rst7 "${lig2s[$m]}~${lig1s[$m]}_${s}".rst7
 				fi
                         done
@@ -1795,7 +1859,12 @@ function create_box_asfe {
         ###
         # write and run tleap to generate initial parm file
         write_tleap_asfe "${pff}" "${lff}" "${wm}" "${mollist[0]}" "${mdboxshape}" "${rbuf}" "${load}" "0" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+        tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
+	rm -rf leap.log
 
         # calculate water and number of ions necessary to reach desired ion conc
         nwat=$(calcwaterinparm merged.parm7)
@@ -1804,7 +1873,12 @@ function create_box_asfe {
 
         # generate parm file with calculated number of ions
         write_tleap_asfe "${pff}" "${lff}" "${wm}" "${mollist[0]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
-        tleap -s -f tleap.in > output; rm -rf leap.log
+        tleap -s -f tleap.in > output
+	if [ $? -ne 0 ]; then
+            echo "tLeap execution failed with an error."
+            exit 1
+        fi
+	rm -rf leap.log
         mv merged.parm7 "${mollist[0]}_${s}".parm7; mv merged.rst7 "${mollist[0]}_${s}".rst7
 
         # calculate water and ions in final parm file for first system. Remaining systems will be built with these number of water and ions.
@@ -1824,6 +1898,10 @@ function create_box_asfe {
                         for m in "${!mollist[@]}";do
                                 write_tleap_asfe "${pff}" "${lff}" "${wm}" "${mollist[$m]}" "${mdboxshape}" "${rbuf}" "${load}" "${nions}" "${boxbuild}" "${s}"
                                 tleap -s -f tleap.in > output
+				if [ $? -ne 0 ]; then
+                                    echo "tLeap execution failed with an error."
+                                    exit 1
+                                fi
                                 mv merged.parm7 "${mollist[$m]}_${s}".parm7; mv merged.rst7 "${mollist[$m]}_${s}".rst7
                         done
 
