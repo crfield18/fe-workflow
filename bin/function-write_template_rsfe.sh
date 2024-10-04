@@ -1234,11 +1234,11 @@ EOF2
 
 def OpenParm( fname, xyz=None ):
     import parmed
-    if parmed.__version__ >= "4.0.0":
+    try:
+        from parmed.constants import IFBOX
+    except ImportError:
         from parmed.constants import PrmtopPointers
         IFBOX = PrmtopPointers.IFBOX
-    else: 
-        from parmed.constants import IFBOX
     if ".mol2" in fname:
         param = parmed.load_file( fname, structure=True )
         #help(param)
@@ -1279,11 +1279,12 @@ def Extract( parm, mask ):
     return Strip( parm, "!(%s)"%(mask) )
 
 def SaveParmRst( param, fname ):
-    if parmed.__version__ >= "4.0.0":
+    import parmed
+    try:
+        from parmed.constants import IFBOX
+    except ImportError:
         from parmed.constants import PrmtopPointers
         IFBOX = PrmtopPointers.IFBOX
-    else:
-        from parmed.constants import IFBOX
     for a in param.atoms:
         param.parm_data["CHARGE"][ a.idx ] = a.charge
     if param.box is not None:
@@ -1634,11 +1635,11 @@ EOF2
 
 def OpenParm( fname, xyz=None ):
     import parmed
-    if parmed.__version__ >= "4.0.0":
+    try:
+        from parmed.constants import IFBOX
+    except ImportError:
         from parmed.constants import PrmtopPointers
         IFBOX = PrmtopPointers.IFBOX
-    else: 
-        from parmed.constants import IFBOX
     if ".mol2" in fname:
         param = parmed.load_file( fname, structure=True )
         #help(param)
@@ -1679,11 +1680,11 @@ def Extract( parm, mask ):
     return Strip( parm, "!(%s)"%(mask) )
 
 def SaveParmRst( param, fname ):
-    if parmed.__version__ >= "4.0.0":
+    try:
+        from parmed.constants import IFBOX
+    except ImportError:
         from parmed.constants import PrmtopPointers
         IFBOX = PrmtopPointers.IFBOX
-    else: 
-        from parmed.constants import IFBOX
     for a in param.atoms:
         param.parm_data["CHARGE"][ a.idx ] = a.charge
     if param.box is not None:
