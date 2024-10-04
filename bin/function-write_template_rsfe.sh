@@ -1384,7 +1384,7 @@ EOFV
 			if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         cpptraj < center.in
                         sleep 1
-			mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/$\\\{lam}_\\\${stage}.rst7	
+			mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7	
 		done
 	cd ../
 
@@ -1777,14 +1777,14 @@ parm \\\${vacdir}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_preTI.rst7
 box x \\\${boxsize[0} y \\\${boxsize[1]} z \\\${boxsize[2]} alpha \\\${boxsize[3]} beta \\\${boxsize[4]} gamma \\\${boxsize[5]}
 autoimage
-trajout t$\\\{trial}/\\\${lam}_preTI_centered.rst7
+trajout t\\\${trial}/\\\${lam}_preTI_centered.rst7
 go
 quit
 EOFV
 			if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         cpptraj < center.in
                         sleep 1
-			mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/$\\\{lam}_\\\${stage}.rst7	
+			mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7	
 		done
         cd ../
 
