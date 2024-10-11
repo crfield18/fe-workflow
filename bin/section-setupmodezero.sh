@@ -417,9 +417,11 @@ EOF
            # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
+                printf "source leaprc.phosaa14SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
+                printf "source leaprc.phosaa19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
 
         fi
@@ -546,9 +548,11 @@ EOF
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "source leaprc.phosaa14SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "source leaprc.phosaa19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
         fi
 	
@@ -693,9 +697,11 @@ EOF
            # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "source leaprc.phosaa14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "source leaprc.phosaa19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
         fi
 	
