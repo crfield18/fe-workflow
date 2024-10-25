@@ -28,7 +28,7 @@ function writetemplate_rsfe
 
 
 	cat <<EOFN >TEMPLATE.sh
-#!/bin/bash
+#!/usr/bin/env bash
 top=\`pwd\`
 
 parmbase=${parmbase}
@@ -1086,7 +1086,7 @@ done
 ###############
 if [ "\${twostate}" != true ]; then
 	cat<<EOF > run_alltrials.slurm
-#!/bin/bash
+#!/usr/bin/env bash
 #SBATCH --job-name="eq_${trans}.slurm"
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"
@@ -1424,7 +1424,7 @@ EOF
 ####
 if [ "\${twostate}" == "true" ]; then
         cat<<EOF > run_alltrials.slurm
-#!/bin/bash
+#!/usr/bin/env bash
 #SBATCH --job-name="eq_${trans}.slurm"
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"

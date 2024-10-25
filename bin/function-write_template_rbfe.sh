@@ -40,7 +40,7 @@ function writetemplate_rbfe
 
 
 	cat <<EOFN >TEMPLATE.sh
-#!/bin/bash
+#!/usr/bin/env bash
 top=\`pwd\`
 
 parmbase=${parmbase}
@@ -1654,7 +1654,7 @@ done
 if [ "\${twostate}" != true ]; then
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm
-#!/bin/bash
+#!/usr/bin/env bash
 #SBATCH --job-name="eq_${trans}.slurm"
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"
@@ -1797,7 +1797,7 @@ elif [ "\${twostate}" == true ]; then
 
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm
-#!/bin/bash
+#!/usr/bin/env bash
 #SBATCH --job-name="eq_${trans}.slurm"
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"
@@ -2009,7 +2009,7 @@ fi
 
 truncate -s0 prod.slurm
 cat<<EOF > prod.slurm
-#!/bin/bash
+#!/usr/bin/env bash
 #SBATCH --job-name="pr_${trans}.slurm"
 #SBATCH --output="pr_${trans}.slurm.slurmout"
 #SBATCH --error="pr_${trans}.slurm.slurmerr"
