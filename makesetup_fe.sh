@@ -118,7 +118,7 @@ fi
 
 # write setup_fe
 cat << EOF2 > ${Workflow}/bin/setup_fe
-#!/bin/bash
+#!/usr/bin/env bash
 
 ##########################################
 pathhere=\`pwd\`
@@ -208,7 +208,7 @@ EOF2
 chmod a+x ${Workflow}/bin/setup_fe
 
 cat << EOF3 > ${path}/FE-Workflow.bashrc
-#!/bin/bash
+#!/usr/bin/env bash
 
 printf "\n\n%s \n\n" "ADDING ${Workflow}/bin to \\\$PATH..."
 export PATH=\$PATH:${Workflow}/bin
