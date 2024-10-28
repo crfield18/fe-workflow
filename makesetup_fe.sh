@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #  This script helps prepare the executable setup_fe
 #  It is recommended that all three repositories of the AMBER DD Boost package
 # FE-MDEngine, FE-ToolKit, and FE-Workflow 
@@ -7,6 +7,14 @@
 #  For additional help reach out 
 #  to abir.ganguly@rutgers.edu 
 
+
+# Check if bash version is 4.3 or higher
+if [[ "${BASH_VERSINFO[0]}" -lt 4 || ( "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -lt 3 ) ]]; then
+	printf "%s \n" "BASH VERSION 4.3 OR HIGHER IS REQUIRED TO RUN ${Workflow}"
+	printf "%s \n" "CURRENT BASH VERSION IS ${BASH_VERSION}"
+	printf "%s \n" "PLEASE UPGRADE BASH TO VERSION 4.3 OR HIGHER"
+	exit 0
+fi
 
 path=`pwd`
 
@@ -120,6 +128,14 @@ fi
 cat << EOF2 > ${Workflow}/bin/setup_fe
 #!/usr/bin/env bash
 
+
+if [[ "${BASH_VERSINFO[0]}" -lt 4 || ( "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -lt 3 ) ]]; then
+	printf "%s \n" "BASH VERSION 4.3 OR HIGHER IS REQUIRED TO RUN ${Workflow}"
+	printf "%s \n" "CURRENT BASH VERSION IS ${BASH_VERSION}"
+	printf "%s \n" "PLEASE UPGRADE BASH TO VERSION 4.3 OR HIGHER"
+	exit 0
+fi
+
 ##########################################
 pathhere=\`pwd\`
 path=\`pwd\`
@@ -210,12 +226,6 @@ chmod a+x ${Workflow}/bin/setup_fe
 cat << EOF3 > ${path}/FE-Workflow.bashrc
 #!/usr/bin/env bash
 
-if [[ "${BASH_VERSINFO[0]}" -lt 4 || ( "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -lt 3 ) ]]; then
-	printf "%s \n" "BASH VERSION 4.3 OR HIGHER IS REQUIRED TO RUN ${Workflow}"
-	printf "%s \n" "CURRENT BASH VERSION IS ${BASH_VERSION}"
-	printf "%s \n" "PLEASE UPGRADE BASH TO VERSION 4.3 OR HIGHER"
-	exit 0
-fi
 
 printf "\n\n%s \n\n" "ADDING ${Workflow}/bin to \\\$PATH..."
 export PATH=\$PATH:${Workflow}/bin
