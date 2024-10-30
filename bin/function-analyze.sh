@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 function write_edgembar {
 
         ticalc=$1; shift

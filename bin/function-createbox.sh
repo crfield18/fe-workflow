@@ -122,6 +122,8 @@ function write_tleap_merged {
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
 		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
+        elif [ "${pff}" == "OL3" ]; then
+                printf "source leaprc.RNA.OL3\n" >> tleap.in
         fi
 
         # assign ligand forcefield
@@ -236,6 +238,8 @@ function write_tleap_merged_head {
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
 		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
+        elif [ "${pff}" == "OL3" ]; then
+                printf "source leaprc.RNA.OL3\n" >> tleap.in
         fi
 
         # assign ligand forcefield
@@ -436,6 +440,8 @@ function write_tleap_asfe {
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
 		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
+        elif [ "${pff}" == "OL3" ]; then
+                printf "source leaprc.RNA.OL3\n" >> tleap.in
         fi
 
         # assign ligand forcefield
@@ -522,6 +528,8 @@ function write_tleap_head_asfe {
                 printf "source leaprc.protein.ff19SB\n" >> tleap.in
 		printf "source leaprc.phosaa19SB\n" >> tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> tleap.in
+        elif [ "${pff}" == "OL3" ]; then
+                printf "source leaprc.RNA.OL3\n" >> tleap.in
         fi
 
         # assign ligand forcefield
