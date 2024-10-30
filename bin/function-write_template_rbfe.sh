@@ -163,8 +163,8 @@ EOF
         cat<<EOF>inputs/\${eqpre1P0}.mdin
 &cntrl
 imin            = 0
-nstlim          = 5000
-dt              = 0.001
+nstlim          = 50000
+dt              = 0.0001
 irest           = 0
 ntx             = 1
 ntxo            = 1
