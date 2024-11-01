@@ -423,11 +423,10 @@ EOF
                 printf "source leaprc.protein.ff19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
                 printf "source leaprc.phosaa19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
-        elif [ "${pff}" == "OL3" ]; then
+        elif [ "${pff}" == "nucleic" ]; then   
+                printf "soruce leaprc.protein.ff19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
                 printf "source leaprc.RNA.OL3\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
-        elif [ "${pff}" == "ff19SB_OL3" ]; then
-                printf "source leaprc.protein.ff19SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
-                printf "source leaprc.RNA.OL3\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
+                printf "soruce leaprc.DNA.OL21\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
         fi
 
 
@@ -558,11 +557,10 @@ EOF
                 printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "source leaprc.phosaa19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
-        elif [ "${pff}" == "OL3" ]; then
+        elif [ "${pff}" == "nucleic" ]; then   
+                printf "soruce leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "source leaprc.RNA.OL3\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
-        elif [ "${pff}" == "ff19SB_OL3" ]; then
-                printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
-                printf "source leaprc.RNA.OL3\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "soruce leaprc.DNA.OL21\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
         fi
 	
 
@@ -712,11 +710,10 @@ EOF
                 printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 printf "source leaprc.phosaa19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 printf "loadamberparams frcmod.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
-        elif [ "${pff}" == "OL3" ]; then
+        elif [ "${pff}" == "nucleic" ]; then   
+                printf "soruce leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 printf "source leaprc.RNA.OL3\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
-        elif [ "${pff}" == "ff19SB_OL3" ]; then
-                printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
-                printf "source leaprc.RNA.OL3\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "soruce leaprc.DNA.OL21\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
         fi
 	
 
