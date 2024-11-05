@@ -1836,7 +1836,15 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
         	if [ \\\${alllams} -eq 0 ];then
 
-                	if [ "\\\$stage" == "min1" ] || [ "\\\$stage" == "min2" ]; then
+					if [ "\\\$stage" == "min1" ] ||
+                           [ "\\\$stage" == "min2" ] ||
+                           [ "\\\$stage" == "eqpre1P0" ] || 
+                           [ "\\\$stage" == "eqpre2P0" ] ||
+                           [ "\\\$stage" == "eqP0" ] ||
+                           [ "\\\$stage" == "eqV" ] || 
+                           [ "\\\$stage" == "eqP" ] ||
+                           [ "\\\$stage" == "eqA" ]; then
+
                         	# check if pmemd.cuda is present
                         	if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
