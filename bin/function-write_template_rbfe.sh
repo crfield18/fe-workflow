@@ -6,12 +6,10 @@ function writetemplate_rbfe
         local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
         local i=0
 		for value in "$@"; do
-			if [[ "$value" == "trans" ]]; then
-				eval "${varlist[$i]}=${value}"
-			elif [[ "$value" =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
-				eval "${varlist[$i]}=${value}"
+			if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
+            	eval "${varlist[$i]}=\'${value}\'"
 			else
-				eval "${varlist[$i]}=\'${value}\'"
+                eval "${varlist[$i]}=${value}"
 			fi
 			i=$(($i+1))
         done
