@@ -23,17 +23,20 @@ path=`pwd`
 # the list "varlist" contains the variables that are defined from the input file
 function read_input {
 
-while read line; do
-        varlist=(MDEngine ToolKit Workflow)
-        IFS=$'\t| |=' read -ra args <<< $line
-        if [[ "${args[0]}" =~ ^#.* ]]; then continue; fi
-        keyword=${args[0]}; value=${args[1]}
-        for var in ${varlist[@]}; do
-			eval "$var=$value"
-        done
+    while read line; do
+        # Skip comments and empty lines
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "$line" ]] && continue
 
+        # Split line into key and value
+        IFS=' ' read -r keyword value <<< "$line"
 
-done < $1
+        # Trim whitespace
+        keyword=$(echo "$keyword" | xargs)
+        value=$(echo "$value" | xargs)
+
+        eval "declare -g $keyword=$value"
+    done < "$1"
 }
 ######################################################################
 
