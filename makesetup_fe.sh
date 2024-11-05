@@ -29,10 +29,7 @@ while read line; do
         if [[ "${args[0]}" =~ ^#.* ]]; then continue; fi
         keyword=${args[0]}; value=${args[1]}
         for var in ${varlist[@]}; do
-                declare -n arr="$var"
-                if [ "$var" == "$keyword" ]; then
-                        arr=$value
-                fi
+			eval "$var=$value"
         done
 
 
