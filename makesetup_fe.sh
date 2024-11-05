@@ -9,10 +9,10 @@
 
 
 # Check if bash version is 4.3 or higher
-if [[ "${BASH_VERSINFO[0]}" -lt 4 || ( "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -lt 3 ) ]]; then
-	printf "%s \n" "BASH VERSION 4.3 OR HIGHER IS REQUIRED TO RUN ${Workflow}"
+if [[ "${BASH_VERSINFO[0]}" -lt 4 || ( "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -lt 1 ) ]]; then
+	printf "%s \n" "BASH VERSION 4.1 OR HIGHER IS REQUIRED TO RUN ${Workflow}"
 	printf "%s \n" "CURRENT BASH VERSION IS ${BASH_VERSION}"
-	printf "%s \n" "PLEASE UPGRADE BASH TO VERSION 4.3 OR HIGHER"
+	printf "%s \n" "PLEASE UPGRADE BASH TO VERSION 4.1 OR HIGHER"
 	exit 0
 fi
 
