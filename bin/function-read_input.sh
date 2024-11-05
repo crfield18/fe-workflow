@@ -12,17 +12,14 @@ while read line; do
                 keyword=${args[0]}; value=${args[2]}
         fi
         for var in ${varlist[@]}; do
-                declare -n arr="$var"
                 if [ "$var" == "$keyword" ]; then
                         if [ "$var" == "translist" ] || [ "$var" == "lams" ]; then
-                                arr=($value)
+                                eval "$var=($value)"
                         else
-                                arr=$value
+                                eval "$var=$value"
                         fi
                 fi
         done
-
-
 done < $1
 }
 ##########################################
