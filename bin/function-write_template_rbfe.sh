@@ -1669,7 +1669,13 @@ top=\\\${PWD}
 endstates=(\${endstates[@]})
 lams=(\${lams[@]})
 twostate=\${twostate}
+full_eqstage=(${eqstagelist[*]})
+# Edit `eqstage` to only include the stages you want to run
 eqstage=(${eqstagelist[*]})
+len_full_eqstage=\\\${#full_eqstage[@]}
+len_eqstage=\\\${#eqstage[@]}
+starting_idx=\\\$((length1 - length2 - 1))
+
 preminTIstage=\${preminTIstage}
 
 
@@ -1680,7 +1686,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
 	if [ ! -d t\\\${trial} ];then mkdir t\\\${trial}; fi
 
-	count=-1; alllams=0
+	count=\\\$starting_idx; alllams=0
 	for stage in \\\${eqstage[@]}; do
         	count=\\\$((\\\${count}+1))
         	lastcount=\\\$((\\\${count}-1))
@@ -1812,7 +1818,13 @@ top=\\\${PWD}
 endstates=(\${endstates[@]})
 lams=(\${lams[@]})
 twostate=\${twostate}
+full_eqstage=(${eqstagelist[*]})
+# Edit `eqstage` to only include the stages you want to run
 eqstage=(${eqstagelist[*]})
+len_full_eqstage=\\\${#full_eqstage[@]}
+len_eqstage=\\\${#eqstage[@]}
+starting_idx=\\\$((length1 - length2 - 1))
+
 preminTIstage=\${preminTIstage}
 
 
@@ -1823,7 +1835,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
 	if [ ! -d t\\\${trial} ];then mkdir t\\\${trial}; fi
 
-	count=-1; alllams=0
+	count=\\\$starting_idx; alllams=0
 	for stage in \\\${eqstage[@]}; do
         	count=\\\$((\\\${count}+1))
         	lastcount=\\\$((\\\${count}-1))
