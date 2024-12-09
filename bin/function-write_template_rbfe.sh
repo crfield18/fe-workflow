@@ -15,10 +15,10 @@ function writetemplate_rbfe
         done
 
 		# Temp modifications for CDK2:
-		TIMASK1=":1"
-		TIMASK2=":2"
-		SCMASK1=":1@H15,H16,H17,C10,C11,C12,C13,H20,C19,O2,H21,N6,H22,C17,C18"
-		SCMASK2=":2@H15,H16,H17,C10,C11,C12,C13,H18,H21,C17,C18"
+		TIMASK1="\":1\""
+		TIMASK2="\":2\""
+		SCMASK1="\":1@H15,H16,H17,C10,C11,C12,C13,H20,C19,O2,H21,N6,H22,C17,C18\""
+		SCMASK2="\":2@H15,H16,H17,C10,C11,C12,C13,H18,H21,C17,C18\""
 		NTWX=25000
 
 
@@ -1668,7 +1668,7 @@ if [ "\${twostate}" != true ]; then
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
-#SBATCH --nodes=${ntrials}
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=\${#lams[@]}
 ##SBATCH --gres=gpu:${ngpus}
 #SBATCH --time=${wallclock}
@@ -1819,7 +1819,7 @@ elif [ "\${twostate}" == true ]; then
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
-#SBATCH --nodes=${ntrials}
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=\${#lams[@]}
 ##SBATCH --gres=gpu:${ngpus}
 #SBATCH --time=${wallclock}
@@ -2039,7 +2039,7 @@ cat<<EOF > prod.slurm
 #SBATCH --output="pr_${trans}.slurm.slurmout"
 #SBATCH --error="pr_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
-#SBATCH --nodes=${nnodes}
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=\${#lams[@]}
 ##SBATCH --gres=gpu:${ngpus}
 #SBATCH --time=${wallclock}
