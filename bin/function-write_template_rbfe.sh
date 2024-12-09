@@ -14,6 +14,14 @@ function writetemplate_rbfe
 			i=$(($i+1))
         done
 
+		# Temp modifications for CDK2:
+		TIMASK1=":1"
+		TIMASK2=":2"
+		SCMASK1=":1@H15,H16,H17,C10,C11,C12,C13,H20,C19,O2,H21,N6,H22,C17,C18"
+		SCMASK2=":2@H15,H16,H17,C10,C11,C12,C13,H18,H21,C17,C18"
+		NTWX=25000
+
+
 	if [ "${twostate}" == "true" ]; then
 		endstates=(0.00000000 1.00000000)
 		parmbase=unisc
@@ -171,7 +179,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -230,7 +238,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -289,7 +297,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -348,7 +356,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -411,7 +419,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -470,7 +478,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -530,7 +538,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -598,7 +606,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -685,7 +693,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -772,7 +780,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -858,7 +866,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -944,7 +952,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -1030,7 +1038,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -1205,7 +1213,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -1260,7 +1268,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -1315,7 +1323,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -1370,7 +1378,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -1435,7 +1443,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -1662,7 +1670,7 @@ if [ "\${twostate}" != true ]; then
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${ntrials}
 #SBATCH --ntasks-per-node=\${#lams[@]}
-#SBATCH --gres=gpu:${ngpus}
+##SBATCH --gres=gpu:${ngpus}
 #SBATCH --time=${wallclock}
 
 top=\\\${PWD}
@@ -1680,6 +1688,8 @@ preminTIstage=\${preminTIstage}
 
 
 # check if AMBERHOME is set
+source ~/.bashrc
+dameamber add_reaf_modes
 #if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
 for trial in \\\$(seq 1 1 ${ntrials}); do
@@ -1811,7 +1821,7 @@ elif [ "\${twostate}" == true ]; then
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${ntrials}
 #SBATCH --ntasks-per-node=\${#lams[@]}
-#SBATCH --gres=gpu:${ngpus}
+##SBATCH --gres=gpu:${ngpus}
 #SBATCH --time=${wallclock}
 
 top=\\\${PWD}
@@ -1829,6 +1839,8 @@ preminTIstage=\${preminTIstage}
 
 
 # check if AMBERHOME is set
+source ~/.bashrc
+dameamber add_reaf_modes
 #if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
 for trial in \\\$(seq 1 1 ${ntrials}); do
@@ -2029,11 +2041,13 @@ cat<<EOF > prod.slurm
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${nnodes}
 #SBATCH --ntasks-per-node=\${#lams[@]}
-#SBATCH --gres=gpu:${ngpus}
+##SBATCH --gres=gpu:${ngpus}
 #SBATCH --time=${wallclock}
 
 lams=(\${lams[@]})
 # check if AMBERHOME is set
+source ~/.bashrc
+dameamber add_reaf_modes
 if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
 EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
