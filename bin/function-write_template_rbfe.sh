@@ -1715,7 +1715,9 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
                 	lam=\\\${endstates[0]}
                 	echo "Running \\\$stage for lambda \\\${lam}..."
-                	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                	echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+                	cat <<EOF2 > center.in"
+					\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                 	cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
@@ -1746,19 +1748,23 @@ EOF2
                         	echo "Running \\\$stage for lambda \\\${lam}..."
 
 				stage=minTI
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}"
 				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}
-                                sleep 1
+				sleep 1
 
 				laststage=minTI; stage=eqpre1P0TI
-                        	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
 				sleep 1
 
 				laststage=eqpre1P0TI; stage=eqpre2P0TI
-                        	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
 				sleep 1
 
 				laststage=eqpre2P0TI; stage=eqP0TI
-                        	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
 				sleep 1
 
                         	cat <<EOF2 > center.in
@@ -1782,6 +1788,7 @@ EOF2
                 	export LAUNCH="mpirun -np \\\${#lams[@]}"
                 	export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
                 	export MV2_ENABLE_AFFINITY=0
+					echo "\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
                 	\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 
                 	for lam in \\\${lams[@]};do
@@ -1804,7 +1811,8 @@ EOF2
         # run production
         EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
         echo "running replica ti"
-        mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+        echo "mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
+		mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 done
 
 EOF
@@ -1867,7 +1875,8 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
                         	for lam in \\\${endstates[@]};do
                                 	echo "Running \\\$stage for lambda \\\${lam}..."
-                                	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                                	echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+									\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                                 	cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
@@ -1890,7 +1899,8 @@ EOF2
                         	export LAUNCH="mpirun -np \\\${#endstates[@]}"
                         	export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
                         	export MV2_ENABLE_AFFINITY=0
-                        	\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
+                        	echo "\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
+							\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 
                         	for lam in \\\${endstates[@]};do
                                 	cat <<EOF2 > center.in
@@ -1939,19 +1949,23 @@ EOF2
 					fi
 
 					stage=minTI
-                                        \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}
-                                        sleep 1
+					echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}"
+					\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}
+					sleep 1
 
 					laststage=minTI; stage=eqpre1P0TI
-                        		\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+					echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+					\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
 					sleep 1
 
 					laststage=eqpre1P0TI; stage=eqpre2P0TI
-                        		\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+					echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+					\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
 					sleep 1
 
 					laststage=eqpre2P0TI; stage=eqP0TI
-                        		\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+					echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+					\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
 					sleep 1
 
                                 	cat <<EOF2 > center.in
@@ -1977,7 +1991,8 @@ EOF2
                 	export LAUNCH="mpirun -np \\\${#lams[@]}"
                 	export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
                 	export MV2_ENABLE_AFFINITY=0
-                	\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
+                	echo "\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
+					\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 
                 	for lam in \\\${lams[@]};do
                         	cat <<EOF2 > center.in
@@ -2019,6 +2034,7 @@ EOF2
 	# run production
 	EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
 	echo "running replica ti"
+	echo "mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
 	mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 done
 
@@ -2052,6 +2068,7 @@ if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
 EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
 echo "running replica ti"
+echo "mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/ti.groupfile"
 mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/ti.groupfile
 EOF
 
