@@ -291,7 +291,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 500000
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -350,7 +350,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 500000
-dt              = 0.001
+dt              = 0.002
 irest           = 1
 ntx             = 5
 ntxo            = 1
@@ -413,7 +413,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 500000
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -472,7 +472,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 500000 
-dt              = 0.001
+dt              = 0.002
 irest           = 1
 ntx             = 5
 ntxo            = 1
@@ -532,7 +532,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 2000000
-dt              = 0.001
+dt              = 0.004
 irest           = 1
 ntx             = 5
 ntxo            = 1
@@ -600,7 +600,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 200000
-dt              = 0.001
+dt              = 0.002
 irest           = 1
 ntx             = 5
 ntxo            = 1
@@ -687,7 +687,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 200000
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -774,7 +774,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 200000
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -860,7 +860,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 200000 
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -946,7 +946,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 200000 
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -1032,7 +1032,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 200000 
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -1317,7 +1317,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 100000
-dt              = 0.001
+dt              = 0.002
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -1372,7 +1372,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 500000
-dt              = 0.001
+dt              = 0.004
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -1437,7 +1437,7 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 2000000
-dt              = 0.001
+dt              = 0.004
 irest           = 0
 ntx             = 1
 ntxo            = 1
@@ -1493,7 +1493,7 @@ EOF
 imin            = 0                 ! = 0, not running minimization; = 1, running minimization
 nstlim          = ${NSTLIMTI}       ! simulation steps between each exchange interval
 numexchg        = ${NUMEXCHGTI}     ! total number of exchange attempts
-dt              = 0.001             ! timestep in unit of ps, 0.001ps = 1fs, safest option
+dt              = 0.004             ! timestep in unit of ps, 0.001ps = 1fs, safest option
 irest           = 0                 ! = 0, not restart a simulation; = 1, restart a simulation
 ntx             = 1                 ! = 1, not read velocity from a restart file; = 5, read velocity from a restart file
 ntxo            = 1                 ! final restart file format. = 1, ASCII; = 2, netCDF
@@ -1563,7 +1563,7 @@ EOF
 imin            = 6
 nstlim          = ${NSTLIMTI}
 numexchg        = ${NUMEXCHGTI}
-dt              = 0.001
+dt              = 0.004
 irest           = 1
 ntx             = 5
 ntxo            = 1
