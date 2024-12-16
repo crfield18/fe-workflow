@@ -551,7 +551,7 @@ EOF
         # assign protein forcefield
         if [ "${pff}" == "ff14SB" ]; then
                 printf "source leaprc.protein.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
-                printf "source leaprc.phosaa14SB\n" >> fix_box_${FILENAME_WITHOUT_EXT}_aq_tleap.in
+                printf "source leaprc.phosaa14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "loadamberparams frcmod.ff14SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
         elif [ "${pff}" == "ff19SB" ]; then
                 printf "source leaprc.protein.ff19SB\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
@@ -648,10 +648,10 @@ EOF
 HMassRepartition
 outparm hmr.parm7 hmr.rst7
 EOFM
-	        parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7 >> output 2>&1
-		mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.rst7
-                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7 >> output 2>&1
-                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7
+	        parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.rst7 >> output 2>&1
+		mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq.rst7
+                #parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7 >> output 2>&1
+                #mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7
 	fi
 
   done
@@ -801,10 +801,8 @@ EOF
 HMassRepartition
 outparm hmr.parm7 hmr.rst7
 EOFM
-                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.rst7 >> output 2>&1
-                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_com.rst7
-                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.rst7 >> output 2>&1
-                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_com.rst7
+                parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.rst7 >> output 2>&1
+                mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.rst7
         fi
 
   done

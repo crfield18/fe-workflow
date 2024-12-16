@@ -1,0 +1,169 @@
+
+                        Y O U      H A V E      B E E N
+                               _
+                            ==(W{==========-      /===-
+                              ||  (.--.)         /===-_---~~~~~~~~~------____
+                              | \_,|**|,__      |===-~___                _,-' `
+                 -==\\        `\ ' `--'   ),    `//~\\   ~~~~`---.___.-~~
+             ______-==|        /`\_. .__/\ \    | |  \\           _-~`
+       __--~~~  ,-/-==\\      (   | .  |~~~~|   | |   `\        ,'
+    _-~       /'    |  \\     )__/==0==-\<>/   / /      \      /
+  .'        /       |   \\      /~\___/~~\/  /' /        \   /'
+ /  ____  /         |    \`\.__/-~~   \  |_/'  /          \/'
+/-'~    ~~~~~---__  |     ~-/~         ( )   /'        _--~`
+                  \_|      /        _) | ;  ),   __--~~
+                    '~~--_/      _-~/- |/ \   '-~ \             
+                   {\__--_/}    / \\_>-|)<__\      \
+                   /'   (_/  _-~  | |__>--<__|      | 
+                  |   _/) )-~     | |__>--<__|      |   
+                  / /~ ,_/       / /__>---<__/      |  
+                 o-o _//        /-~_>---<__-~      / 
+                 (^(~          /~_>---<__-      _-~              
+                ,/|           /__>--<__/     _-~                 
+             ,//('(          |__>--<__|     /                  .----_ 
+            ( ( '))          |__>--<__|    |                 /' _---_~\
+         `-)) )) (           |__>--<__|    |               /'  /     ~\`\
+        ,/,'//( (             \__>--<__\    \            /'  //        ||
+      ,( ( ((, ))              ~-__>--<_~-_  ~--____---~' _/'/        /'
+    `~/  )` ) ,/|                 ~-_~>--<_/-__       __-~ _/ 
+  ._-~//( )/ )) `                    ~~-'_/_/ /~~~~~~~__--~ 
+   ;'( ')/ ,)(                              ~~~~~~~~~~ 
+  ' ') '( (/
+    '   '  `             
+                                  P A R M E D
+
+ParmEd: a Parameter file Editor
+
+
+Traceback (most recent call last):
+  File "/work2/10162/piskuliche/frontera/Software/amber24/bin/parmed", line 33, in <module>
+    sys.exit(load_entry_point('ParmEd==0+untagged.61627.gf830474.dirty', 'console_scripts', 'parmed')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/scripts.py", line 115, in clapp
+    amber_prmtop.add_parm(parm)
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/tools/parmlist.py", line 36, in add_parm
+    parm = load_file(name, structure=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/formats/registry.py", line 166, in load_file
+    raise FileNotFoundError('%s does not exist' % filename)
+FileNotFoundError: fix_box_*~*-1_aq.parm7 does not exist
+
+.     .       .  .   . .   .   . .    +  .
+  .     .  :     .    .. :. .___---------___.
+       .  .   .    .  :.:. _".^ .^ ^.  '.. :"-_. .
+    .  :       .  .  .:../:            . .^  :.:\.
+        .   . :: +. :.:/: .   .    .        . . .:\
+ .  :    .     . _ :::/:               .  ^ .  . .:\
+  .. . .   . - : :.:./.                        .  .:\
+  .      .     . :..|:                    .  .  ^. .:|
+    .       . : : ..||        .                . . !:|
+  .     . . . ::. ::\(                           . :)/
+ .   .     : . : .:.|. ######              .#######::|
+  :.. .  :-  : .:  ::|.#######           ..########:|
+ .  .  .  ..  .  .. :\ ########          :######## :/
+  .        .+ :: : -.:\ ########       . ########.:/
+    .  .+   . . . . :.:\. #######       #######..:/
+      :: . . . . ::.:..:.\           .   .   ..:/
+   .   .   .  .. :  -::::.\.       | |     . .:/
+      .  :  .  .  .-:.":.::.\             ..:/ .~~~~~~~~~~~.
+ .      -.   . . . .: .:::.:.\.           .:/,: Prepare to  \
+.   .   .  :      : ....::_:..:\   ___.  :/ .       be       |
+   .   .  .   .:. .. .  .: :.:.:\       :/   \  P A R M E D |
+     +   .   .   : . ::. :.:. .:.|\  .:/|      \~~~~~~~~~~~'
+     .         +   .  .  ...:: ..|  --.:|
+.      . . .   .  .  . ... :..:.."(  ..)"
+ .   .       .      :  .   .: ::/  .  .::\
+
+ParmEd: a Parameter file Editor
+
+
+Traceback (most recent call last):
+  File "/work2/10162/piskuliche/frontera/Software/amber24/bin/parmed", line 33, in <module>
+    sys.exit(load_entry_point('ParmEd==0+untagged.61627.gf830474.dirty', 'console_scripts', 'parmed')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/scripts.py", line 115, in clapp
+    amber_prmtop.add_parm(parm)
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/tools/parmlist.py", line 36, in add_parm
+    parm = load_file(name, structure=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/formats/registry.py", line 166, in load_file
+    raise FileNotFoundError('%s does not exist' % filename)
+FileNotFoundError: fix_box_*~*-2_aq.parm7 does not exist
+
+                        Y O U      H A V E      B E E N
+                               _
+                            ==(W{==========-      /===-
+                              ||  (.--.)         /===-_---~~~~~~~~~------____
+                              | \_,|**|,__      |===-~___                _,-' `
+                 -==\\        `\ ' `--'   ),    `//~\\   ~~~~`---.___.-~~
+             ______-==|        /`\_. .__/\ \    | |  \\           _-~`
+       __--~~~  ,-/-==\\      (   | .  |~~~~|   | |   `\        ,'
+    _-~       /'    |  \\     )__/==0==-\<>/   / /      \      /
+  .'        /       |   \\      /~\___/~~\/  /' /        \   /'
+ /  ____  /         |    \`\.__/-~~   \  |_/'  /          \/'
+/-'~    ~~~~~---__  |     ~-/~         ( )   /'        _--~`
+                  \_|      /        _) | ;  ),   __--~~
+                    '~~--_/      _-~/- |/ \   '-~ \             
+                   {\__--_/}    / \\_>-|)<__\      \
+                   /'   (_/  _-~  | |__>--<__|      | 
+                  |   _/) )-~     | |__>--<__|      |   
+                  / /~ ,_/       / /__>---<__/      |  
+                 o-o _//        /-~_>---<__-~      / 
+                 (^(~          /~_>---<__-      _-~              
+                ,/|           /__>--<__/     _-~                 
+             ,//('(          |__>--<__|     /                  .----_ 
+            ( ( '))          |__>--<__|    |                 /' _---_~\
+         `-)) )) (           |__>--<__|    |               /'  /     ~\`\
+        ,/,'//( (             \__>--<__\    \            /'  //        ||
+      ,( ( ((, ))              ~-__>--<_~-_  ~--____---~' _/'/        /'
+    `~/  )` ) ,/|                 ~-_~>--<_/-__       __-~ _/ 
+  ._-~//( )/ )) `                    ~~-'_/_/ /~~~~~~~__--~ 
+   ;'( ')/ ,)(                              ~~~~~~~~~~ 
+  ' ') '( (/
+    '   '  `             
+                                  P A R M E D
+
+ParmEd: a Parameter file Editor
+
+
+Traceback (most recent call last):
+  File "/work2/10162/piskuliche/frontera/Software/amber24/bin/parmed", line 33, in <module>
+    sys.exit(load_entry_point('ParmEd==0+untagged.61627.gf830474.dirty', 'console_scripts', 'parmed')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/scripts.py", line 115, in clapp
+    amber_prmtop.add_parm(parm)
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/tools/parmlist.py", line 36, in add_parm
+    parm = load_file(name, structure=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/formats/registry.py", line 166, in load_file
+    raise FileNotFoundError('%s does not exist' % filename)
+FileNotFoundError: fix_box_*~*-1_com.parm7 does not exist
+
+                                  /^^^/           /]
+                                 /   ]           / ]
+                         _______/    ]___       /  ]
+                        /                \_____/   /
+                      _/   [@]  \ \                \
+                     /..         | |                ]
+                      VVVvvv\    | |         _/\    ]
+          P A R M E D       |               /    \  ]
+                     AAA^^^^^              /       \]
+                      \_________\   \_____/
+                                \    \
+                                 \____\
+
+ParmEd: a Parameter file Editor
+
+
+Traceback (most recent call last):
+  File "/work2/10162/piskuliche/frontera/Software/amber24/bin/parmed", line 33, in <module>
+    sys.exit(load_entry_point('ParmEd==0+untagged.61627.gf830474.dirty', 'console_scripts', 'parmed')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/scripts.py", line 115, in clapp
+    amber_prmtop.add_parm(parm)
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/tools/parmlist.py", line 36, in add_parm
+    parm = load_file(name, structure=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work2/10162/piskuliche/frontera/Software/amber24/lib/python3.12/site-packages/parmed/formats/registry.py", line 166, in load_file
+    raise FileNotFoundError('%s does not exist' % filename)
+FileNotFoundError: fix_box_*~*-2_com.parm7 does not exist

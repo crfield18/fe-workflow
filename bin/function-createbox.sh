@@ -190,13 +190,20 @@ function write_tleap_merged {
                         printf "bond x.${args[0]}.SG x.${args[1]}.SG\n" >> tleap.in
                 done < ${inpfile}_sslinks
         fi
-
+        
+        # add Na+ ions for nucleic acid systems
+        # to neutralize the system before adding water.
+        if [ "${pff}" == "nucleic" ]; then
+                printf "addIons x Na+ 0\n" >> tleap.in
+        fi
         # build box and neutralize with Na+ Cl-
 	if [ "${boxbuild}" == 0 ] && [ "${s}" == "com" ]; then
                 printf "setbox x vdw \n" >> tleap.in
 	else
                 printf "${boxcmd} x ${boxkey} ${rbuf}\n" >> tleap.in
-                printf "addions x Na+ 0\n" >> tleap.in
+                if [ "${pff}" != "nucleic" ] ; then
+                        printf "addions x Na+ 0\n" >> tleap.in
+                fi
                 printf "addions x Cl- 0\n" >> tleap.in
 
                 # add additional Na+ Cl- if needed
@@ -308,6 +315,10 @@ function write_tleap_merged_head {
                 done < ${inpfile}_sslinks
         fi
 
+        if [ "${pff}" == "nucleic" ]; then
+                printf "addIons x Na+ 0\n" >> tleap.in
+                nna=${nch} 
+        fi
         # build box and neutralize with Na+ Cl-
         if [ "${boxbuild}" == 0 ] && [ "${s}" == "com" ]; then
                 printf "setbox x vdw \n" >> tleap.in
@@ -474,6 +485,11 @@ function write_tleap_asfe {
                 boxkey="OPCBOX" 
         fi
 
+        # Adds the counter ions for systems with nucleic acids
+        # before calling the solvate box command.
+        if [ "${pff}" == "nucleic" ]; then
+                printf "addIons x Na+ 0\n" >> tleap.in
+        fi
 
 
         # assign MD box
@@ -493,8 +509,12 @@ function write_tleap_asfe {
 
         # build box and neutralize with Na+ Cl-
         printf "${boxcmd} x ${boxkey} ${rbuf}\n" >> tleap.in
-        printf "addions x Na+ 0\n" >> tleap.in
-        printf "addions x Cl- 0\n" >> tleap.in
+
+        # Counter ions for systems without nucleic acids.
+        if [ "${pff}" != "nucleic" ]; then
+                printf "addions x Na+ 0\n" >> tleap.in
+        fi
+                printf "addions x Cl- 0\n" >> tleap.in
 
         # add additional Na+ Cl- if needed
         if [ "${addions}" != "0" ]; then
@@ -579,7 +599,14 @@ function write_tleap_head_asfe {
         printf "loadamberparams ${inpfile}_0.frcmod\n" >> tleap.in
         printf "loadoff ${inpfile}_0.lib\n" >> tleap.in
 
-
+        # Adds the counter ions for systems with nucleic acids
+        # before calling the solvate box command. Note that the
+        # number of sodium ions is then set to the number of
+        # chloride ions.
+        if [ "${pff}" == "nucleic" ]; then
+                printf "addIons x Na+ 0\n" >> tleap.in
+                nna=${nch}
+        fi
 
         # build box and neutralize with Na+ Cl-
         printf "${boxcmd} x ${boxkey} ${rbuf}\n" >> tleap.in
