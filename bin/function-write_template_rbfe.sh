@@ -40,9 +40,11 @@ function writetemplate_rbfe
 		if [ "$s" == "com" ]; then
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA eqProt2 eqProt1 eqProt05 eqProt025 eqProt01 eqProt0 minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
 			preminTIstage="eqProt0"
+			jobname_prefix="com"
 		else
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
 			preminTIstage="eqA"
+			jobname_prefix="aq"
 		fi
 	fi
 
@@ -1664,7 +1666,7 @@ if [ "\${twostate}" != true ]; then
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm
 #!/usr/bin/env bash
-#SBATCH --job-name="eq_${trans}.slurm"
+#SBATCH --job-name="${jobname_prefix}_eq_${trans}.slurm"
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
@@ -1823,7 +1825,7 @@ elif [ "\${twostate}" == true ]; then
 # submit group-ed jobs
         cat<<EOF > run_alltrials.slurm
 #!/usr/bin/env bash
-#SBATCH --job-name="eq_${trans}.slurm"
+#SBATCH --job-name="${jobname_prefix}_eq_${trans}.slurm"
 #SBATCH --output="eq_${trans}.slurm.slurmout"
 #SBATCH --error="eq_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
@@ -2051,7 +2053,7 @@ fi
 truncate -s0 prod.slurm
 cat<<EOF > prod.slurm
 #!/usr/bin/env bash
-#SBATCH --job-name="pr_${trans}.slurm"
+#SBATCH --job-name="${jobname_prefix}_pr_${trans}.slurm"
 #SBATCH --output="pr_${trans}.slurm.slurmout"
 #SBATCH --error="pr_${trans}.slurm.slurmerr"
 #SBATCH --partition=${partition}
