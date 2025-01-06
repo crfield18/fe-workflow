@@ -29,9 +29,11 @@ function writetemplate_rbfe
 		if [ "$s" == "com" ]; then
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqNTP4 eqV eqP eqA eqProt2 eqProt1 eqProt05 eqProt025 eqProt01 eqProt0 minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
 			preminTIstage="eqProt0"
+			jobname_prefix="com"
 		else
 			eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqNTP4 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
 			preminTIstage="eqA"
+			jobname_prefix="aq"
 		fi
 	else
 		endstates=(0.00000000)
@@ -1694,6 +1696,15 @@ source ~/.bashrc
 dameamber add_reaf_modes
 #if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
+### CUDA MPS # BEGIN ###
+job_name=${jobname_prefix}_${trans}
+temp_path=/tmp/temp_${job_name}
+mkdir -p ${temp_path}
+export CUDA_MPS_PIPE_DIRECTORY=${temp_path}/nvidia-mps
+export CUDA_MPS_LOG_DIRECTORY=${temp_path}/nvidia-log
+nvidia-cuda-mps-control -d
+### CUDA MPS # END ###
+
 for trial in \\\$(seq 1 1 ${ntrials}); do
 
 	if [ ! -d t\\\${trial} ];then mkdir t\\\${trial}; fi
@@ -1817,6 +1828,10 @@ EOF2
 		mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 done
 
+### CUDA MPS # BEGIN ###
+echo quit | nvidia-cuda-mps-control
+### CUDA MPS # END ###
+
 echo "--- DONE ---"
 
 EOF
@@ -1854,6 +1869,15 @@ preminTIstage=\${preminTIstage}
 source ~/.bashrc
 dameamber add_reaf_modes
 #if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
+
+### CUDA MPS # BEGIN ###
+job_name=${jobname_prefix}_${trans}
+temp_path=/tmp/temp_${job_name}
+mkdir -p ${temp_path}
+export CUDA_MPS_PIPE_DIRECTORY=${temp_path}/nvidia-mps
+export CUDA_MPS_LOG_DIRECTORY=${temp_path}/nvidia-log
+nvidia-cuda-mps-control -d
+### CUDA MPS # END ###
 
 for trial in \\\$(seq 1 1 ${ntrials}); do
 
@@ -2041,6 +2065,10 @@ EOF2
 	echo "mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
 	mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 done
+
+### CUDA MPS # BEGIN ###
+echo quit | nvidia-cuda-mps-control
+### CUDA MPS # END ###
 
 echo "--- DONE ---"
 
