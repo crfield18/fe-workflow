@@ -1503,7 +1503,7 @@ ntx             = 1                 ! = 1, not read velocity from a restart file
 ntxo            = 1                 ! final restart file format. = 1, ASCII; = 2, netCDF
 ntc             = 2                 ! SHAKE or not. = 1, not perform; = 2, on -H; = 3, on all bonds
 ntf             = 1                 ! force evaluation. = 1, evaluate all; = 2, -H omitted; = 3, all omitted
-ntwx            = ${NSTLIMTI}       ! coordinates output frequency to the trajectory file
+ntwx            = ${NTWX}       	! coordinates output frequency to the trajectory file
 ntwr            = ${NSTLIMTI}       ! restart output frequency
 ntpr            = ${NSTLIMTI}       ! energy info output frequency
 cut             = ${CUTOFF}         ! non-bonded interaction cutoff in unit of Ang
