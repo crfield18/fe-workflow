@@ -129,7 +129,7 @@ cat << EOF2 > ${Workflow}/bin/setup_fe
 #!/usr/bin/env bash
 
 
-if [[ "${BASH_VERSINFO[0]}" -lt 4 || ( "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -lt 3 ) ]]; then
+if [[ "${BASH_VERSINFO[0]}" -lt 4 || ( "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -lt 1 ) ]]; then
 	printf "%s \n" "BASH VERSION 4.3 OR HIGHER IS REQUIRED TO RUN ${Workflow}"
 	printf "%s \n" "CURRENT BASH VERSION IS ${BASH_VERSION}"
 	printf "%s \n" "PLEASE UPGRADE BASH TO VERSION 4.3 OR HIGHER"
