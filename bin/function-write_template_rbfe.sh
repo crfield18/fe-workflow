@@ -1697,8 +1697,7 @@ dameamber add_reaf_modes
 #if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
 ### CUDA MPS # BEGIN ###
-job_name=${jobname_prefix}_${trans}
-temp_path=/tmp/temp_${job_name}
+temp_path=/tmp/temp_${jobname_prefix}_${trans}
 mkdir -p ${temp_path}
 export CUDA_MPS_PIPE_DIRECTORY=${temp_path}/nvidia-mps
 export CUDA_MPS_LOG_DIRECTORY=${temp_path}/nvidia-log
@@ -1871,8 +1870,7 @@ dameamber add_reaf_modes
 #if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
 ### CUDA MPS # BEGIN ###
-job_name=${jobname_prefix}_${trans}
-temp_path=/tmp/temp_${job_name}
+temp_path=/tmp/temp_${jobname_prefix}_${trans}
 mkdir -p ${temp_path}
 export CUDA_MPS_PIPE_DIRECTORY=${temp_path}/nvidia-mps
 export CUDA_MPS_LOG_DIRECTORY=${temp_path}/nvidia-log
