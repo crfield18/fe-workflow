@@ -3,7 +3,7 @@
 #################################
 function writetemplate_rbfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate temp_cdk2)
         local i=0
 		for value in "$@"; do
 			if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -14,13 +14,14 @@ function writetemplate_rbfe
 			i=$(($i+1))
         done
 
-		# Temp modifications for CDK2:
-		TIMASK1="\":1\""
-		TIMASK2="\":2\""
-		SCMASK1="\":1@H15,H16,H17,C10,C11,C12,C13,H20,C19,O2,H21,N6,H22,C17,C18\""
-		SCMASK2="\":2@H15,H16,H17,C10,C11,C12,C13,H18,H21,C17,C18\""
-		NTWX=25000
-
+		if [ "${temp_cdk2}" == "true" ]; then
+			# Temp modifications for CDK2:
+			TIMASK1="\":1\""
+			TIMASK2="\":2\""
+			SCMASK1="\":1@H15,H16,H17,C10,C11,C12,C13,H20,C19,O2,H21,N6,H22,C17,C18\""
+			SCMASK2="\":2@H15,H16,H17,C10,C11,C12,C13,H18,H21,C17,C18\""
+			NTWX=25000
+		fi
 
 	if [ "${twostate}" == "true" ]; then
 		endstates=(0.00000000 1.00000000)
