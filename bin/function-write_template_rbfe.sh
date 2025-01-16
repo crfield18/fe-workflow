@@ -1699,9 +1699,9 @@ dameamber add_reaf_modes
 
 ### CUDA MPS # BEGIN ###
 temp_path=/tmp/temp_${jobname_prefix}_${trans}
-mkdir -p ${temp_path}
-export CUDA_MPS_PIPE_DIRECTORY=${temp_path}/nvidia-mps
-export CUDA_MPS_LOG_DIRECTORY=${temp_path}/nvidia-log
+mkdir -p \\\${temp_path}
+export CUDA_MPS_PIPE_DIRECTORY=\\\${temp_path}/nvidia-mps
+export CUDA_MPS_LOG_DIRECTORY=\\\${temp_path}/nvidia-log
 nvidia-cuda-mps-control -d
 ### CUDA MPS # END ###
 
