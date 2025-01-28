@@ -1683,7 +1683,7 @@ endstates=(\${endstates[@]})
 lams=(\${lams[@]})
 twostate=\${twostate}
 full_eqstage=(${eqstagelist[*]})
-# Edit `eqstage` to only include the stages you want to run
+# Edit eqstage to only include the stages you want to run
 eqstage=(${eqstagelist[*]})
 len_full_eqstage=\\\${#full_eqstage[@]}
 len_eqstage=\\\${#eqstage[@]}
@@ -1856,7 +1856,7 @@ endstates=(\${endstates[@]})
 lams=(\${lams[@]})
 twostate=\${twostate}
 full_eqstage=(${eqstagelist[*]})
-# Edit `eqstage` to only include the stages you want to run
+# Edit eqstage to only include the stages you want to run
 eqstage=(${eqstagelist[*]})
 len_full_eqstage=\\\${#full_eqstage[@]}
 len_eqstage=\\\${#eqstage[@]}
