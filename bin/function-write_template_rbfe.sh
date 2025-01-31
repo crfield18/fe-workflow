@@ -1499,8 +1499,8 @@ imin            = 0                 ! = 0, not running minimization; = 1, runnin
 nstlim          = ${NSTLIMTI}       ! simulation steps between each exchange interval
 numexchg        = ${NUMEXCHGTI}     ! total number of exchange attempts
 dt              = 0.004             ! timestep in unit of ps, 0.001ps = 1fs, safest option
-irest           = 0                 ! = 0, not restart a simulation; = 1, restart a simulation
-ntx             = 1                 ! = 1, not read velocity from a restart file; = 5, read velocity from a restart file
+irest           = 1                 ! = 0, don't restart a simulation; = 1, restart a simulation
+ntx             = 5                 ! = 1, don't read velocity from a restart file; = 5, read velocity from a restart file
 ntxo            = 1                 ! final restart file format. = 1, ASCII; = 2, netCDF
 ntc             = 2                 ! SHAKE or not. = 1, not perform; = 2, on -H; = 3, on all bonds
 ntf             = 1                 ! force evaluation. = 1, evaluate all; = 2, -H omitted; = 3, all omitted
