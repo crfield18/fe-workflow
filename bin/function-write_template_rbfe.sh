@@ -3,7 +3,7 @@
 #################################
 function writetemplate_rbfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate temp_cdk2)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate temp_cdk2 NTWR NTPR)
         local i=0
 		for value in "$@"; do
 			if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -21,6 +21,8 @@ function writetemplate_rbfe
 			SCMASK1="\":1@H15,H16,H17,C10,C11,C12,C13,H20,C19,O2,H21,N6,H22,C17,C18\""
 			SCMASK2="\":2@H15,H16,H17,C10,C11,C12,C13,H18,H21,C17,C18\""
 			NTWX=25000
+			NTWR=2500
+			NTPR=2500
 		fi
 
 	if [ "${twostate}" == "true" ]; then
@@ -1505,8 +1507,8 @@ ntxo            = 1                 ! final restart file format. = 1, ASCII; = 2
 ntc             = 2                 ! SHAKE or not. = 1, not perform; = 2, on -H; = 3, on all bonds
 ntf             = 1                 ! force evaluation. = 1, evaluate all; = 2, -H omitted; = 3, all omitted
 ntwx            = ${NTWX}       	! coordinates output frequency to the trajectory file
-ntwr            = ${NSTLIMTI}       ! restart output frequency
-ntpr            = ${NSTLIMTI}       ! energy info output frequency
+ntwr            = ${NTWR}       ! restart output frequency
+ntpr            = ${NTPR}       ! energy info output frequency
 cut             = ${CUTOFF}         ! non-bonded interaction cutoff in unit of Ang
 iwrap           = 1                 ! = 1, wrap coordinates to a prime box
 
