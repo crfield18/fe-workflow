@@ -144,7 +144,7 @@ pathTOFEToolKit=${ToolKit}
 export PATH="\$PATH:\${Workflow}/bin"
 
 # set AMBERHOME
-source ${amberhome}/amber.sh
+# source ${amberhome}/amber.sh
 ###########################################
 
 ##########################################

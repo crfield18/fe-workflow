@@ -77,11 +77,27 @@ echo "Running: python3 DiscoverEdges.py"
 python3 ./DiscoverEdges.py
 echo "Finished DiscoverEdges.py"
 
+
+
 for xml in analysis/*.xml; do
     if [ -e "${xml}" ]; then
         echo ""
-        echo "Running: time OMP_NUM_THREADS=4 edgembar.OMP --halves --fwdrev ${xml}"
-        time OMP_NUM_THREADS=4 edgembar.OMP --halves --fwdrev ${xml}
+	embar=False
+	# Use FE-ToolKit if available,
+	# otherwise check for ambertools,
+	# otherwise look for any serial verion
+	if type -P edgembar_omp &> /tmp/null; then
+	    embar=$(type -P edgembar_omp)
+	elif type -P edgembar.OMP &> /tmp/null; then
+	    embar=$(type -P edgembar.OMP)
+	elif type -P edgembar &> /tmp/null; then
+	    embar=$(type -P edgembar)
+	else
+	    echo "section-analysis.sh error: Could not find any of: edgembar.OMP, edgembar_omp, nor edgembar"
+	    exit 1
+	fi
+        echo "Running: time OMP_NUM_THREADS=4 ${embar} --halves --fwdrev ${xml}"
+        time OMP_NUM_THREADS=4 ${embar} --halves --fwdrev ${xml}
         echo "Finished creating ${xml%.xml}.py"
     fi
 done
@@ -113,6 +129,7 @@ echo ""
 echo "Running: edgembar-WriteGraphHtml.py -o analysis/GraphWithExpt.html -x ExptVals.txt \$(ls analysis/*~*.py)"
 edgembar-WriteGraphHtml.py -o analysis/GraphWithExpt.html -x ${exptdatafile} $(ls analysis/*~*.py)
 echo "Finished creating analysis/GraphWithExpt.html"
+
 fi
 
 cd $path

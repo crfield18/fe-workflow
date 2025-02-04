@@ -819,7 +819,7 @@ def Joincom( mol1, mol2, nonligand ):
     else:
         pq = mol1 + mol2 + nonligand
         pq.coordinates = numpy.concatenate( (mol1.coordinates, mol2.coordinates, nonligand.coordinates) )
-        return pq
+    return pq
 
 def Joinaq( mol1, mol2 ):
     import numpy
@@ -831,7 +831,7 @@ def Joinaq( mol1, mol2 ):
     else:
         pq = mol1 + mol2
         pq.coordinates = numpy.concatenate( (mol1.coordinates, mol2.coordinates) )
-        return pq
+    return pq
 
 
 if __name__ == "__main__":
@@ -1079,7 +1079,7 @@ def Joincom( mol1, mol2, nonligand ):
     else:
         pq = mol1 + mol2 + nonligand
         pq.coordinates = numpy.concatenate( (mol1.coordinates, mol2.coordinates, nonligand.coordinates) )
-        return pq
+    return pq
 
 def Joinaq( mol1, mol2 ):
     import numpy
@@ -1091,7 +1091,7 @@ def Joinaq( mol1, mol2 ):
     else:
         pq = mol1 + mol2
         pq.coordinates = numpy.concatenate( (mol1.coordinates, mol2.coordinates) )
-        return pq
+    return pq
 
 
 if __name__ == "__main__":
