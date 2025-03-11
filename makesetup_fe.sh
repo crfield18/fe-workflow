@@ -222,6 +222,7 @@ cd \$pathhere
 EOF2
 
 chmod a+x ${Workflow}/bin/setup_fe
+chmod a+x ${Workflow}/bin/*.py
 
 cat << EOF3 > ${path}/FE-Workflow.bashrc
 #!/usr/bin/env bash

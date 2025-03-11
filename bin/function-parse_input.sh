@@ -170,6 +170,9 @@ partition=general-long-gpu      # name of specific partition on HPC. Use "null" 
 nnodes=1                        # number of nodes to be used for each transformation
 ngpus=8                         # number of gpus/node to be used for each transformation
 wallclock=3-00:00:00            # wallclock for individual jobs
+ntwx=5						  	# ntwx
+ntwr=5                    		# ntwr
+ntpr=5                        	# ntpr
 #######################################################################
 
 #######################################################################
@@ -232,7 +235,11 @@ EOFN
 		lams=($(gen_lambdas $nlambda))
 	fi
 	printf "\n The following lambda schedule will be used \n"
-	printf "%s\n\n" "${lams[*]}"
+	if [[ -v override_lambda ]]; then
+		printf "\n\n Lambda schedule will be overridden by the values provided in \"${override_lambda}\" \n\n"
+	else
+		printf "%s\n\n" "${lams[*]}"
+	fi
 
         if [ "${protocol}" != "unified" ]; then printf "\n\nScript currently supports only \"unified\" protocol\n\n" && exit 0; fi
 
@@ -288,6 +295,7 @@ EOFN
 	if [ "${twostate}" != "true" ] && [ "${twostate}" != "false" ]; then printf "\n\n\"twostate\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	if [ "${bidirection_aq}" != "true" ] && [ "${bidirection_aq}" != "false" ]; then printf "\n\n\"bidirection_aq\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	if [ "${bidirection_com}" != "true" ] && [ "${bidirection_com}" != "false" ]; then printf "\n\n\"bidirection_com\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
+
 	
 
 	########################
@@ -300,6 +308,7 @@ EOFN
 		done
 		listligs+=(${listA[@]} ${listB[@]})
 		uniqueligs=($(echo "${listligs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
 	else
 		for i in "${!translist[@]}";do
 			if grep -q '~' <<< "${translist[$i]}"; then printf "\n\n The character '~' is present is ${translist[$i]}. For \"ticalc\"=asfe, translist should contain a list of ligand molecules.\n\n" && exit 0; fi
@@ -313,7 +322,25 @@ EOFN
 
 		# ensure path_to_input is absolute and check if input directories are present
 		if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
-		
+
+		# check if ntwx is set, if not initialize to nstlimti
+		if [ -z "${ntwx}" ]; then ntwx=0; fi
+		if [ -z "${ntwx_equil}" ]; then ntwx_equil=0; fi
+		# check if ntwr is set, if not initialize to nstlimti
+		if [ -z "${ntwr}" ]; then ntwr=1250; fi
+		# check if ntpr is set, if not initialize to nstlimti
+		if [ -z "${ntpr}" ]; then ntpr=${nstlimti}; fi
+		# Check the equil type
+		if [ -z "${equil_type}" ]; then equil_type=2; fi
+		if [ -z "${source_header}" ]; then source_header="~/.bashrc"; fi
+		if [ -z "${max_dt}" ]; then 
+			if [ "${hmr}" == "true" ]; then 
+				max_dt=0.004
+			else
+				max_dt=0.002
+			fi
+		fi
+		if [ -z "${nnodes}" ]; then nnodes=1; fi
 		########################
 		
 		if [ "${ticalc}" == "rbfe" ]; then
