@@ -21,3 +21,17 @@ echo $lams
 rm -rf gen_lambda.py
 }
 
+read_lambda_schedule() {
+    local file_path=$1
+    local -n lambda_array=$2
+
+    if [[ ! -f "$file_path" ]]; then
+        echo "File not found: $file_path"
+        return 1
+    fi
+
+    # Read the file line by line and store each line in the array
+    while IFS= read -r line; do
+        lambda_array+=("$line")
+    done < "$file_path"
+}

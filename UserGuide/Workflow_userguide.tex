@@ -618,6 +618,8 @@ nlambda            & integer         & Number of lambda windows in TI calculatio
 \hline
 	lams        & list of floats          & Specifies the specific $\lambda$ values that will be used when \textit{lamschedule} is set to \textit{yes}.  & lams=(0 0.25 0.5 0.75 1)   \\ 
 \hline
+override\_lambda	& string          & Specifies directory from where lambdas can be read.. Acceptable values - \textit{null}, \textit{path to directory}.   & override\_lambda=false   \\
+\hline
 protocol           & string          & Protocol for running TI simulations. Acceptable value - \textit{unified}.     & protocol=unified     \\ 
 \hline
 	mapmethod          & integer         & Specifies the algorithm using which TS/TC regions are going to be determined. Acceptable values - \textit{0}, \textit{1}, \textit{2}. \newline \textit{0} specifies MCS algorithm. \newline \textit{1} specifies MCS-E algorithm. \newline \textit{2} specifies MCS-E2 algorithm. \newline For a given transformation/edge~\textit{molname1\textasciitilde{}molname2} in \textit{translist}, an atom map file, \textit{molname1\textasciitilde{}molname2.map.txt}, is generated in the folder \textit{system/setup}.   & mapmethod=1      \\ 
@@ -656,6 +658,16 @@ hmr                & string          & Specifies if Hydrogen Mass Repartitioning
 \hline
 notrajectory       & string          & Specifies if production trajectories will be saved during TI simulations. Acceptable values - \textit{true}, \textit{false}.  & notrajectory=true  \\ 
 \hline
+max\_dt      			& float         & Specifies the maximum timestep (default is 0.002 for not hmr, 0.004 for hmr)  & max\_dt=0.002/0.004  \\ 
+\hline
+ntwx      			& integer         & Specifies the frequency for which TI trajectory frames will be saved  & ntwx=0  \\ 
+\hline
+ntwx\_equil      			& integer         & Specifies the frequency for which TI trajectory frames will be saved for equil runs (note - careful choice recommended)  & ntwx=0  \\ 
+\hline
+ntwr      			& integer         & Specifies the frequency for which TI restart files will be saved  & ntwr=nstlimti  \\ 
+\hline
+ntpr      			& integer         & Specifies the frequency for which TI energies will be saved  & ntpr=nstlimti  \\ 
+\hline
 scalpha            & float           & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{scalpha} in TI simulations. Acceptable values - positive real numbers.   & scalpha=0.5   \\ 
 \hline
 scbeta             & float           & Specifies the value of \textit{AMBER DD BOOST} keyword \textit{scbeta}~in TI simulations. Acceptable values - positive real numbers.   & scbeta=0.5  \\ 
@@ -691,6 +703,10 @@ bidirection\_com   & string          & Specifies if bidirectional setup will be 
 stage              & string          & Specifies the action of the script. Acceptable values - \textit{setup}, \textit{analysis}.\newline \textit{setup} specifies script to set up TI simulations.\newline \textit{analysis} specifies script to perform analysis. & stage=setup  \\ 
 \hline
 setupmode          & integer         & Specifies the mode of simulation setup. Acceptable values - \textit{0}\newline \textit{0} sets up regular TI simulations. & setupmode=0  \\ 
+\hline
+equil\_type         & integer         & Specifies whether a single equilibration (equil\_type=1) or a trial-dependent equilibration (equil\_type=2) will be performed. Acceptable values - \textit{1}, \textit{2}. & equil\_type=2  \\
+\hline
+source\_header	   & string 		 & Specifies the path to the header file that will be sourced before running the TI simulations. Acceptable values - \textit{null}, \textit{path to header file}. & source\_header=null  \\
 \hline
 partition          & string          & Specifies the HPC partition on which TI runs will be performed. Acceptable values - \textit{null}, \textit{name of HPC partition}. & partition=gpu  \\ 
 \hline
