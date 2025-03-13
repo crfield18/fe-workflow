@@ -962,7 +962,7 @@ fi
 
 cd ${path}
 echo "Running: Image_Writer on ${system}"
-python3 ${pathTOWFToolKit}/bin/fewf-image_writer.py --sys ${system} --image_dir results/imgdir --sub_dir aq --showidxs
+python3 ${pathTOWFToolKit}/bin/fewf-image_writer.py --sys ${system} --image_dir results/imgdir --sub_dir aq --showidxs --showlabels
 echo "Finished Image_Writer"
 
 # END of setupmode=0

@@ -14,6 +14,11 @@ def show_atom_number(mol, label, offset):
         atom.SetProp(label, str(atom.GetIdx()+1+offset))
     return mol
 
+def show_atom_label(mol):
+    for atom in mol.GetAtoms():
+        atom.SetProp('atomLabel', atom.GetPDBResidueInfo().GetName())
+    return mol
+
 
 def GetSelectedAtomIndices(param,maskstr):
     import parmed
@@ -31,7 +36,7 @@ def GetSelectedAtomIndices(param,maskstr):
 
 
 class Ligand:
-    def __init__(self, input, parmfile, rstfile, image_loc, edge_name, showidxs, size):
+    def __init__(self, input, parmfile, rstfile, image_loc, edge_name, showidxs, showlabels, size):
         """ This is a class to generate an image of a ligand with softcore atoms highlighted
 
         Parameters
@@ -48,6 +53,8 @@ class Ligand:
             Name of the edge (e.g. 0~1)
         showidxs : bool
             If True, show the atom indexes in the image
+        showlabels: bool
+            If True, show the atom labels in the image
         size : tuple of int
             The image size in pixels.
 
@@ -70,6 +77,7 @@ class Ligand:
         self.image_loc = Path(image_loc)
         self.edge_name = edge_name
         self.showidxs = showidxs
+        self.showlabels = showlabels
         self.size = size
         if not self.input.exists():
             raise FileNotFoundError(f"{self.input} does not exist")
@@ -184,6 +192,23 @@ class Ligand:
                 with open(f"{self.image_loc}/{self.edge_name}_{node_names[i]}_idxs.png",'wb') as f:
                     f.write(img.GetDrawingText())
             
+            if self.showlabels:
+                show_atom_label(rdmol)
+                img = Draw.rdMolDraw2D.MolDraw2DCairo(*self.size)
+                opts = img.drawOptions()
+                opts.baseFontSize = 0.42
+                opts.useMolBlockWedging = True
+                opts.singleColourWedgeBonds = True
+                opts.highlightBondWidthMultiplier = 12
+
+                img.DrawMolecule(rdmol,highlightAtoms=sc)
+                img.FinishDrawing()
+                node_names = self.edge_name.split('~')
+                #print(f"{self.edge_name}_{node_names[i]} : {offset}")
+                with open(f"{self.image_loc}/{self.edge_name}_{node_names[i]}_labels.png",'wb') as f:
+                    f.write(img.GetDrawingText())
+
+            
         return 
 
     def _find_softcore(self):
@@ -288,7 +313,7 @@ class FakeFile:
         return content
     
 class GenerateImages:
-    def __init__(self, system='1Y27', image_dir="analysis/images", sub_dir="aq", showidxs=False,size=(-1,-1)):
+    def __init__(self, system='1Y27', image_dir="analysis/images", sub_dir="aq", showidxs=False, showlabels=False, size=(-1,-1)):
         """ This class generates images of the ligands with the softcore atoms highlighted 
         
         Parameters
@@ -308,6 +333,7 @@ class GenerateImages:
         self.image_dir = Path(image_dir)
         self.sub_dir = sub_dir
         self.showidxs = showidxs
+        self.showlabels = showlabels
         self.size = size
         if not self.image_dir.exists():
             self.image_dir.mkdir(parents=True, exist_ok=True)
@@ -333,6 +359,7 @@ class GenerateImages:
                             image_loc = self.image_dir,
                             edge_name=edge_name,
                             showidxs=self.showidxs,
+                            showlabels=self.showlabels,
                             size=self.size)
             ligand.run()
         
@@ -378,6 +405,48 @@ class GenerateImages:
             fh.write( HTML.unescape( ET.tostring(html,encoding="unicode",
                                                  method='html') ) )
             fh.close()
+        
+        if self.showlabels == True:
+            if len(self.edges) > 0:
+                import xml.etree.ElementTree as ET
+                import html as HTML
+                import xml.dom.minidom as md
+
+                html = ET.Element('html', attrib={'lang':'en'})
+                head = ET.SubElement(html,'head')
+                ET.SubElement(head,'title').text = self.system
+                ET.SubElement(head,'meta',
+                            attrib={ 'http-equiv': "content-type",
+                                    'content': "text/html; charset=utf-8" })
+
+                body = ET.SubElement(html,'body')
+                table = ET.SubElement(body,'table',attrib={'style': 'border: 1px solid black; border-collapse:collapse'})
+                tr = ET.SubElement(table,'tr')
+                th = ET.SubElement(tr,'th',attrib={'colspan': '2'})
+                th.text = self.system
+                for iedge,edge in enumerate(self.edges):
+                    edge_name = str(edge).split('/')[-1]
+                    lig1,lig2 = edge_name.split('~')
+                    
+                    tr = ET.SubElement(table,'tr')
+                    th = ET.SubElement(tr,'th',attrib={'colspan': '2'})
+                    th.text = edge_name
+                    tr = ET.SubElement(table,'tr')
+                    th = ET.SubElement(tr,'th')
+                    th.text = lig1
+                    th = ET.SubElement(tr,'th')
+                    th.text = lig2
+                    
+                    tr  = ET.SubElement(table,'tr',attrib={'style': 'border-bottom: 1px solid black;'})
+                    td  = ET.SubElement(tr,'td')
+                    img = ET.SubElement(td,'img',attrib={'src': "%s_%s_labels.png"%(edge_name,lig1)})
+                    td  = ET.SubElement(tr,'td')
+                    img = ET.SubElement(td,'img',attrib={'src': "%s_%s_labels.png"%(edge_name,lig2)})
+                    
+                fh = open( str(self.image_dir / "index_labels.html"), "w" )
+                fh.write( HTML.unescape( ET.tostring(html,encoding="unicode",
+                                                    method='html') ) )
+                fh.close()
 
         
 if __name__ == "__main__":
@@ -389,6 +458,7 @@ if __name__ == "__main__":
     parser.add_argument("--single", type=str)
     parser.add_argument("--sub_dir", type=str, default="aq")
     parser.add_argument("--showidxs", action='store_true')
+    parser.add_argument("--showlabels", action='store_true')
     parser.add_argument("--width", type=int, default=400)
     parser.add_argument("--height", type=int, default=-1)
     
@@ -403,7 +473,8 @@ if __name__ == "__main__":
                         image_loc="analysis/images", 
                         edge_name=f"{args.single}",
                         showidxs=args.showidxs,
+                        showlabels=args.showlabels,
                         size=size)
         ligand.run()
     else:
-        Images = GenerateImages(system=args.sys, image_dir=args.image_dir, sub_dir=args.sub_dir,showidxs=args.showidxs,size=size)
+        Images = GenerateImages(system=args.sys, image_dir=args.image_dir, sub_dir=args.sub_dir,showidxs=args.showidxs, showlabels=args.showlabels, size=size)
