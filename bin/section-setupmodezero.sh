@@ -965,5 +965,14 @@ echo "Running: Image_Writer on ${system}"
 python3 ${pathTOWFToolKit}/bin/fewf-image_writer.py --sys ${system} --image_dir results_${system}/imgdir --sub_dir aq --showidxs --showlabels
 echo "Finished Image_Writer"
 
+echo "Copying initial files to results directory."
+mkdir -p results_${system}/inputs
+cp -r initial results_${system}/inputs/
+cp input results_${system}/inputs/
+if [[ -v override_lambda ]]; then 
+        cp -r ${override_lambda} results_${system}/inputs/
+fi
+echo "Done copying initial files."
+
 # END of setupmode=0
 
