@@ -179,13 +179,13 @@ if [ "${setupmode}" == 0 ]; then
 
                 cat << EOF_runalltrials > run_all_equil.slurm
 translist=(${translist[@]})
-logfile=${path}/${system}/submitted_equil_jobs.log
+logfile=\${PWD}/${system}/submitted_equil_jobs.log
 
 touch \${logfile}
 
 for i in "\${!translist[@]}";do
         for dir in aq com; do
-                cd ${path}/${system}/unified/run/\${translist[\$i]}/\${dir}
+                cd \${PWD}/${system}/unified/run/\${translist[\$i]}/\${dir}
                 job_id="\${translist[\$i]}_\${dir}_run_equil.slurm"
                 if ! grep -q "\${job_id}" \${logfile}; then
                         output=\$(sbatch run_equilibration.slurm)
@@ -202,6 +202,7 @@ for i in "\${!translist[@]}";do
                 else
                         echo "Job \${job_id} has already been submitted."
                 fi
+                cd -
         done 
 done
 EOF_runalltrials
@@ -209,13 +210,13 @@ EOF_runalltrials
 
                 cat << EOF_runalltrials > run_all_prod.slurm
 translist=(${translist[@]})
-logfile=${path}/${system}/submitted_production_jobs.log
+logfile=\${PWD}/${system}/submitted_production_jobs.log
 
 touch \${logfile}
 
 for i in "\${!translist[@]}";do
         for dir in aq com; do
-                cd ${path}/${system}/unified/run/\${translist[\$i]}/\${dir}
+                cd \${PWD}/${system}/unified/run/\${translist[\$i]}/\${dir}
                 for j in \$(seq 1 1 ${ntrials}); do
                         job_id="\${translist[\$i]}_\${dir}_run_trial_\${j}.slurm"
                         if ! grep -q "\${job_id}" \${logfile}; then
@@ -235,6 +236,7 @@ for i in "\${!translist[@]}";do
                         fi
 
                 done
+                cd -
         done 
 done
 EOF_runalltrials
@@ -242,13 +244,13 @@ EOF_runalltrials
                 elif [ ${equil_type} == 2 ]; then
                 cat << EOF_runalltrials > run_all_trials.slurm
 translist=(${translist[@]})
-logfile=${path}/${system}/submitted_jobs.log
+logfile=\${PWD}/${system}/submitted_jobs.log
 
 touch \${logfile}
 
 for i in "\${!translist[@]}";do
         for dir in aq com; do
-                cd ${path}/${system}/unified/run/\${translist[\$i]}/\${dir}
+                cd \${PWD}/${system}/unified/run/\${translist[\$i]}/\${dir}
                 for j in \$(seq 1 1 ${ntrials}); do
                         job_id="\${translist[\$i]}_\${dir}_run_trial_\${j}.slurm"
                         if ! grep -q "\${job_id}" \${logfile}; then
@@ -268,6 +270,7 @@ for i in "\${!translist[@]}";do
                         fi
 
                 done
+                cd -
         done 
 done
 EOF_runalltrials
