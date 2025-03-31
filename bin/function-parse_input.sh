@@ -241,6 +241,18 @@ EOFN
 		printf "%s\n\n" "${lams[*]}"
 	fi
 
+	if [[ -v read_map ]]; then
+		printf "\n\n The mapping files will be read from the directory \"${read_map}\" \n\n"
+		if [ ! -d "${read_map}" ]; then printf "\n\n!!!! ERROR !!!!\n\n" && printf "\n\n Directory ${read_map} does not exist \n\n" && exit 0; fi
+		if [[ -v full_sc && "${full_sc}" == "true" ]]; then printf "\n\n!!!! ERROR !!!!\n\n" && printf "\n\n Cannot specify 'read_map' and set 'full_sc' at the same time. \n\n" && exit 0; fi
+	fi 
+
+	if [[ -v full_sc ]]; then
+		if [[ "${full_sc}" -ne "false" ]]; then
+			full_sc="true"
+		fi
+	fi
+
         if [ "${protocol}" != "unified" ]; then printf "\n\nScript currently supports only \"unified\" protocol\n\n" && exit 0; fi
 
 	if [ "${mapmethod}" -lt 0 ] && [ "${mapmethod}" -gt 2 ]; then printf "\n\n\"mapmethod\" should be set to 0 for \"MCSS\", 1 for \"MCSS-E\" algorithm for atom-mapping\n\n, 2 for \"MCSS-E\" variant applicable to linear transformations that involve change in mass of atoms" && exit 0; fi
@@ -255,7 +267,14 @@ EOFN
 
         if [ "${hmr}" != "true" ] && [ "${hmr}" != "false" ]; then printf "\n\n\"hmr\" should be set to \"true\" or \"false\"\n\n"   && exit 0; fi
 
-        if [ "${notrajectory}" != "true" ] && [ "${notrajectory}" != "false" ]; then printf "\n\n\"notrajectory\" should be set to \"true\" or \"false\"\n\n"   && exit 0; fi
+        if [ "${notrajectory}" != "true" ] && [ "${notrajectory}" != "false" ]; then 
+			printf "\n\n\"notrajectory\" should be set to \"true\" or \"false\"\n\n" 
+			exit 0
+		elif [ "${notrajectory}" == "true" ]; then
+		    printf "\n\n\"notrajectory\" is set to \"true\". No output trajectory files will be generated\n\n"
+			ntwx=0
+		fi
+
 
 #        if [ "${gti_add_sc}" -lt 1 ] || [ "${gti_add_sc}" -gt 5 ] ; then printf "\n\nAcceptable values for \"gti_add_sc\" are 1, 2(Recommended), 3, 4, 5 and 25\n\n" && exit 0; fi
 	case ${gti_add_sc} in
@@ -296,7 +315,6 @@ EOFN
 	if [ "${bidirection_aq}" != "true" ] && [ "${bidirection_aq}" != "false" ]; then printf "\n\n\"bidirection_aq\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	if [ "${bidirection_com}" != "true" ] && [ "${bidirection_com}" != "false" ]; then printf "\n\n\"bidirection_com\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 
-	
 
 	########################
 	# parse intended transformations and identify unique ligands
@@ -326,12 +344,18 @@ EOFN
 		# check if ntwx is set, if not initialize to nstlimti
 		if [ -z "${ntwx}" ]; then ntwx=0; fi
 		if [ -z "${ntwx_equil}" ]; then ntwx_equil=0; fi
+		if [ -z "${ntwx_ep}" ]; then ntwx_ep=${ntwx}; fi
 		# check if ntwr is set, if not initialize to nstlimti
 		if [ -z "${ntwr}" ]; then ntwr=1250; fi
 		# check if ntpr is set, if not initialize to nstlimti
 		if [ -z "${ntpr}" ]; then ntpr=${nstlimti}; fi
 		# Check the equil type
 		if [ -z "${equil_type}" ]; then equil_type=2; fi
+		if [ "${equil_type}" -lt 1 ] || [ "${equil_type}" -gt 2 ]; then printf "\n\n\"equil_type\" should be set to 1 or 2\n\n" && exit 0; fi
+
+		if [ -z "$combine_aq" ]; then combine_aq="false"; fi
+		if [ "${combine_aq}" == "true" ] && [ "${equil_type}" -eq 1 ]; then printf "\n\nERROR: \"combine_aq\" is not compatible with \"equil_type\"=2 \n\n" && exit 0; fi
+
 		if [ -z "${source_header}" ]; then source_header="~/.bashrc"; fi
 		if [ -z "${max_dt}" ]; then 
 			if [ "${hmr}" == "true" ]; then 

@@ -2,6 +2,11 @@
 ##########################
 ##########################
 ##########################
+printf "\n ***************************************\n"
+printf " *                                     *\n"
+printf " *   Generating MD Boxes               *\n"
+printf " *                                     *\n"
+printf " ***************************************\n\n"
 if [ "${ticalc}" == "rbfe" ]; then
 	cd $system/setup
 		# one-state setup

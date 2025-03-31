@@ -46,7 +46,7 @@ round_to_nearest_highest_even() {
 
 function writetemplate_rbfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes ntwx_ep combine_aq)
         local i=0
 		for value in "$@"; do
 			if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -1347,6 +1347,13 @@ for lam in \${lams[@]}; do
         preTI=\${lam}_preTI
         ti=\${lam}_ti
         anal=\${lam}_analyze
+		if (( \$(echo "\${lam} == ${endstates[0]}" | bc -l) )); then  
+			ntwx_tmp=${ntwx_ep}
+		elif (( \$(echo "\${lam} == ${endstates[1]}" | bc -l) )); then
+			ntwx_tmp=${ntwx_ep}
+		else
+			ntwx_tmp=${ntwx}
+		fi
 
 	cat << EOF > inputs/\${minTI}.mdin
 &cntrl
@@ -1738,7 +1745,7 @@ ntx             = 5                 ! = 1, don't read velocity from a restart fi
 ntxo            = 1                 ! final restart file format. = 1, ASCII; = 2, netCDF
 ntc             = 2                 ! SHAKE or not. = 1, not perform; = 2, on -H; = 3, on all bonds
 ntf             = 1                 ! force evaluation. = 1, evaluate all; = 2, -H omitted; = 3, all omitted
-ntwx            = ${NTWX}       	! coordinates output frequency to the trajectory file
+ntwx            = \${ntwx_tmp}       	! coordinates output frequency to the trajectory file
 ntwr            = ${NTWR}       ! restart output frequency
 ntpr            = ${NTPR}       ! energy info output frequency
 cut             = ${CUTOFF}         ! non-bonded interaction cutoff in unit of Ang
@@ -2397,12 +2404,24 @@ for((t=1;t<=${ntrials};t++)); do
         cat<<EOF > run_trial_\${t}.slurm
 #!/usr/bin/env bash
 #SBATCH --job-name="${trans}_${jobname_prefix}_t\${t}.slurm"
-#SBATCH --output="\${t}${trans}_\$(basename \${PWD}).slurmout"
+#SBATCH --output="\${t}_${trans}_\$(basename \${PWD}).slurmout"
 #SBATCH --partition=${partition}
 #SBATCH --nodes=${nnodes}
 #SBATCH --ntasks-per-node=${tasks_per_node}
 ##SBATCH --gres=gpu:${ngpus}
 #SBATCH --time=${wallclock}
+
+EOF
+
+if [ ${combine_aq} = true ] && [ \$(basename \${PWD}) = "com" ]; then
+		cat<<EOF >> run_trial_\${t}.slurm
+cd ../aq/
+bash run_trial_\${t}.slurm
+cd ../com/
+EOF
+fi
+
+cat<<EOF >> run_trial_\${t}.slurm
 
 top=\\\${PWD}
 endstates=(\${endstates[@]})
@@ -2652,6 +2671,8 @@ fi
 EOFN
 
 }
+
+
 
 #################################
 

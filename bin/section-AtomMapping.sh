@@ -2,7 +2,23 @@
 ##########################
 ##########################
 ##########################
+printf "\n ***************************************\n"
+printf " *                                     *\n"
+printf " *  Atom mapping between ligands       *\n"
+printf " *                                     *\n"
+printf " ***************************************\n\n"
+
 if [ "${ticalc}" != "asfe" ]; then
+	printf "\n\nGenerating atom mapping between ligands\n\n"
+	if [ "${mapinspect}" -eq 0 ]; then
+		printf "\n\nmapinspect is set to 0. All transformation maps will be generated.\n\n"
+	elif [ "${mapinspect}" -eq 1 ]; then
+		printf "\n\nmapinspect is set to 1. All transformation maps will be generated, and will stop there.\n\n"
+	elif [ "${mapinspect}" -eq 2 ]; then
+		printf "\n\nmapinspect is set to 2. Starting from provided maps.\n\n"
+	else
+		printf "\n\nInvalid value for mapinspect. Exiting...\n\n" && exit 0
+	fi
 
 	if [ "${mapinspect}" -ne 2 ]; then
         	cd ${system}/setup
@@ -48,6 +64,15 @@ if [ "${ticalc}" != "asfe" ]; then
 					cat ${l1}~${l2}.map.txt | awk -F ' ' '{print $3" => "$1}' |column -t > ${l2}~${l1}.map.txt
 				done
 			fi
+			if [[ -v read_map ]]; then
+				printf "\n\nOverriding atom mapping with user provided maps\n\n"
+				for i in "${!translist[@]}"; do
+					if [ ! -f ${path}/${read_map}/${translist[$i]}.map.txt ]; then
+						printf "\n\n${path}/${read_map}/${translist[$i]}.map.txt missing in working directory.\n\n" && exit 0
+					fi
+					cp ${path}/${read_map}/${translist[$i]}.map.txt ${path}/${system}/setup/${translist[$i]}.map.txt
+				done
+			fi 
         	cd ${path}
 	fi
 
@@ -57,6 +82,15 @@ if [ "${ticalc}" != "asfe" ]; then
 
 	if [ "${mapinspect}" -eq 2 ];then
         	cd ${system}/setup
+			if [[ -v read_map ]]; then
+				printf "\n\nOverriding atom mapping with user provided maps\n\n"
+				for i in "${!translist[@]}"; do
+					if [ ! -f ${path}/${read_map}/${translist[$i]}.map.txt ]; then
+						printf "\n\n${path}/${read_map}/${translist[$i]}.map.txt missing in working directory.\n\n" && exit 0
+					fi
+					cp ${path}/${read_map}/${translist[$i]}.map.txt ${path}/${system}/setup/${translist[$i]}.map.txt
+				done
+			fi 
                 	mapmissing=0; mapmissingrev=0
                 	for i in "${!translist[@]}";do
 				l1=$(basename ${translist[$i]}); l2="${l1##*~}"; l1="${l1%~*}"

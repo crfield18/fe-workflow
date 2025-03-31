@@ -628,7 +628,13 @@ protocol           & string          & Protocol for running TI simulations. Acce
 \hline
 mapnetwork         & string          & Specifies if network-wide consistent TS/TC regions of ligands will be generated. Acceptable values - \textit{true},\textit{false}.    & mapnetwork=false     \\ 
 \hline
+read\_map  		   & string 	     & Specifies a folder where ligand mapping files can be found and used during setup to define the common core    & read\_map="" \\
+\hline
+full\_sc           & string          & When full\_sc=true timask1(2) will be copied onto scmask1(2), that is, the whole ti region will be part of the soft-core, without any common-core. Hence, full\_sc flag is incompatible with the read\_map option. Acceptable values - \textit{true},\textit{false}. \\
+\hline
 boxbuild           & string /\newline integer  & Specifies if and how MD boxes will be built. Acceptable values - \textit{0}, \textit{1}, \textit{2}, \textit{skip}.\newline \textit{0} specifies to build boxes only for "aqueous" state and not for "complex" state.\newline \textit{1} specifies to build boxes for both "aqueous" and "complex" states.\newline \textit{2} specifies to build boxes for both "aqueous" and "complex" states with identical number of water and ions.\newline \textit{skip} specifies to skip box building altogether.\newline For RSFE and ASFE calculations, \textit{boxbuild 0} and \textit{1} are identical. & boxbuild=1   \\ 
+\hline
+combine\_aq        & string          & Specifies whether the aq and com should be run as a single job. Only applies to equil\_type=2. Acceptable values - \texit{true}, \textit{false} & combine\_aq = false \\
 \hline
 boxbufcom          & integer         & Specifies MD box buffer for "complex" states. Relevant only for RBFE calculations. Acceptable values - positive integers. & boxbufcom=16   \\ 
 \hline
@@ -663,6 +669,8 @@ max\_dt      			& float         & Specifies the maximum timestep (default is 0.0
 ntwx      			& integer         & Specifies the frequency for which TI trajectory frames will be saved  & ntwx=0  \\ 
 \hline
 ntwx\_equil      			& integer         & Specifies the frequency for which TI trajectory frames will be saved for equil runs (note - careful choice recommended)  & ntwx=0  \\ 
+\hline
+ntwx\_ep 			& integer  		  & Specifies the output frequency for the end point trajectories & ntwx\_ep=ntwx \\
 \hline
 ntwr      			& integer         & Specifies the frequency for which TI restart files will be saved  & ntwr=nstlimti  \\ 
 \hline
