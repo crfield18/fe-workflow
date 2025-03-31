@@ -1526,6 +1526,38 @@ EOF
         ##########################################
 
 
+        ##########################################
+        # Fix Box if mdboxshape is oct 
+        if [ "${mdboxshape}" == "oct" ]; then
+		for m in "${!translist[@]}";do
+			mol="${lig1s[$m]}~${lig2s[$m]}_${s}"
+                        boxinfo=$(tail -n 1 ${mol}.rst7)
+                        xval=$(echo "$boxinfo" | awk '{print $1}')
+                        mv ${mol}.parm7 temp_${mol}.parm7
+                        mv ${mol}.rst7 temp_${mol}.rst7
+			cat > fix_parm7_oct.in <<EOF 
+parm temp_${mol}.parm7
+parmbox truncoct x ${xval} 
+parmwrite out ${mol}.parm7
+run 
+EOF
+
+			cat > fix_rst7_oct.in <<EOF 
+parm temp_${mol}.parm7
+trajin temp_${mol}.rst7
+box x ${xval} y ${xval} z ${xval} truncoct
+trajout ${mol}.rst7
+run 
+EOF
+
+			cpptraj -i fix_parm7_oct.in 
+			cpptraj -i fix_rst7_oct.in 
+			rm temp_${mol}.parm7
+                        rm temp_${mol}.rst7
+
+		done
+        fi
+        ##########################################
 
 }
 
@@ -1689,6 +1721,42 @@ EOF
                 printf "\n${mol1} has ${nwat1} waters, ${nsod1} Na+ ions, and ${ncl1} Cl- ions\n"
                 printf "\n${mol2} has ${nwat2} waters, ${nsod2} Na+ ions, and ${ncl2} Cl- ions\n"
         done
+        ##########################################
+
+        ##########################################
+        # Fix Box if mdboxshape is oct  
+        if [ "${mdboxshape}" == "oct" ]; then
+                for m in "${!translist[@]}";do
+                        mol1="${translist[$m]}-1_${s}"
+                        mol2="${translist[$m]}-2_${s}"
+                        mols=( ${mol1} ${mol2} )
+                        for mol in ${mols[@]}; do 
+                        	boxinfo=$(tail -n 1 ${mol}.rst7)
+                        	xval=$(echo "$boxinfo" | awk '{print $1}')
+                        	mv ${mol}.parm7 temp_${mol}.parm7
+                        	mv ${mol}.rst7 temp_${mol}.rst7
+                        	cat > fix_parm7_oct.in <<EOF 
+parm temp_${mol}.parm7
+parmbox truncoct x ${xval} 
+parmwrite out ${mol}.parm7
+run 
+EOF
+
+                        	cat > fix_rst7_oct.in <<EOF 
+parm temp_${mol}.parm7
+trajin temp_${mol}.rst7
+box x ${xval} y ${xval} z ${xval} truncoct
+trajout ${mol}.rst7
+run     
+EOF
+
+                        	cpptraj -i fix_parm7_oct.in > log
+                        	cpptraj -i fix_rst7_oct.in > log
+                        	rm temp_${mol}.parm7
+                        	rm temp_${mol}.rst7
+                	done
+                done
+        fi
         ##########################################
 
 }
@@ -1865,6 +1933,39 @@ EOF
         done
         ##########################################
 
+        ##########################################
+        # Fix Box if mdboxshape is oct 
+        if [ "${mdboxshape}" == "oct" ]; then
+                for m in "${!translist[@]}";do
+                        mol="${lig1s[$m]}~${lig2s[$m]}_${s}"
+                        boxinfo=$(tail -n 1 ${mol}.rst7)
+                        xval=$(echo "$boxinfo" | awk '{print $1}')
+                        mv ${mol}.parm7 temp_${mol}.parm7
+                        mv ${mol}.rst7 temp_${mol}.rst7
+                        cat > fix_parm7_oct.in <<EOF 
+parm temp_${mol}.parm7
+parmbox truncoct x ${xval} 
+parmwrite out ${mol}.parm7
+run 
+EOF
+
+                        cat > fix_rst7_oct.in <<EOF 
+parm temp_${mol}.parm7
+trajin temp_${mol}.rst7
+box x ${xval} y ${xval} z ${xval} truncoct
+trajout ${mol}.rst7
+run 
+EOF
+
+                        cpptraj -i fix_parm7_oct.in > log
+                        cpptraj -i fix_rst7_oct.in > log
+                        rm temp_${mol}.parm7
+                        rm temp_${mol}.rst7
+
+                done
+        fi
+        ##########################################
+
 }
 
 
@@ -1987,6 +2088,39 @@ EOF
                 nions=$(calcionsinparm ${mol}.parm7)
                 printf "${mol} has ${nwat} waters, ${nions} Na+ ions, and ${nions} Cl- ions \n"
         done
+        ##########################################
+
+        ##########################################
+        # Fix Box if mdboxshape is oct 
+        if [ "${mdboxshape}" == "oct" ]; then
+                for m in "${!translist[@]}";do
+                        mol="${translist[$m]}_${s}"
+                        boxinfo=$(tail -n 1 ${mol}.rst7)
+                        xval=$(echo "$boxinfo" | awk '{print $1}')
+                        mv ${mol}.parm7 temp_${mol}.parm7
+                        mv ${mol}.rst7 temp_${mol}.rst7
+                        cat > fix_parm_oct.in <<EOF 
+parm temp_${mol}.parm7
+parmbox truncoct x ${xval} 
+parmwrite out ${mol}.parm7
+run 
+EOF
+
+                        cat > fix_rst7_oct.in <<EOF 
+parm temp_${mol}.parm7
+trajin temp_${mol}.rst7
+box x ${xval} y ${xval} z ${xval} truncoct
+trajout ${mol}.rst7
+run 
+EOF
+
+                        cpptraj -i fix_parm7_oct.in > log
+                        cpptraj -i fix_rst7_oct.in > log
+                        rm temp_${mol}.parm7
+                        rm temp_${mol}.rst7
+
+                done
+        fi
         ##########################################
 
 }

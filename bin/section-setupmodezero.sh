@@ -170,7 +170,11 @@ EOF
 
 }
 
-
+printf "\n ***************************************\n"
+printf " *                                     *\n"
+printf " *  Entering SetupZero                 *\n"
+printf " *                                     *\n"
+printf " ***************************************\n\n"
 
 if [ "${setupmode}" == 0 ]; then
 
@@ -249,7 +253,13 @@ logfile=\${PWD}/${system}/submitted_jobs.log
 touch \${logfile}
 
 for i in "\${!translist[@]}";do
-        for dir in aq com; do
+EOF_runalltrials
+if [ ${combine_aq} == "false" ]; then
+        printf "for dir in aq com; do\n" >> run_all_trials.slurm
+else
+        printf "for dir in com; do\n" >> run_all_trials.slurm
+fi
+cat << EOF_runalltrials >> run_all_trials.slurm
                 cd \${PWD}/${system}/unified/run/\${translist[\$i]}/\${dir}
                 for j in \$(seq 1 1 ${ntrials}); do
                         job_id="\${translist[\$i]}_\${dir}_run_trial_\${j}.slurm"
@@ -320,7 +330,7 @@ EOF_runalltrials
                                                                         lams=()
                                                                         read_lambda_schedule "${path}/${override_lambda}/${stA}~${stB}_${s}_ar_${nlambda}.txt" lams
                                                                 fi
-                                                        	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt} ${nnodes}
+                                                        	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt} ${nnodes} ${ntwx_ep}
                                                 	else
                                                         	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${nnodes}
                                                 	fi
@@ -361,7 +371,7 @@ EOF_runalltrials
                                                                                 lams=()
                                                                                 read_lambda_schedule "${path}/${override_lambda}/${stB}~${stA}_${s}_ar_${nlambda}.txt" lams
                                                                         fi
-                                                                	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt}
+                                                                	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt} ${nnodes} ${ntwx_ep}
                                                         	else
                                                                 	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} 
                                                         	fi
@@ -408,15 +418,7 @@ EOF_runalltrials
 						if [ -d "${path}/${system}/${protocol}/run/${dir}/${s}" ]; then
 							cd ${path}/${system}/${protocol}/run/${dir}/${s}
 
-                                				# if hmr=true set timestep to 4fs
-                                				if [ "${hmr}" == "true" ]; then
-                                        				sed -i '/dt.*.=.*.*/c\dt              = 0.004' inputs/*_ti.mdin
-                                				fi
 
-								# if notrajecory=true, set ntwx=0 in input files
-                                				if [ "${notrajectory}" == "true" ]; then
-									sed -i 's/ntwx.*/ntwx            = 0/' inputs/*.mdin
-                                				fi
 
                                 				# if repex=false, alter input files and slurm files
                                 				if [ "${repex}" == "false" ]; then
@@ -431,6 +433,15 @@ EOF_runalltrials
 										-e 's/running replica ti/running regular ti/g' \
 										run_alltrials.slurm
                                 				fi
+                                                                if [[ "${full_sc}" == "true" ]]; then 
+                                                                    # We assume that all mdinputs have the same timasks and scmasks (as they should)
+                                                                    timask1=`awk -F\' '/timask1\s*=/{print $2}' inputs/${lams[0]}_ti.mdin`
+                                                                    sed -i "/^\s*scmask1\s*=/ s/'[^']*'/'$timask1'/" inputs/*mdin
+                                                                    sed -i "/^\s*scmask1\s*=/ s/'[^']*'/'$timask1'/" inputs/*mdin.template
+                                                                    timask2=`awk -F\' '/timask2\s*=/{print $2}' inputs/${lams[0]}_ti.mdin`
+                                                                    sed -i "/^\s*scmask2\s*=/ s/'[^']*'/'$timask2'/" inputs/*mdin
+                                                                    sed -i "/^\s*scmask2\s*=/ s/'[^']*'/'$timask2'/" inputs/*mdin.template
+                                                                fi
                                                                 if [ "${equil_type}" == "1" ]; then 
                                                                         mkdir -p equil
                                                                         sed "s/current/equil/g" inputs/eqpre1P0.groupfile       > inputs/equil_eqpre1P0.groupfile
@@ -476,6 +487,7 @@ EOF_runalltrials
                                                                                 #sed "s/current/equil/g" inputs/eqBTI.groupfile          > inputs/equil_eqBTI.groupfile
                                                                         done
                                                                 fi
+
 								for(( t=1;t<=${ntrials};t++));do
 									mkdir -p t${t}
 									sed "s/current/t${t}/g" inputs/preTI.groupfile          > inputs/t${t}_preTI.groupfile
@@ -537,7 +549,7 @@ fi
                         echo $max_c >> fix_box_aq_size.txt
      fi
   for aq_file in *_aq*rst7;do
-     
+
      FILENAME_WITHOUT_EXT=$(echo "$aq_file" | sed 's/_aq.rst7$//')
      
      for num in 1;do
@@ -641,6 +653,34 @@ EOFM
 		mv hmr.parm7 fix_box_${FILENAME_WITHOUT_EXT}_aq.parm7; mv hmr.rst7  fix_box_${FILENAME_WITHOUT_EXT}_aq.rst7
 	fi
 
+        # Redo fix box if mdboxshape is oct 
+        if [ "${mdboxshape}" == "oct" ]; then
+                mol="fix_box_${FILENAME_WITHOUT_EXT}_aq"
+                boxinfo=$(tail -n 1 ${mol}.rst7)
+                xval=$(echo "$boxinfo" | awk '{print $1}')
+                mv ${mol}.parm7 temp_${mol}.parm7
+                mv ${mol}.rst7 temp_${mol}.rst7
+                cat > fix_parm7_oct.in <<EOF 
+parm temp_${mol}.parm7
+parmbox truncoct x ${xval} 
+parmwrite out ${mol}.parm7
+run 
+EOF
+
+                cat > fix_rst7_oct.in <<EOF 
+parm temp_${mol}.parm7
+trajin temp_${mol}.rst7
+box x ${xval} y ${xval} z ${xval} truncoct
+trajout ${mol}.rst7
+run 
+EOF
+
+                cpptraj -i fix_parm7_oct.in
+                cpptraj -i fix_rst7_oct.in
+                rm temp_${mol}.parm7
+                rm temp_${mol}.rst7
+
+        fi
 
   done
 
@@ -669,7 +709,9 @@ else #######
 			echo $max_c >> fix_box_aq_size.txt
      fi
    for aq_file in *-1_aq*rst7;do
-     
+    if [[ "${aq_file}" == "fix_box"* ]]; then
+        continue
+    fi
      FILENAME_WITHOUT_EXT=$(echo "$aq_file" | sed 's/-[0-9]\+_aq.rst7$//')
      BEFORE_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f1)
      AFTER_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f2)
@@ -791,7 +833,37 @@ EOFM
                 #mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-2_aq.rst7
 	fi
 
-  done
+        # Redo fix box if mdboxshape is oct 
+        if [ "${mdboxshape}" == "oct" ]; then
+		mol="fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq"
+                boxinfo=$(tail -n 1 ${mol}.rst7)
+                xval=$(echo "$boxinfo" | awk '{print $1}')
+                mv ${mol}.parm7 temp_${mol}.parm7
+                mv ${mol}.rst7 temp_${mol}.rst7
+		cat > fix_parm7_oct.in <<EOF 
+parm temp_${mol}.parm7
+parmbox truncoct x ${xval} 
+parmwrite out ${mol}.parm7
+run 
+EOF
+
+		cat > fix_rst7_oct.in <<EOF 
+parm temp_${mol}.parm7
+trajin temp_${mol}.rst7
+box x ${xval} y ${xval} z ${xval} truncoct
+trajout ${mol}.rst7
+run 
+EOF
+
+		cpptraj -i fix_parm7_oct.in 
+		cpptraj -i fix_rst7_oct.in 
+		rm temp_${mol}.parm7
+                rm temp_${mol}.rst7
+
+        fi
+
+
+    done
 
 
               cp fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-1_aq.parm7  ${path}/${system}/${protocol}/run/${BEFORE_TILDE}~${AFTER_TILDE}/aq/unisc.parm7
@@ -827,10 +899,21 @@ if [ "${ticalc}" == "rbfe" ]; then
   fi
 
 for com_file in *-1_com*rst7;do
+    # Skip files that are from previous generations.
+    if [[ "${com_file}" == "fix_box"* ]]; then
+        continue
+    fi
+
      
      FILENAME_WITHOUT_EXT=$(echo "$com_file" | sed 's/-[0-9]\+_com.rst7$//')
      BEFORE_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f1)
      AFTER_TILDE=$(echo "$FILENAME_WITHOUT_EXT" | cut -d'~' -f2)
+     
+
+     printf "**********************************************\n"
+     printf "com file: $com_file\n"
+     printf "Before tilde: $BEFORE_TILDE\n"
+     printf "After tilde: $AFTER_TILDE\n"
      
      for num in 1 2;do
      cat <<EOF > fix_box_com_cpptraj.in
@@ -938,6 +1021,7 @@ EOF
 
         # Reperform HMR if needed
         if [ "${hmr}" == "true" ]; then
+                printf "Applying HMR on ${BEFORE_TILDE}~${AFTER_TILDE}\n"
                 if [ -f hmr.parm7 ] || [ -f hmr.rst7 ]; then rm -rf hmr.parm7 hmr.rst7; fi
                         cat <<EOFM > hmr.in
 HMassRepartition
@@ -945,6 +1029,35 @@ outparm hmr.parm7 hmr.rst7
 EOFM
                 parmed -i hmr.in -p fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.parm7 -c fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.rst7 >> output 2>&1
                 mv hmr.parm7 fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.parm7; mv hmr.rst7  fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com.rst7
+        fi
+
+        # Redo fix box if mdboxshape is oct 
+        if [ "${mdboxshape}" == "oct" ]; then
+                mol="fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com"
+                boxinfo=$(tail -n 1 ${mol}.rst7)
+                xval=$(echo "$boxinfo" | awk '{print $1}')
+                mv ${mol}.parm7 temp_${mol}.parm7
+                mv ${mol}.rst7 temp_${mol}.rst7
+                cat > fix_parm7_oct.in <<EOF 
+parm temp_${mol}.parm7
+parmbox truncoct x ${xval} 
+parmwrite out ${mol}.parm7
+run 
+EOF
+
+                cat > fix_rst7_oct.in <<EOF 
+parm temp_${mol}.parm7
+trajin temp_${mol}.rst7
+box x ${xval} y ${xval} z ${xval} truncoct
+trajout ${mol}.rst7
+run 
+EOF
+
+                cpptraj -i fix_parm7_oct.in
+                cpptraj -i fix_rst7_oct.in
+                rm temp_${mol}.parm7
+                rm temp_${mol}.rst7
+
         fi
 
   done
@@ -970,10 +1083,13 @@ echo "Finished Image_Writer"
 
 echo "Copying initial files to results directory."
 mkdir -p results_${system}/inputs
-cp -r initial results_${system}/inputs/
+cp -r ${path_to_input} results_${system}/inputs/
 cp input results_${system}/inputs/
 if [[ -v override_lambda ]]; then 
         cp -r ${override_lambda} results_${system}/inputs/
+fi
+if [[ -v read_map ]]; then 
+        cp -r ${read_map} results_${system}/inputs/
 fi
 echo "Done copying initial files."
 

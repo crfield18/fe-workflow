@@ -1,5 +1,11 @@
 # Organization of initial files organization
 # RBFE calculations
+
+printf "\n ***************************************\n"
+printf " *                                     *\n"
+printf " *  Organizing Files                   *\n"
+printf " *                                     *\n"
+printf " ***************************************\n\n"
 if [ "${ticalc}" == "rbfe" ]; then
         cd ${system}/setup
                 if [[ -f molname-ligname.mapping && $(cat molname-ligname.mapping | wc -l) -eq "${#uniqueligs[@]}"  ]]; then
