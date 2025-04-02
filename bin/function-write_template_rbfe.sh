@@ -2396,7 +2396,8 @@ fi
 
 ########
 ########
-if [ ${equil_type} == 2 && ${polaris} == false ]; then
+
+if [ ${equil_type} == 2 ] && [ ${polaris} == false ]; then
 
 for((t=1;t<=${ntrials};t++)); do
 
@@ -2670,7 +2671,7 @@ fi
 #######################################################
 #######################################################
 
-if [ ${equil_type} == 2 && ${polaris} == true ]; then
+if [ ${equil_type} == 2 ] && [ ${polaris} == true ]; then
 
 for((t=1;t<=${ntrials};t++)); do
 
