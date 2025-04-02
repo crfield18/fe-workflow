@@ -337,7 +337,6 @@ EOFN
 	########################
 
 	if [ "${stage}" == "setup" ]; then
-
 		# ensure path_to_input is absolute and check if input directories are present
 		if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
 
@@ -355,7 +354,7 @@ EOFN
 
 		if [ -z "$combine_aq" ]; then combine_aq="false"; fi
 		if [ "${combine_aq}" == "true" ] && [ "${equil_type}" -eq 1 ]; then printf "\n\nERROR: \"combine_aq\" is not compatible with \"equil_type\"=2 \n\n" && exit 0; fi
-
+		if [ -z "${polaris}" ]; then polaris="false"; fi
 		if [ -z "${source_header}" ]; then source_header="~/.bashrc"; fi
 		if [ -z "${max_dt}" ]; then 
 			if [ "${hmr}" == "true" ]; then 

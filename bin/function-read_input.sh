@@ -8,7 +8,8 @@ while read line; do
         notrajectory scalpha scbeta gti_add_sc gti_scale_beta gti_cut gti_cut_sc_on gti_cut_sc_off gti_lam_sch \
         gti_ele_sc gti_vdw_sc gti_cut_sc gti_ele_exp gti_vdw_exp stage setupmode twostate bidirection_aq bidirection_com \
         ticalc partition nnodes ngpus wallclock path_to_data exptdatafile bar ccc start stop check_convergence \
-        lead_ligand ntwx ntwx_equil ntwr ntpr equil_type override_lambda source_header max_dt nnodes ntwx_ep combine_aq read_map full_sc)
+        lead_ligand ntwx ntwx_equil ntwr ntpr equil_type override_lambda source_header max_dt nnodes ntwx_ep \ 
+        combine_aq read_map full_sc polaris)
         IFS=$'\t| |=' read -ra args <<< $line
         if [[ "${args[0]}" =~ ^#.* ]]; then continue; fi
         keyword=${args[0]}; value=${args[1]}

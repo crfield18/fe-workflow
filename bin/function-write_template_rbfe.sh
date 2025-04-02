@@ -46,7 +46,7 @@ round_to_nearest_highest_even() {
 
 function writetemplate_rbfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes ntwx_ep combine_aq)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes ntwx_ep combine_aq polaris)
         local i=0
 		for value in "$@"; do
 			if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -1972,7 +1972,7 @@ for stage in \\\${eqstage[@]}; do
 				# check if pmemd.cuda is present
 				if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
-				export LAUNCH="srun"
+				export LAUNCH="pbsdsh"
 				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 
 				lam=\\\${endstates[0]}
@@ -1997,7 +1997,7 @@ EOF2
 		elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
 				# check if pmemd.cuda is present
 				if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
-				export LAUNCH="srun"
+				export LAUNCH="pbsdsh"
 				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 		for i in \\\${!lams[@]}; do
 			lam=\\\${lams[\\\$i]}
@@ -2142,7 +2142,7 @@ for stage in \\\${eqstage[@]}; do
 						# check if pmemd.cuda is present
 						if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
-						export LAUNCH="srun"
+						export LAUNCH="pbsdsh"
 						export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 
 						for lam in \\\${endstates[@]};do
@@ -2194,7 +2194,7 @@ EOF2
 
 				# check if pmemd.cuda is present
 				if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
-				export LAUNCH="srun"
+				export LAUNCH="pbsdsh"
 				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 
 		firsthalf=(\\\${lams[@]::\\\$((\\\${#lams[@]} / 2 ))})
@@ -2396,7 +2396,7 @@ fi
 
 ########
 ########
-if [ ${equil_type} == 2 ]; then
+if [ ${equil_type} == 2 && ${polaris} == false ]; then
 
 for((t=1;t<=${ntrials};t++)); do
 
@@ -2471,7 +2471,7 @@ for stage in \\\${eqstage[@]}; do
 						# check if pmemd.cuda is present
 						if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
-						export LAUNCH="srun"
+						export LAUNCH="pbsdsh"
 						export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 
 						for lam in \\\${endstates[@]};do
@@ -2523,7 +2523,269 @@ EOF2
 
 				# check if pmemd.cuda is present
 				if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
-				export LAUNCH="srun"
+				export LAUNCH="pbsdsh"
+				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+
+		firsthalf=(\\\${lams[@]::\\\$((\\\${#lams[@]} / 2 ))})
+		secondhalf=(\\\${lams[@]:\\\$((\\\${#lams[@]} / 2 ))})
+
+		indices=(\\\${!secondhalf[@]}); tmp=()
+		for ((k=\\\${#indices[@]} - 1; k >= 0; k--)) ; do
+			tmp+=("\\\${secondhalf[indices[k]]}")
+		done
+		secondhalf=("\\\${tmp[@]}")
+		p=("\\\${firsthalf[*]}" "\\\${secondhalf[*]}")
+
+		for l in \\\${!p[@]};do
+			startingconfig=\\\${endstates[\\\$l]}_\\\${preminTIstage}.rst7
+			list=(\\\${p[\\\$l]})
+			for i in \\\${!list[@]}; do
+				lam=\\\${list[\\\$i]}
+							echo "Running \\\$stage for lambda \\\${lam}..."
+				
+				if [ "\\\${i}" -eq 0 ]; then
+					init=\\\${startingconfig}
+				else
+					init=\\\${list[\\\$((\\\$i-1))]}_eqP0TI.rst7
+				fi
+
+				stage=minTI
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${init}"
+				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${init}
+				sleep 1
+
+				laststage=minTI; stage=eqpre1P0TI
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+				sleep 1
+
+				laststage=eqpre1P0TI; stage=eqpre2P0TI
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/${laststage}.rst7"
+				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+				sleep 1
+
+				laststage=eqpre2P0TI; stage=eqP0TI
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+				sleep 1
+
+								cat <<EOF2 > center.in
+parm \\\${top}/unisc.parm7
+trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+autoimage
+trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+go
+quit
+EOF2
+							# check if cpptraj is present
+							if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+							cpptraj < center.in
+							sleep 1
+							mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+					done
+			laststage=eqP0TI
+		done
+		else
+				# check if pmemd.cuda.MPI is present
+				if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
+
+				export LAUNCH="mpirun -np \\\${#lams[@]}"
+				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+				export MV2_ENABLE_AFFINITY=0
+				echo "\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile"
+				\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile
+
+				for lam in \\\${lams[@]};do
+						cat <<EOF2 > center.in
+parm \\\${top}/unisc.parm7
+trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+autoimage
+trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+go
+quit
+EOF2
+						if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+						cpptraj < center.in
+						sleep 1
+						mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+				done
+		fi
+
+
+		if [ "\\\${stage}" == "eqP2" ]; then
+		a=0; b=0; c=0
+				for lam in \\\${endstates[@]};do
+						box=(\\\$(tail -1 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7))
+						a=\\\$(awk "BEGIN {print ( \\\$a + \\\${box[0]} ) }")
+						b=\\\$(awk "BEGIN {print ( \\\$b + \\\${box[1]} ) }")
+						c=\\\$(awk "BEGIN {print ( \\\$c + \\\${box[2]} ) }")
+				done
+				a=\\\$(awk "BEGIN {print ( \\\$a / \\\${#endstates[@]} ) }")
+				b=\\\$(awk "BEGIN {print ( \\\$b / \\\${#endstates[@]} ) }")
+				c=\\\$(awk "BEGIN {print ( \\\$c / \\\${#endstates[@]} ) }")
+
+				a=\\\$(printf "%8.7f" \\\$a); b=\\\$(printf "%8.7f" \\\$b); c=\\\$(printf "%8.7f" \\\$c)
+				for lam in \\\${endstates[@]};do
+						sed -e "s/ABOX/\\\${a}/g" -e "s/BBOX/\\\${b}/g" -e "s/CBOX/\\\${c}/g" inputs/\\\${lam}_eqNTP4.mdin.template > inputs/\\\${lam}_eqNTP4.mdin
+				done
+				sleep 1
+		fi
+done
+
+EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+echo "running replica ti"
+echo "mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile"
+mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile
+
+for lam in \\\${lams[@]};do
+		cat <<EOF2 > center.in
+parm \\\${top}/unisc.parm7
+trajin t\\\${trial}/\\\${lam}_preTI.rst7
+autoimage
+trajout t\\\${trial}/\\\${lam}_preTI_centered.rst7
+go
+quit
+EOF2
+		if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+		cpptraj < center.in
+		sleep 1
+		mv t\\\${trial}/\\\${lam}_preTI_centered.rst7 t\\\${trial}/\\\${lam}_preTI.rst7
+done
+
+echo "mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
+mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+
+### CUDA MPS # BEGIN ###
+echo quit | nvidia-cuda-mps-control
+### CUDA MPS # END ###
+
+echo "--- DONE ---"
+
+EOF
+
+done
+fi
+
+
+#######################################################
+#######################################################
+
+if [ ${equil_type} == 2 && ${polaris} == true ]; then
+
+for((t=1;t<=${ntrials};t++)); do
+
+if [ ${combine_aq} = true ] && [ \$(basename \${PWD}) = "com" ]; then
+
+		cat<<EOF >> run_trial_\${t}.pbs
+cd ../aq/
+bash run_trial_\${t}.pbs
+cd ../com/
+EOF
+fi
+
+cat<<EOF >> run_trial_\${t}.pbs
+
+top=\\\${PWD}
+endstates=(\${endstates[@]})
+lams=(\${lams[@]})
+twostate=\${twostate}
+full_eqstage=(${eqstagelist[*]})
+# Edit eqstage to only include the stages you want to run
+eqstage=(${eqstagelist[*]})
+len_full_eqstage=\\\${#full_eqstage[@]}
+len_eqstage=\\\${#eqstage[@]}
+starting_idx=\\\$((length1 - length2 - 1))
+
+preminTIstage=\${preminTIstage}
+
+
+# check if AMBERHOME is set
+
+# User Defined Commands
+source ${source_header}
+
+#if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
+
+### CUDA MPS # BEGIN ###
+temp_path=/tmp/temp_${jobname_prefix}_${trans}
+mkdir -p \\\${temp_path}
+export CUDA_MPS_PIPE_DIRECTORY=\\\${temp_path}/nvidia-mps
+export CUDA_MPS_LOG_DIRECTORY=\\\${temp_path}/nvidia-log
+nvidia-cuda-mps-control -d
+### CUDA MPS # END ###
+
+
+trial=\${t}
+if [ ! -d equil\${trial} ];then mkdir equil\${trial}; fi
+
+count=\\\$starting_idx; alllams=0
+for stage in \\\${eqstage[@]}; do
+		count=\\\$((\\\${count}+1))
+		lastcount=\\\$((\\\${count}-1))
+	if [ "\\\${stage}" == "init" ] || [ "\\\${stage}" == "eqpre1P0TI" ] || [ "\\\${stage}" == "eqpre2P0TI" ] || [ "\\\${stage}" == "eqP0TI" ]; then continue; fi
+		laststage=\\\${eqstage[\\\${lastcount}]}
+
+		if [ "\\\$stage" == "minTI" ]; then alllams=1; fi
+
+		if [ \\\${alllams} -eq 0 ];then
+
+				if [ "\\\$stage" == "min1" ] || [ "\\\$stage" == "min2" ]; then
+						# check if pmemd.cuda is present
+						if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
+
+						export LAUNCH="pbsdsh"
+						export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+
+						for lam in \\\${endstates[@]};do
+								echo "Running \\\$stage for lambda \\\${lam}..."
+								echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+								\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+								cat <<EOF2 > center.in
+parm \\\${top}/unisc.parm7
+trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+autoimage
+trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+go
+quit
+EOF2
+								# check if cpptraj is present
+								if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+								cpptraj < center.in
+								sleep 1
+								mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+						done
+
+				else
+						# check if pmemd.cuda.MPI is present
+						if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
+
+						export LAUNCH="mpirun -np \\\${#endstates[@]}"
+						export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
+						export MV2_ENABLE_AFFINITY=0
+						echo "\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile"
+						\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile
+
+						for lam in \\\${endstates[@]};do
+								cat <<EOF2 > center.in
+parm \\\${top}/unisc.parm7
+trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+autoimage
+trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+go
+quit
+EOF2
+								if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+								cpptraj < center.in
+								sleep 1
+								mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+						done
+				fi
+
+		elif [ "\\\${alllams}" == 1 ] && [ "\\\$stage" == "minTI" ]; then
+
+				# check if pmemd.cuda is present
+				if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
+				export LAUNCH="pbsdsh"
 				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 
 		firsthalf=(\\\${lams[@]::\\\$((\\\${#lams[@]} / 2 ))})
