@@ -9,7 +9,7 @@ while read line; do
         gti_ele_sc gti_vdw_sc gti_cut_sc gti_ele_exp gti_vdw_exp stage setupmode twostate bidirection_aq bidirection_com \
         ticalc partition nnodes ngpus wallclock path_to_data exptdatafile bar ccc start stop check_convergence \
         lead_ligand ntwx ntwx_equil ntwr ntpr equil_type override_lambda source_header max_dt nnodes ntwx_ep \ 
-        combine_aq read_map full_sc polaris)
+        combine_aq read_map full_sc polaris nmropt)
         IFS=$'\t| |=' read -ra args <<< $line
         if [[ "${args[0]}" =~ ^#.* ]]; then continue; fi
         keyword=${args[0]}; value=${args[1]}

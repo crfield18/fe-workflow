@@ -46,7 +46,7 @@ round_to_nearest_highest_even() {
 
 function writetemplate_rbfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes ntwx_ep combine_aq polaris)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes ntwx_ep combine_aq polaris nmropt)
         local i=0
 		for value in "$@"; do
 			if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -153,6 +153,7 @@ ntx             = 1
 ntxo            = 1
 ntpr            = 5
 cut             = ${CUTOFF}
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ntr             = 1 
 restraintmask 	= '!:WAT,Cl-,K+,Na+ & !@H='
@@ -186,6 +187,12 @@ gti_syn_mass    = 0
 
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${min1}.mdin
+DISANG=restraint.in
+EOF
+fi
+
 	cat<<EOF>inputs/\${min2}.mdin
 Minimization of the entire molecular system
 &cntrl
@@ -196,6 +203,7 @@ ntx             = 1
 ntxo            = 1
 ntpr            = 5
 cut             = ${CUTOFF}
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 
 ifsc            = 1
@@ -226,6 +234,12 @@ gti_syn_mass    = 0
 
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${min2}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqpre1P0}.mdin
 &cntrl
 imin            = 0
@@ -250,6 +264,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -285,6 +300,13 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqpre1P0}.mdin
+DISANG=restraint.in
+EOF
+fi
+
+
         cat<<EOF>inputs/\${eqpre2P0}.mdin
 &cntrl
 imin            = 0
@@ -309,6 +331,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -344,6 +367,13 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqpre2P0}.mdin
+DISANG=restraint.in
+EOF
+fi
+
+
         cat<<EOF>inputs/\${eqP0}.mdin
 &cntrl
 imin            = 0
@@ -368,6 +398,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2     
 barostat	= 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig		= -1
 
@@ -403,6 +434,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass	= 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqP0}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqP1}.mdin
 &cntrl
 imin            = 0
@@ -427,6 +464,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2     
 barostat	= 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig		= -1
 
@@ -462,6 +500,13 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass	= 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqP1}.mdin
+DISANG=restraint.in
+EOF
+fi
+
+
         cat<<EOF>inputs/\${eqP2}.mdin
 &cntrl
 imin            = 0
@@ -486,6 +531,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2     
 barostat	= 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig		= -1
 
@@ -521,6 +567,11 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass	= 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqP2}.mdin
+DISANG=restraint.in
+EOF
+fi
         cat<<EOF>inputs/\${eqNTP4}.mdin.template
 &cntrl
 imin            = 0
@@ -545,6 +596,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -584,6 +636,11 @@ gti_syn_mass    = 0
 
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqNTP4}.mdin
+DISANG=restraint.in
+EOF
+fi
         cat<<EOF>inputs/\${eqV}.mdin
 &cntrl
 imin            = 0
@@ -607,6 +664,7 @@ temp0           = 298.
 ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -642,6 +700,11 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqV}.mdin
+DISANG=restraint.in
+EOF
+fi
 
         cat<<EOF>inputs/\${eqP}.mdin
 &cntrl
@@ -667,6 +730,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat	= 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -702,6 +766,11 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqP}.mdin
+DISANG=restraint.in
+EOF
+fi
 
         cat<<EOF>inputs/\${eqA}.mdin
 &cntrl
@@ -725,6 +794,7 @@ temp0           = 298.
 ntt             = 3
 gamma_ln        = 2.
 tautp           = 2     
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -770,6 +840,11 @@ gti_syn_mass    = 0
 &wt type='END'  /
 
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqA}.mdin
+DISANG=restraint.in
+EOF
+fi
 
         cat<<EOF>inputs/\${eqProt2}.mdin
 &cntrl
@@ -795,6 +870,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -830,6 +906,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqProt2}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${minProt2}.mdin
 Minimization with Cartesian restraints for the solute
 &cntrl
@@ -840,6 +922,7 @@ ntx             = 1
 ntxo            = 1
 ntpr            = 5
 cut             = ${CUTOFF}
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ntr             = 1
 restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
@@ -858,6 +941,12 @@ scmask2         = ${SCMASK2}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${minProt2}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqProt1}.mdin
 &cntrl
 imin            = 0
@@ -882,6 +971,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -917,6 +1007,11 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqProt1}.mdin
+DISANG=restraint.in
+EOF
+fi
         cat<<EOF>inputs/\${minProt1}.mdin
 Minimization with Cartesian restraints for the solute
 &cntrl
@@ -927,6 +1022,7 @@ ntx             = 1
 ntxo            = 1
 ntpr            = 5
 cut             = ${CUTOFF}
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ntr             = 1
 restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
@@ -945,6 +1041,11 @@ scmask2         = ${SCMASK2}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${minProt1}.mdin
+DISANG=restraint.in
+EOF
+fi
         cat<<EOF>inputs/\${eqProt05}.mdin
 &cntrl
 imin            = 0
@@ -969,6 +1070,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1004,6 +1106,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqProt05}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${minProt05}.mdin
 Minimization with Cartesian restraints for the solute
 &cntrl
@@ -1017,6 +1125,7 @@ ntpr            = 5
 ntr             = 1
 restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 restraint_wt    = 0.5
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ifsc            = 1
 icfe            = 1
@@ -1031,6 +1140,12 @@ scmask2         = ${SCMASK2}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${minProt05}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqProt025}.mdin
 &cntrl
 imin            = 0
@@ -1055,6 +1170,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1090,6 +1206,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqProt025}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${minProt025}.mdin
 Minimization with Cartesian restraints for the solute
 &cntrl
@@ -1103,6 +1225,7 @@ ntpr            = 5
 ntr             = 1
 restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 restraint_wt    = 0.25
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ifsc            = 1
 icfe            = 1
@@ -1117,6 +1240,11 @@ scmask2         = ${SCMASK2}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${minProt025}.mdin
+DISANG=restraint.in
+EOF
+fi
         cat<<EOF>inputs/\${eqProt01}.mdin
 &cntrl
 imin            = 0
@@ -1133,6 +1261,7 @@ ntpr            = 1000
 cut             = ${CUTOFF}
 iwrap           = 1
 
+
 ntb             = 2
 ntp             = 1
 tempi           = 298.
@@ -1141,6 +1270,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1176,6 +1306,11 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqProt01}.mdin
+DISANG=restraint.in
+EOF
+fi
         cat<<EOF>inputs/\${minProt01}.mdin
 Minimization with Cartesian restraints for the solute
 &cntrl
@@ -1189,6 +1324,7 @@ ntpr            = 5
 ntr             = 1
 restraintmask   = '!:WAT,Cl-,K+,Na+ & !@H='
 restraint_wt    = 0.1
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ifsc            = 1
 icfe            = 1
@@ -1203,6 +1339,12 @@ scmask2         = ${SCMASK2}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${minProt01}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqProt0}.mdin
 &cntrl
 imin            = 0
@@ -1227,6 +1369,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1258,6 +1401,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqProt0}.mdin
+DISANG=restraint.in
+EOF
+fi
+
 count=\$((\$count+1))
 done
 
@@ -1364,6 +1513,7 @@ ntx             = 1
 ntxo            = 1
 ntpr            = 5
 cut             = ${CUTOFF}
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 
 ifsc            = 1
@@ -1394,6 +1544,12 @@ gti_syn_mass    = 0
 
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${minTI}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqpre1P0TI}.mdin
 &cntrl
 imin            = 0
@@ -1418,6 +1574,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1449,6 +1606,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqpre1P0TI}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqpre2P0TI}.mdin
 &cntrl
 imin            = 0
@@ -1473,6 +1636,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1504,6 +1668,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqpre2P0TI}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<<EOF>inputs/\${eqP0TI}.mdin
 &cntrl
 imin            = 0
@@ -1528,6 +1698,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1559,6 +1730,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqP0TI}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat << EOF > inputs/\${eqATI}.mdin
 &cntrl
 imin            = 0
@@ -1583,6 +1760,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1624,6 +1802,12 @@ gti_syn_mass    = 0
 /
 &wt TYPE='END' /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqATI}.mdin
+DISANG=restraint.in
+EOF
+fi
+
 	cat << EOF > inputs/\${eqBTI}.mdin
 &cntrl
 imin            = 0
@@ -1648,6 +1832,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1679,6 +1864,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${eqBTI}.mdin
+DISANG=restraint.in
+EOF
+fi
+
 	cat << EOF > inputs/\${preTI}.mdin
 &cntrl
 imin            = 0
@@ -1703,6 +1894,7 @@ ntt             = 3
 gamma_ln        = 2.
 tautp           = 2
 barostat        = 2
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ig              = -1
 
@@ -1734,6 +1926,12 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${preTI}.mdin
+DISANG=restraint.in
+EOF
+fi
+
         cat<< EOF >inputs/\${ti}.mdin
 &cntrl
 imin            = 0                 ! = 0, not running minimization; = 1, running minimization
@@ -1760,6 +1958,7 @@ ntp             = 1                 ! = 1, constant P MD with isotropic position
 barostat        = 2                 ! = 2, Monte Carlo barostat
 pres0           = 1.01325           ! reference pressure in unit of bar
 taup            = 5.0               ! pressure relaxation time in unit of ps
+nmropt			= ${nmropt}		! = 1, use NMR restraint; = 0, no NMR restraint
 
 ifsc            = 1                 ! = 1, turn on softcore potential
 icfe            = 1                 ! = 1, turn on free energy calculation
@@ -1803,6 +2002,11 @@ gremd_acyc      = 1                 ! = 1, not exchange lambda = 0 with lambda =
  &ewald
  /
 EOF
+if [ ${nmropt} -eq 1 ]; then
+		cat<<EOF>>inputs/\${ti}.mdin
+DISANG=restraint.in
+EOF
+fi
 
         cat<< EOF >inputs/\${anal}.mdin
 &cntrl
@@ -2760,7 +2964,7 @@ EOF2
 						# check if pmemd.cuda.MPI is present
 						if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
-						export LAUNCH="mpirun -np \\\${#endstates[@]}"
+						export LAUNCH="mpirun -np \\\${#endstates[@]} -host \\\$(hostname -s)"
 						export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
 						export MV2_ENABLE_AFFINITY=0
 						echo "\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile"
@@ -2852,7 +3056,7 @@ EOF2
 				# check if pmemd.cuda.MPI is present
 				if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda.MPI &> /dev/null; then echo "pmemd.cuda.MPI is missing." && exit 0; fi
 
-				export LAUNCH="mpirun -np \\\${#lams[@]}"
+				export LAUNCH="mpirun -np \\\${#lams[@]} -host \\\$(hostname -s)"
 				export EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
 				export MV2_ENABLE_AFFINITY=0
 				echo "\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile"
@@ -2897,8 +3101,8 @@ done
 
 EXE=\\\${AMBERHOME}/bin/pmemd.cuda.MPI
 echo "running replica ti"
-echo "mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile"
-mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile
+echo "mpirun -np \\\${#lams[@]} -host \\\$(hostname -s) \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile"
+mpirun -np \\\${#lams[@]} -host \\\$(hostname -s) \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile
 
 for lam in \\\${lams[@]};do
 		cat <<EOF2 > center.in
@@ -2915,8 +3119,8 @@ EOF2
 		mv t\\\${trial}/\\\${lam}_preTI_centered.rst7 t\\\${trial}/\\\${lam}_preTI.rst7
 done
 
-echo "mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
-mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+echo "mpirun -np \\\${#lams[@]} -host \\\$(hostname -s) \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
+mpirun -np \\\${#lams[@]} -host \\\$(hostname -s) \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
 
 ### CUDA MPS # BEGIN ###
 echo quit | nvidia-cuda-mps-control

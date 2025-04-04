@@ -344,6 +344,12 @@ EOFN
 		if [ -z "${ntwx}" ]; then ntwx=0; fi
 		if [ -z "${ntwx_equil}" ]; then ntwx_equil=0; fi
 		if [ -z "${ntwx_ep}" ]; then ntwx_ep=${ntwx}; fi
+		if [ -z "${nmropt}" ]; then 
+			nmropt=0; 
+		elif [ ${nmropt} -eq 1 ]; then
+			printf "\n\n NOTE: nmropt option is set to \"1\". This will use nmr restraints (defined in restraint.in) for the ligand. \n"
+			printf "The file defined by source_header MUST contain everything needed to produce this file (either a copy command, or a call to a code that generates this file)\n\n"
+		fi
 		# check if ntwr is set, if not initialize to nstlimti
 		if [ -z "${ntwr}" ]; then ntwr=1250; fi
 		# check if ntpr is set, if not initialize to nstlimti

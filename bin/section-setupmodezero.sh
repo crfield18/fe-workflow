@@ -330,7 +330,7 @@ EOF_runalltrials
                                                                         lams=()
                                                                         read_lambda_schedule "${path}/${override_lambda}/${stA}~${stB}_${s}_ar_${nlambda}.txt" lams
                                                                 fi
-                                                        	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt} ${nnodes} ${ntwx_ep}
+                                                        	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt} ${nnodes} ${ntwx_ep} ${combine_aq} ${polaris} ${nmropt}
                                                 	else
                                                         	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${nnodes}
                                                 	fi
@@ -371,7 +371,7 @@ EOF_runalltrials
                                                                                 lams=()
                                                                                 read_lambda_schedule "${path}/${override_lambda}/${stB}~${stA}_${s}_ar_${nlambda}.txt" lams
                                                                         fi
-                                                                	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt} ${nnodes} ${ntwx_ep}
+                                                                	writetemplate_rbfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} ${ntwx_equil} ${ntwx} ${ntwr} ${ntpr} ${equil_type} ${source_header} ${max_dt} ${nnodes} ${ntwx_ep} ${combine_aq} ${polaris} ${nmropt}
                                                         	else
                                                                 	writetemplate_rsfe $cutoff $repex $nstlimti $numexchgti $timask1 $timask2 $scmask1 $scmask2 $noshakemask $scalpha $scbeta $gti_add_sc $gti_scale_beta $gti_cut $gti_cut_sc_on $gti_cut_sc_off $gti_lam_sch $gti_ele_sc $gti_vdw_sc $gti_cut_sc $gti_ele_exp $gti_vdw_exp ${translist[$i]} $s ${twostate} 
                                                         	fi
