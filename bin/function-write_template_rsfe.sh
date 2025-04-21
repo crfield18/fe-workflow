@@ -3,7 +3,7 @@
 #################################
 function writetemplate_rsfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR source_header max_dt)
         local i=0
         for value in "$@"; do
             if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -122,7 +122,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -180,7 +180,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -239,7 +239,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -298,7 +298,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -361,7 +361,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -420,7 +420,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -480,7 +480,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -603,7 +603,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -658,7 +658,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -713,7 +713,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -768,7 +768,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -827,13 +827,13 @@ EOF
 &cntrl
 imin            = 0
 nstlim          = 2000000
-dt              = 0.001
+dt              = ${max_dt}
 irest           = 0
 ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -883,15 +883,15 @@ EOF
 imin            = 0
 nstlim          = ${NSTLIMTI}
 numexchg        = ${NUMEXCHGTI}
-dt              = 0.001
+dt              = ${max_dt}
 irest           = 0
 ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = ${NSTLIMTI}
-ntwr            = ${NSTLIMTI}
-ntpr            = ${NSTLIMTI}
+ntwx            = ${NTWX}
+ntwr            = ${NTWR}
+ntpr            = ${NTPR}
 cut             = ${CUTOFF}
 iwrap           = 1
 
@@ -1105,11 +1105,13 @@ lams=(\${lams[@]})
 eqstage=(${eqstagelist[*]})
 preminTIstage=\${preminTIstage}
 
+source ${source_header}
 
 # check if AMBERHOME is set
 if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 # check if cpptraj is present
 if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
+
 
 EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 
