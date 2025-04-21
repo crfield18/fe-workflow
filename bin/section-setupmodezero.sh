@@ -450,7 +450,7 @@ EOF_runalltrials
 									fi
 								    done
                                                                 fi
-                                                                if [ "${equil_type}" == "1" ]; then 
+                                                                if [ "${equil_type}" == "1" ] && [ "${ti_calc}" != asfe ]; then 
                                                                     mkdir -p equil
 								    for f in inputs/eqp*.groupfile \
 										 inputs/eqP*.groupfile \
@@ -483,7 +483,7 @@ EOF_runalltrials
                                                                         # fi
                                                                         # sed "s/current/equil/g" inputs/eqATI.groupfile          > inputs/equil_eqATI.groupfile
                                                                         # sed "s/current/equil/g" inputs/eqBTI.groupfile          > inputs/equil_eqBTI.groupfile
-                                                                elif [ "${equil_type}" == "2" ]; then 
+                                                                elif [ "${equil_type}" == "2" ] && [ "${ti_calc}" != asfe ]; then 
                                                                         for (( t=1;t<=${ntrials};t++));do
                                                                             mkdir -p equil${t}
 									    for f in inputs/eqp*.groupfile \
@@ -517,7 +517,41 @@ EOF_runalltrials
                                                                             # fi
                                                                             # sed "s/current/equil${t}/g" inputs/eqATI.groupfile          > inputs/equil${t}_eqATI.groupfile
                                                                         done
+                                                                elif [ "${ti_calc}" == asfe ]
+                                                                        for (( t=1;t<=${ntrials};t++));do
+									    for f in inputs/eqp*.groupfile \
+											 inputs/eqP*.groupfile \
+											 inputs/eqN*.groupfile \
+											 inputs/eqV*.groupfile \
+											 inputs/eqB*.groupfile \
+											 inputs/eqA*.groupfile; do
+										if [ -e "${f}" ]; then
+										    dname=$(dirname $f)
+										    bname=$(basename $f)
+										    sed "s/current/t${t}/g" ${f} > ${dname}/t${t}_${bname}
+										fi
+									    done
+                                                                            # sed "s/current/equil${t}/g" inputs/eqpre1P0.groupfile       > inputs/equil${t}_eqpre1P0.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqpre2P0.groupfile       > inputs/equil${t}_eqpre2P0.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP0.groupfile           > inputs/equil${t}_eqP0.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP1.groupfile           > inputs/equil${t}_eqP1.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP2.groupfile           > inputs/equil${t}_eqP2.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqNTP4.groupfile         > inputs/equil${t}_eqNTP4.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqV.groupfile            > inputs/equil${t}_eqV.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP.groupfile            > inputs/equil${t}_eqP.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqA.groupfile            > inputs/equil${t}_eqA.groupfile
+                                                                            # if [ "${s}" == "com" ]; then
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt2.groupfile        > inputs/equil${t}_eqProt2.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt1.groupfile        > inputs/equil${t}_eqProt1.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt05.groupfile       > inputs/equil${t}_eqProt05.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt025.groupfile      > inputs/equil${t}_eqProt025.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt01.groupfile       > inputs/equil${t}_eqProt01.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt0.groupfile        > inputs/equil${t}_eqProt0.groupfile
+                                                                            # fi
+                                                                            # sed "s/current/equil${t}/g" inputs/eqATI.groupfile          > inputs/equil${t}_eqATI.groupfile
+                                                                        done
                                                                 fi
+                                                                
 
 								for(( t=1;t<=${ntrials};t++));do
 								    mkdir -p t${t}
