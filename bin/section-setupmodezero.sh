@@ -435,66 +435,103 @@ EOF_runalltrials
                                                                 if [[ "${full_sc}" == "true" ]]; then 
                                                                     # We assume that all mdinputs have the same timasks and scmasks (as they should)
                                                                     timask1=`awk -F\' '/timask1\s*=/{print $2}' inputs/${lams[0]}_ti.mdin`
-                                                                    sed -i "/^\s*scmask1\s*=/ s/'[^']*'/'$timask1'/" inputs/*mdin
-                                                                    sed -i "/^\s*scmask1\s*=/ s/'[^']*'/'$timask1'/" inputs/*mdin.template
                                                                     timask2=`awk -F\' '/timask2\s*=/{print $2}' inputs/${lams[0]}_ti.mdin`
-                                                                    sed -i "/^\s*scmask2\s*=/ s/'[^']*'/'$timask2'/" inputs/*mdin
-                                                                    sed -i "/^\s*scmask2\s*=/ s/'[^']*'/'$timask2'/" inputs/*mdin.template
+								    for f in inputs/*mdin; do
+									if [ -e "${f}" ]; then
+									    sed -i -e "/^\s*scmask1\s*=/ s/'[^']*'/'$timask1'/" \
+										-e "/^\s*scmask2\s*=/ s/'[^']*'/'$timask2'/" "${f}"
+									fi
+								    done
+								    for f in inputs/*mdin.template; do
+									if [ -e "${f}" ]; then
+									    sed -i -e "/^\s*scmask1\s*=/ s/'[^']*'/'$timask1'/" \
+										-e "/^\s*scmask2\s*=/ s/'[^']*'/'$timask2'/" "${f}"
+									fi
+								    done
                                                                 fi
                                                                 if [ "${equil_type}" == "1" ]; then 
-                                                                        mkdir -p equil
-                                                                        sed "s/current/equil/g" inputs/eqpre1P0.groupfile       > inputs/equil_eqpre1P0.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqpre2P0.groupfile       > inputs/equil_eqpre2P0.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqP0.groupfile           > inputs/equil_eqP0.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqP1.groupfile           > inputs/equil_eqP1.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqP2.groupfile           > inputs/equil_eqP2.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqNTP4.groupfile         > inputs/equil_eqNTP4.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqV.groupfile            > inputs/equil_eqV.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqP.groupfile            > inputs/equil_eqP.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqA.groupfile            > inputs/equil_eqA.groupfile
-                                                                        if [ "${s}" == "com" ]; then
-                                                                                sed "s/current/equil/g" inputs/eqProt2.groupfile        > inputs/equil_eqProt2.groupfile
-                                                                                sed "s/current/equil/g" inputs/eqProt1.groupfile        > inputs/equil_eqProt1.groupfile
-                                                                                sed "s/current/equil/g" inputs/eqProt05.groupfile       > inputs/equil_eqProt05.groupfile
-                                                                                sed "s/current/equil/g" inputs/eqProt025.groupfile      > inputs/equil_eqProt025.groupfile
-                                                                                sed "s/current/equil/g" inputs/eqProt01.groupfile       > inputs/equil_eqProt01.groupfile
-                                                                                sed "s/current/equil/g" inputs/eqProt0.groupfile        > inputs/equil_eqProt0.groupfile
-                                                                        fi
-                                                                        sed "s/current/equil/g" inputs/eqATI.groupfile          > inputs/equil_eqATI.groupfile
-                                                                        sed "s/current/equil/g" inputs/eqBTI.groupfile          > inputs/equil_eqBTI.groupfile
+                                                                    mkdir -p equil
+								    for f in inputs/eqp*.groupfile \
+										 inputs/eqP*.groupfile \
+										 inputs/eqN*.groupfile \
+										 inputs/eqV*.groupfile \
+										 inputs/eqB*.groupfile \
+										 inputs/eqA*.groupfile; do
+									if [ -e "${f}" ]; then
+									    dname=$(dirname $f)
+									    bname=$(basename $f)
+									    sed "s/current/equil/g" ${f} > ${dname}/equil_${bname}
+									fi
+								    done
+                                                                        # sed "s/current/equil/g" inputs/eqpre1P0.groupfile       > inputs/equil_eqpre1P0.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqpre2P0.groupfile       > inputs/equil_eqpre2P0.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqP0.groupfile           > inputs/equil_eqP0.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqP1.groupfile           > inputs/equil_eqP1.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqP2.groupfile           > inputs/equil_eqP2.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqNTP4.groupfile         > inputs/equil_eqNTP4.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqV.groupfile            > inputs/equil_eqV.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqP.groupfile            > inputs/equil_eqP.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqA.groupfile            > inputs/equil_eqA.groupfile
+                                                                        # if [ "${s}" == "com" ]; then
+                                                                        #         sed "s/current/equil/g" inputs/eqProt2.groupfile        > inputs/equil_eqProt2.groupfile
+                                                                        #         sed "s/current/equil/g" inputs/eqProt1.groupfile        > inputs/equil_eqProt1.groupfile
+                                                                        #         sed "s/current/equil/g" inputs/eqProt05.groupfile       > inputs/equil_eqProt05.groupfile
+                                                                        #         sed "s/current/equil/g" inputs/eqProt025.groupfile      > inputs/equil_eqProt025.groupfile
+                                                                        #         sed "s/current/equil/g" inputs/eqProt01.groupfile       > inputs/equil_eqProt01.groupfile
+                                                                        #         sed "s/current/equil/g" inputs/eqProt0.groupfile        > inputs/equil_eqProt0.groupfile
+                                                                        # fi
+                                                                        # sed "s/current/equil/g" inputs/eqATI.groupfile          > inputs/equil_eqATI.groupfile
+                                                                        # sed "s/current/equil/g" inputs/eqBTI.groupfile          > inputs/equil_eqBTI.groupfile
                                                                 elif [ "${equil_type}" == "2" ]; then 
                                                                         for (( t=1;t<=${ntrials};t++));do
-                                                                                mkdir -p equil${t}
-                                                                                sed "s/current/equil${t}/g" inputs/eqpre1P0.groupfile       > inputs/equil${t}_eqpre1P0.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqpre2P0.groupfile       > inputs/equil${t}_eqpre2P0.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqP0.groupfile           > inputs/equil${t}_eqP0.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqP1.groupfile           > inputs/equil${t}_eqP1.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqP2.groupfile           > inputs/equil${t}_eqP2.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqNTP4.groupfile         > inputs/equil${t}_eqNTP4.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqV.groupfile            > inputs/equil${t}_eqV.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqP.groupfile            > inputs/equil${t}_eqP.groupfile
-                                                                                sed "s/current/equil${t}/g" inputs/eqA.groupfile            > inputs/equil${t}_eqA.groupfile
-                                                                                if [ "${s}" == "com" ]; then
-                                                                                        sed "s/current/equil${t}/g" inputs/eqProt2.groupfile        > inputs/equil${t}_eqProt2.groupfile
-                                                                                        sed "s/current/equil${t}/g" inputs/eqProt1.groupfile        > inputs/equil${t}_eqProt1.groupfile
-                                                                                        sed "s/current/equil${t}/g" inputs/eqProt05.groupfile       > inputs/equil${t}_eqProt05.groupfile
-                                                                                        sed "s/current/equil${t}/g" inputs/eqProt025.groupfile      > inputs/equil${t}_eqProt025.groupfile
-                                                                                        sed "s/current/equil${t}/g" inputs/eqProt01.groupfile       > inputs/equil${t}_eqProt01.groupfile
-                                                                                        sed "s/current/equil${t}/g" inputs/eqProt0.groupfile        > inputs/equil${t}_eqProt0.groupfile
-                                                                                fi
-                                                                                sed "s/current/equil${t}/g" inputs/eqATI.groupfile          > inputs/equil${t}_eqATI.groupfile
-                                                                                #sed "s/current/equil/g" inputs/eqBTI.groupfile          > inputs/equil_eqBTI.groupfile
+                                                                            mkdir -p equil${t}
+									    for f in inputs/eqp*.groupfile \
+											 inputs/eqP*.groupfile \
+											 inputs/eqN*.groupfile \
+											 inputs/eqV*.groupfile \
+											 inputs/eqB*.groupfile \
+											 inputs/eqA*.groupfile; do
+										if [ -e "${f}" ]; then
+										    dname=$(dirname $f)
+										    bname=$(basename $f)
+										    sed "s/current/equil/g" ${f} > ${dname}/equil${t}_${bname}
+										fi
+									    done
+                                                                            # sed "s/current/equil${t}/g" inputs/eqpre1P0.groupfile       > inputs/equil${t}_eqpre1P0.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqpre2P0.groupfile       > inputs/equil${t}_eqpre2P0.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP0.groupfile           > inputs/equil${t}_eqP0.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP1.groupfile           > inputs/equil${t}_eqP1.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP2.groupfile           > inputs/equil${t}_eqP2.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqNTP4.groupfile         > inputs/equil${t}_eqNTP4.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqV.groupfile            > inputs/equil${t}_eqV.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqP.groupfile            > inputs/equil${t}_eqP.groupfile
+                                                                            # sed "s/current/equil${t}/g" inputs/eqA.groupfile            > inputs/equil${t}_eqA.groupfile
+                                                                            # if [ "${s}" == "com" ]; then
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt2.groupfile        > inputs/equil${t}_eqProt2.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt1.groupfile        > inputs/equil${t}_eqProt1.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt05.groupfile       > inputs/equil${t}_eqProt05.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt025.groupfile      > inputs/equil${t}_eqProt025.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt01.groupfile       > inputs/equil${t}_eqProt01.groupfile
+                                                                            #     sed "s/current/equil${t}/g" inputs/eqProt0.groupfile        > inputs/equil${t}_eqProt0.groupfile
+                                                                            # fi
+                                                                            # sed "s/current/equil${t}/g" inputs/eqATI.groupfile          > inputs/equil${t}_eqATI.groupfile
                                                                         done
                                                                 fi
 
 								for(( t=1;t<=${ntrials};t++));do
-									mkdir -p t${t}
+								    mkdir -p t${t}
+								    if [ -e inputs/preTI.groupfile ]; then
 									sed "s/current/t${t}/g" inputs/preTI.groupfile          > inputs/t${t}_preTI.groupfile
-                                                                        if [ "${equil_type}" == "2" ]; then
-                                                                                sed "s/equil/equil${t}/g"  inputs/t${t}_preTI.groupfile         > inputs/t${t}_preTI.groupfiletmp
-                                                                                cp inputs/t${t}_preTI.groupfiletmp inputs/t${t}_preTI.groupfile
-                                                                        fi
+								    fi
+                                                                    if [ "${equil_type}" == "2" ]; then
+									if [ -e inputs/t${t}_preTI.groupfile ]; then
+                                                                            sed "s/equil/equil${t}/g"  inputs/t${t}_preTI.groupfile         > inputs/t${t}_preTI.groupfiletmp
+                                                                            cp inputs/t${t}_preTI.groupfiletmp inputs/t${t}_preTI.groupfile
+									fi
+                                                                    fi
+								    if [ -e inputs/ti.groupfile ]; then
 									sed "s/current/t${t}/g" inputs/ti.groupfile             > inputs/t${t}_ti.groupfile
+								    fi
 								done
 
 
@@ -502,11 +539,11 @@ EOF_runalltrials
 						fi
                                 	done
 					if [ -d ${path}/${system}/${protocol}/run/${stA}~${stB}/${s} ] && [ -d ${path}/${system}/${protocol}/run/${stB}~${stA}/${s} ]; then
-						mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/forward
-						mv ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/* ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/forward/ 2>/dev/null
-						mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/reverse
-						mv ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/* ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/reverse/ 2>/dev/null
-						rm -rf ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}
+					    mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/forward
+					    mv ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/* ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/forward/ 2>/dev/null
+					    mkdir -p ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/reverse
+					    mv ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}/* ${path}/${system}/${protocol}/run/${stA}~${stB}/${s}/reverse/ 2>/dev/null
+					    rm -rf ${path}/${system}/${protocol}/run/${stB}~${stA}/${s}
 					fi
 				done
 				printf "Done with ${translist[$i]}...\n"
