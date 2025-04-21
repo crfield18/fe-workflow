@@ -495,7 +495,7 @@ EOF_runalltrials
 										if [ -e "${f}" ]; then
 										    dname=$(dirname $f)
 										    bname=$(basename $f)
-										    sed "s/current/equil/g" ${f} > ${dname}/equil${t}_${bname}
+										    sed "s/current/equil${t}/g" ${f} > ${dname}/equil${t}_${bname}
 										fi
 									    done
                                                                             # sed "s/current/equil${t}/g" inputs/eqpre1P0.groupfile       > inputs/equil${t}_eqpre1P0.groupfile
