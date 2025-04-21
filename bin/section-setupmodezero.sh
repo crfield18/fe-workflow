@@ -725,7 +725,7 @@ EOF
               cp fix_box_${FILENAME_WITHOUT_EXT}_aq.parm7  ${path}/${system}/${protocol}/run/${FILENAME_WITHOUT_EXT}/aq/unisc.parm7
               cp fix_box_${FILENAME_WITHOUT_EXT}_aq.rst7   ${path}/${system}/${protocol}/run/${FILENAME_WITHOUT_EXT}/aq/stateA.rst7
         for(( t=1;t<=${ntrials};t++));do
-        cp ${path}/${system}/${protocol}/run/${FILENAME_WITHOUT_EXT}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${FILENAME_WITHOUT_EXT}/aq/t${t}/0.00000000_init.rst7
+        cp ${path}/${system}/${protocol}/run/${FILENAME_WITHOUT_EXT}/aq/stateA.rst7 ${path}/${system}/${protocol}/run/${FILENAME_WITHOUT_EXT}/aq/equil${t}/0.00000000_init.rst7
 	done
 done
 
