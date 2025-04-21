@@ -1118,7 +1118,7 @@ EXE=\\\${AMBERHOME}/bin/pmemd.cuda
 for trial in \\\$(seq 1 1 ${ntrials}); do
 	
 	cd \\\${top}
-	if [ ! -d t\\\${trial} ];then mkdir t\\\${trial}; fi
+	if [ ! -d equil\\\${trial} ];then mkdir equil\\\${trial}; fi
 
 	count=-1; alllams=0
 	for stage in \\\${eqstage[@]}; do
@@ -1140,12 +1140,12 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
                 	lam=\${endstates[0]}
                 	echo "Running \\\$stage for lambda \\\${lam}..."
-                	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                 	cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
-trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
 autoimage
-trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
@@ -1153,7 +1153,7 @@ EOF2
                 	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                 	cpptraj < center.in
                 	sleep 1
-                	mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+                	mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
 
 		elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
 			# check if pmemd.cuda is present
@@ -1171,33 +1171,33 @@ EOF2
 				echo "Running \\\$stage for lambda \\\${lam}..."
 
 				stage=minTI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}
+                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${init}
                                 sleep 1
 
                                 laststage=minTI; stage=eqpre1P0TI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                                 sleep 1
 
                                 laststage=eqpre1P0TI; stage=eqpre2P0TI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                                 sleep 1
 
                                 laststage=eqpre2P0TI; stage=eqP0TI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                                 sleep 1
 
                                 cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
-trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
 autoimage
-trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
                                 if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                                 cpptraj < center.in
                                 sleep 1
-                                mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+                                mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
                         done
                         laststage=eqP0TI
 		else
@@ -1207,21 +1207,21 @@ EOF2
                         export LAUNCH="mpirun -np \\\${#lams[@]}"
                         export EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
                         export MV2_ENABLE_AFFINITY=0
-                        \\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
+                        \\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile
 
 			for lam in \\\${lams[@]};do
 				cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
-trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
 autoimage
-trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
+trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
 EOF2
                                 if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                                 cpptraj < center.in
                                 sleep 1
-                                mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+                                mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
                         done
 		fi
 	done
@@ -1229,7 +1229,7 @@ EOF2
         ### # run production
         ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
         ### echo "running replica ti"
-        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_ti.groupfile
 
 
 	cat << EOFP > extract.py
