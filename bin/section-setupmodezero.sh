@@ -517,7 +517,7 @@ EOF_runalltrials
                                                                             # fi
                                                                             # sed "s/current/equil${t}/g" inputs/eqATI.groupfile          > inputs/equil${t}_eqATI.groupfile
                                                                         done
-                                                                elif [ "${ti_calc}" == asfe ]
+                                                                elif [ "${ti_calc}" == asfe ]; then
                                                                         for (( t=1;t<=${ntrials};t++));do
 									    for f in inputs/eqp*.groupfile \
 											 inputs/eqP*.groupfile \
