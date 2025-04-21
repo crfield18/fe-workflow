@@ -516,6 +516,7 @@ EOF_runalltrials
                                                                             # fi
                                                                             # sed "s/current/equil${t}/g" inputs/eqATI.groupfile          > inputs/equil${t}_eqATI.groupfile
                                                                         done
+                                                                fi
                                                                 
 
 								for(( t=1;t<=${ntrials};t++));do
