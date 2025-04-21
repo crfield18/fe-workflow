@@ -1140,7 +1140,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
                 	lam=\${endstates[0]}
                 	echo "Running \\\$stage for lambda \\\${lam}..."
-                	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+                	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                 	cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
