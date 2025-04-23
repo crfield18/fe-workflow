@@ -523,16 +523,20 @@ EOF_runalltrials
 								for(( t=1;t<=${ntrials};t++));do
 								    mkdir -p t${t}
 								    if [ -e inputs/preTI.groupfile ]; then
-									sed "s/current/t${t}/g" inputs/preTI.groupfile          > inputs/t${t}_preTI.groupfile
+									if [ "${ticalc}" == "asfe" ]; then
+									    sed "s/-c current/-c equil/g" inputs/preTI.groupfile > inputs/t${t}_preTI.groupfile
+									else
+									    sed "s/current/t${t}/g" inputs/preTI.groupfile > inputs/t${t}_preTI.groupfile
+									fi
 								    fi
                                                                     if [ "${equil_type}" == "2" ]; then
 									if [ -e inputs/t${t}_preTI.groupfile ]; then
-                                                                            sed "s/equil/equil${t}/g"  inputs/t${t}_preTI.groupfile         > inputs/t${t}_preTI.groupfiletmp
-                                                                            cp inputs/t${t}_preTI.groupfiletmp inputs/t${t}_preTI.groupfile
+                                                                            sed -i -e "s/equil/equil${t}/g"  inputs/t${t}_preTI.groupfile
+                                                                            # inputs/t${t}_preTI.groupfiletmp inputs/t${t}_preTI.groupfile
 									fi
                                                                     fi
 								    if [ -e inputs/ti.groupfile ]; then
-									sed "s/current/t${t}/g" inputs/ti.groupfile             > inputs/t${t}_ti.groupfile
+									sed "s/current/t${t}/g" inputs/ti.groupfile > inputs/t${t}_ti.groupfile
 								    fi
 								done
 
