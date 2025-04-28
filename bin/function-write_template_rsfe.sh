@@ -1258,6 +1258,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
                echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
 
                echo "Command failed: \\\${cmd}"
+               echo "Current directory: \\\${PWD}"
 
                exit 1
 
@@ -1309,6 +1310,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
                   echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
 
                   echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
 
                   exit 1
 
@@ -1341,6 +1343,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
                   echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
 
                   echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
 
                   exit 1
 
@@ -1373,6 +1376,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
                   echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
 
                   echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
 
                   exit 1
 
@@ -1405,6 +1409,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
                   echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
 
                   echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
 
                   exit 1
 
@@ -1447,6 +1452,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
                echo "Failed to produce \\\${mdouts[@]} \\\${mdrsts[@]}"
 
                echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
+               echo "Current directory: \\\${PWD}"
 
                exit 1
 
@@ -1472,6 +1478,57 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
    ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
    ### echo "running replica ti"
    ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_ti.groupfile
+
+
+
+   for stage in preTI ti; do
+
+      mdouts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
+
+      mdrsts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
+
+      errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+      if [ "\\\${errflg}" == "1" ]; then
+
+         echo "Running stage \\\${stage} in environment \\\${dir}"
+
+         if [ "\\\${stage}" == "preTI" ]; then
+            cmd="\\\${MPIEXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
+         else
+            cmd="\\\${MPIEXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
+         fi
+
+         \\\${MPILAUNCH} \\\${cmd}
+
+         errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+         if [ "\\\${errflg}" == "1" ]; then
+ 
+            echo "Failed to produce stage \\\${stage} outputs in environment \\\${dir} \\\${mdouts[@]} \\\${mdrsts[@]}"
+
+            echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
+            echo "Current directory: \\\${PWD}"
+
+            exit 1
+
+         fi
+
+      else
+
+         echo "Skipping \\\$stage in environment aq because it is finished"
+
+      fi
+
+      for lam in \\\${lams[@]}; do
+
+         recenterrst "unisc.parm7" "t\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+      done
+
+   done
+
+
 
 
    cat << EOFP > extract.py
@@ -1595,9 +1652,21 @@ EOFP
 
    chmod a+x extract.py
 
-   mkdir -p ../vac/t\\\${trial} ../vac/inputs
+   for vacdir in "../vac/t\\\${trial}" "../vac/inputs"; do
+
+      if [ ! -d "\\\${vacdir}" ]; then
+
+         echo "Creating directory \\\${vacdir}"
+
+         mkdir -p "\\\${vacdir}"
+
+      fi
+
+   done
 
    for lam in \\\${lams[@]};do
+
+      echo "Running ./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init"
 
       ./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
 
@@ -1609,19 +1678,23 @@ EOFP
 
    cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
 
-   cd ../vac
+   echo "Changing directory to ../vac/t\\\${trial}"
 
-   cd t\\\${trial}
+   cd ../vac/t\\\${trial}
 
    mv 0.00000000_init.parm7 ../unisc.parm7
 
    rm *.parm7
+
+   echo "Changing directory to ../ that is, the vac/ directory"
 
    cd ../
 
    vacdir=\\\${PWD}
 
    stage=preTI; laststage=init
+
+   echo "Running the vac/ directory preTI stages..."
 
    for lam in \\\${lams[@]};do
 
@@ -1659,105 +1732,47 @@ EOFP
 
    for lam in \\\${lams[@]};do
 
-      recenterrst "\\\${vacdir}/unisc.parm7" "t\\\${trial}/\\\${lam}_preTI_centered.rst7" \\\${boxsize[0]} \\\${boxsize[1]} \\\${boxsize[2]} \\\${boxsize[3]} \\\${boxsize[4]} \\\${boxsize[5]} 
+      recenterrst "\\\${vacdir}/unisc.parm7" "t\\\${trial}/\\\${lam}_preTI.rst7" \\\${boxsize[0]} \\\${boxsize[1]} \\\${boxsize[2]} \\\${boxsize[3]} \\\${boxsize[4]} \\\${boxsize[5]} 
 
    done
 
-   cd ../
+   echo "Running the vac/ directory ti stage..."
 
-   for dir in aq vac; do
+   stage=ti
 
-      cd \\\${dir}
+   mdouts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
 
-      #stage=ti; laststage=preTI
+   mdrsts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
 
-      if [ \\\${dir} == "aq" ]; then
+   errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
 
-         for stage in preTI ti; do
+   if [ "\\\{errflg}" == "1" ]; then
 
-            mdouts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
+      echo "Running stage \\\${stage} in environment vac"
 
-            mdrsts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
+      cmd="\\\${MPIEXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
 
-            errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+      \\\${MPILAUNCH} \\\${cmd}
 
-            if [ "\\\${errflg}" == "1" ]; then
+      errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
 
-               echo "Running stage \\\${stage} in environment \\\${dir}"
+      if [ "\\\{errflg}" == "1" ]; then
 
-               cmd="\\\${MPIEXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
+         echo "Failed to produce stage \\\${stage} outputs in environment vac \\\${mdouts[@]} \\\${mdrsts[@]}"
 
-               \\\${MPILAUNCH} \\\${cmd}
+         echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
+         echo "Current directory: \\\${PWD}"
 
-               errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
-
-               if [ "\\\${errflg}" == "1" ]; then
- 
-                  echo "Failed to produce stage \\\${stage} outputs in environment \\\${dir} \\\${mdouts[@]} \\\${mdrsts[@]}"
-
-                  echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
-
-                  exit 1
-
-               fi
-
-            else
-
-               echo "Skipping \\\$stage in environment \\\${dir} because it is finished"
-
-            fi
-
-            for lam in \\\${lams[@]}; do
-
-               recenterrst "unisc.parm7" "t\\\${trial}/\\\${lam}_\\\${stage}.rst7"
-
-            done
-
-         done
-
-      else
-
-         stage=ti
-
-         mdouts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
-
-         mdrsts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
-
-         errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
-
-         if [ "\\\{errflg}" == "1" ]; then
-
-            echo "Running stage \\\${stage} in environment \\\${dir}"
-
-            cmd="\\\${MPIEXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
-
-            \\\${MPILAUNCH} \\\${cmd}
-
-            errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
-
-            if [ "\\\{errflg}" == "1" ]; then
-
-               echo "Failed to produce stage \\\${stage} outputs in environment \\\${dir} \\\${mdouts[@]} \\\${mdrsts[@]}"
-
-               echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
-
-               exit 1
-
-            fi
-
-         else
-
-            echo "Skipping \\\$stage in environment \\\${dir} because it is finished"
-
-         fi
+         exit 1
 
       fi
 
-      cd ../
+   else
 
-   done
+      echo "Skipping \\\$stage in environment vac because it is finished"
 
-   wait
+   fi
+
 
 done
 

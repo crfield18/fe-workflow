@@ -523,9 +523,9 @@ EOF_runalltrials
 								    mkdir -p t${t}
 								    if [ -e inputs/preTI.groupfile ]; then
 									if [ "${ticalc}" == "asfe" ]; then
-									    sed "s/-c current/-c equil/g" inputs/preTI.groupfile > inputs/t${t}_preTI.groupfile
+									    sed -e "s/-c current/-c equil/g" -e "s/current/t${t}/g" -e 's/-ref.*$//' inputs/preTI.groupfile > inputs/t${t}_preTI.groupfile
 									else
-									    sed "s/current/t${t}/g" inputs/preTI.groupfile > inputs/t${t}_preTI.groupfile
+									    sed -e "s/current/t${t}/g"  -e 's/-ref.*$//' inputs/preTI.groupfile > inputs/t${t}_preTI.groupfile
 									fi
 								    fi
                                                                     if [ "${equil_type}" == "2" ]; then
