@@ -55,6 +55,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     p = parmed.load_file(args.pdb)
+    print(f"renameinpdb.py is working on pdb {args.pdb}")
     for res in p.residues:
         if res.name == args.iname:
             res.name = args.tname
