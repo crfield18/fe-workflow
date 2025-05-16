@@ -1491,7 +1491,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
       if [ "\\\${errflg}" == "1" ]; then
 
-         echo "Running stage \\\${stage} in environment \\\${dir}"
+         echo "Running stage \\\${stage} in environment aq"
 
          if [ "\\\${stage}" == "preTI" ]; then
             cmd="\\\${MPIEXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
@@ -1505,7 +1505,7 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 
          if [ "\\\${errflg}" == "1" ]; then
  
-            echo "Failed to produce stage \\\${stage} outputs in environment \\\${dir} \\\${mdouts[@]} \\\${mdrsts[@]}"
+            echo "Failed to produce stage \\\${stage} outputs in environment aq \\\${mdouts[@]} \\\${mdrsts[@]}"
 
             echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
             echo "Current directory: \\\${PWD}"
@@ -1746,7 +1746,7 @@ EOFP
 
    errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
 
-   if [ "\\\{errflg}" == "1" ]; then
+   if [ "\\\${errflg}" == "1" ]; then
 
       echo "Running stage \\\${stage} in environment vac"
 
@@ -1756,7 +1756,7 @@ EOFP
 
       errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
 
-      if [ "\\\{errflg}" == "1" ]; then
+      if [ "\\\${errflg}" == "1" ]; then
 
          echo "Failed to produce stage \\\${stage} outputs in environment vac \\\${mdouts[@]} \\\${mdrsts[@]}"
 
