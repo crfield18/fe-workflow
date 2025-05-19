@@ -341,6 +341,8 @@ EOFN
 		# ensure path_to_input is absolute and check if input directories are present
 		if [[ "${path_to_input}" != /* ]]; then path_to_input=${path}"/"${path_to_input}; fi
 
+		if [[ -z "${autoimage}" ]]; then autoimage="true"; fi
+
 		# check if ntwx is set, if not initialize to nstlimti
 		if [ -z "${ntwx}" ]; then ntwx=0; fi
 		if [ -z "${ntwx_equil}" ]; then ntwx_equil=0; fi

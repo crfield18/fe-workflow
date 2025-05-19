@@ -46,7 +46,7 @@ round_to_nearest_highest_even() {
 
 function writetemplate_rbfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes ntwx_ep combine_aq)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR equil_type source_header max_dt nnodes ntwx_ep combine_aq autoimage)
         local i=0
 		for value in "$@"; do
 			if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -1978,12 +1978,12 @@ for stage in \\\${eqstage[@]}; do
 				lam=\\\${endstates[0]}
 				echo "Running \\\$stage for lambda \\\${lam}..."
 				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7"
-				cat <<EOF2 > center.in"
 				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7
+				if [ "${autoimage}" == "true" ]; then 
 				cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -1993,6 +1993,7 @@ EOF2
 				cpptraj < center.in
 				sleep 1
 				mv equil/\\\${lam}_\\\${stage}_centered.rst7 equil/\\\${lam}_\\\${stage}.rst7
+			    fi
 
 		elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
 				# check if pmemd.cuda is present
@@ -2028,11 +2029,11 @@ EOF2
 			echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7"
 			\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7
 			sleep 1
-
+			if [ "${autoimage}" == "true" ]; then
 						cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2041,6 +2042,7 @@ EOF2
 						cpptraj < center.in
 						sleep 1
 						mv equil/\\\${lam}_\\\${stage}_centered.rst7 equil/\\\${lam}_\\\${stage}.rst7
+			fi
 				done
 		laststage=eqP0TI
 		else
@@ -2054,10 +2056,11 @@ EOF2
 				\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/equil_\\\${stage}.groupfile
 
 				for lam in \\\${lams[@]};do
+				if [ "${autoimage}" == "true" ]; then
 						cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2066,6 +2069,7 @@ EOF2
 						cpptraj < center.in
 						sleep 1
 						mv equil/\\\${lam}_\\\${stage}_centered.rst7 equil/\\\${lam}_\\\${stage}.rst7
+				fi
 				done
 		fi
 done
@@ -2142,17 +2146,18 @@ for stage in \\\${eqstage[@]}; do
 						# check if pmemd.cuda is present
 						if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
-						export LAUNCH="srun"
-						export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+						export LAUNCH="mpirun -np \\\${#lams[@]}"
+						export EXE=\\\${AMBERHOME}/bin/pmemd.MPI
 
 						for lam in \\\${endstates[@]};do
 								echo "Running \\\$stage for lambda \\\${lam}..."
-								echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7"
-								\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7
+								echo "\\\${LAUNCH} \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7"
+								\\\${LAUNCH} \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7
+								if [ "${autoimage}" == "true" ]; then
 								cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2162,6 +2167,7 @@ EOF2
 								cpptraj < center.in
 								sleep 1
 								mv equil/\\\${lam}_\\\${stage}_centered.rst7 equil/\\\${lam}_\\\${stage}.rst7
+								fi
 						done
 
 				else
@@ -2175,10 +2181,11 @@ EOF2
 						\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/equil_\\\${stage}.groupfile
 
 						for lam in \\\${endstates[@]};do
+						if [ "${autoimage}" == "true" ]; then
 								cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2187,6 +2194,7 @@ EOF2
 								cpptraj < center.in
 								sleep 1
 								mv equil/\\\${lam}_\\\${stage}_centered.rst7 equil/\\\${lam}_\\\${stage}.rst7
+						fi
 						done
 				fi
 
@@ -2239,11 +2247,11 @@ EOF2
 				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7"
 				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7
 				sleep 1
-
+				if [ "${autoimage}" == "true" ]; then
 								cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2253,6 +2261,7 @@ EOF2
 							cpptraj < center.in
 							sleep 1
 							mv equil/\\\${lam}_\\\${stage}_centered.rst7 equil/\\\${lam}_\\\${stage}.rst7
+				fi
 					done
 			laststage=eqP0TI
 		done
@@ -2267,10 +2276,11 @@ EOF2
 				\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/equil_\\\${stage}.groupfile
 
 				for lam in \\\${lams[@]};do
+				if [ "${autoimage}" == "true" ]; then
 						cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2279,6 +2289,7 @@ EOF2
 						cpptraj < center.in
 						sleep 1
 						mv equil/\\\${lam}_\\\${stage}_centered.rst7 equil/\\\${lam}_\\\${stage}.rst7
+				fi
 				done
 		fi
 
@@ -2359,10 +2370,11 @@ echo "mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/
 mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile
 
 for lam in \\\${lams[@]};do
+if [ "${autoimage}" == "true" ]; then
 		cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_preTI.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout t\\\${trial}/\\\${lam}_preTI_centered.rst7
 go
 quit
@@ -2371,6 +2383,7 @@ EOF2
 		cpptraj < center.in
 		sleep 1
 		mv t\\\${trial}/\\\${lam}_preTI_centered.rst7 t\\\${trial}/\\\${lam}_preTI.rst7
+fi
 done
 
 
@@ -2471,17 +2484,18 @@ for stage in \\\${eqstage[@]}; do
 						# check if pmemd.cuda is present
 						if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
 
-						export LAUNCH="srun"
-						export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+						export LAUNCH="mpirun -np \\\${#lams[@]} "
+						export EXE=\\\${AMBERHOME}/bin/pmemd.MPI
 
 						for lam in \\\${endstates[@]};do
 								echo "Running \\\$stage for lambda \\\${lam}..."
-								echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
-								\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+								echo "\\\${LAUNCH} \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+								\\\${LAUNCH} \\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
+								if [ "${autoimage}" == "true" ]; then
 								cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2491,6 +2505,7 @@ EOF2
 								cpptraj < center.in
 								sleep 1
 								mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+								fi
 						done
 
 				else
@@ -2504,10 +2519,11 @@ EOF2
 						\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile
 
 						for lam in \\\${endstates[@]};do
+						if [ "${autoimage}" == "true" ]; then
 								cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2516,6 +2532,7 @@ EOF2
 								cpptraj < center.in
 								sleep 1
 								mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+						fi
 						done
 				fi
 
@@ -2568,11 +2585,11 @@ EOF2
 				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
 				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7
 				sleep 1
-
+				if [ "${autoimage}" == "true" ]; then
 								cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2582,6 +2599,7 @@ EOF2
 							cpptraj < center.in
 							sleep 1
 							mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+				fi
 					done
 			laststage=eqP0TI
 		done
@@ -2596,10 +2614,11 @@ EOF2
 				\\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile
 
 				for lam in \\\${lams[@]};do
+				if [ "${autoimage}" == "true" ]; then
 						cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
@@ -2608,6 +2627,7 @@ EOF2
 						cpptraj < center.in
 						sleep 1
 						mv equil\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 equil\\\${trial}/\\\${lam}_\\\${stage}.rst7
+				fi 
 				done
 		fi
 
@@ -2638,10 +2658,11 @@ echo "mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/
 mpirun -np \\\${#lams[@]} \\\${EXE}  -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_preTI.groupfile
 
 for lam in \\\${lams[@]};do
+if [ "${autoimage}" == "true" ]; then
 		cat <<EOF2 > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_preTI.rst7
-autoimage
+autoimage !:WAT,Na+,Cl-,NA+,CL-
 trajout t\\\${trial}/\\\${lam}_preTI_centered.rst7
 go
 quit
@@ -2650,6 +2671,7 @@ EOF2
 		cpptraj < center.in
 		sleep 1
 		mv t\\\${trial}/\\\${lam}_preTI_centered.rst7 t\\\${trial}/\\\${lam}_preTI.rst7
+fi
 done
 
 echo "mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
