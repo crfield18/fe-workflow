@@ -551,6 +551,9 @@ ig              = -1
 ifsc            = 1
 icfe            = 1
 
+ntr		= 1
+restraint_wt	= 5
+restraintmask 	= '!:WAT,Cl-,K+,Na+ & !@H='
 
 clambda         = \${lam}
 timask1         = ${TIMASK1}
