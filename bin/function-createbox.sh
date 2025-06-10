@@ -372,7 +372,9 @@ EOF
                 res_list=($(seq ${ldel} -1 ${fdel}))
                 # Shuffle the list and pick 'excess' number of residues
                 res_to_remove=($(printf "%s\n" "${res_list[@]}" | shuf -n ${excess}))
+                echo "${#res_to_remove[@]} residues to remove: ${res_to_remove[@]}"
                 for res in "${res_to_remove[@]}"; do
+                        echo "${res}" # Changed from print(res) to echo "${res}"
                         echo "remove m m.${res}" >> tleap.in
                 done
         	#for res in $(seq ${ldel} -1 ${fdel}); do
