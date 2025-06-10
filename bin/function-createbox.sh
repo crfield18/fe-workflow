@@ -367,10 +367,11 @@ m = loadpdb tmp.pdb
 setbox m centers
 EOF
 
-    	if [ ! -z "${fdel}" -a ! -z "${ldel}" -a ! [ -z "${excess}" ] ]; then
+    	if [ ! -z "${fdel}" -a ! -z "${ldel}" -a !  -z "${excess}"  ]; then
                 # Get list of residue numbers between ldel and fdel (inclusive)
                 res_list=($(seq ${ldel} -1 ${fdel}))
                 # Shuffle the list and pick 'excess' number of residues
+                echo "${excess}"
                 res_to_remove=($(shuf -n ${excess} -e "${res_list[@]}"))
                 echo "${#res_to_remove[@]} residues to remove: ${res_to_remove[@]}"
                 for res in "${res_to_remove[@]}"; do
@@ -433,7 +434,7 @@ function fix_solvent {
         if [ ${excess_waters} -gt 0 ]; then
                 lastdel=$(calctotalresinparm "out.parm7")
                 firstdel=$(( ${lastdel} - ${current_nwat} + 1 ))
-		RunTLEAP "${pff}" "${lff}" "${wm}" "${inpfile}" "${lig1}" "${numnonstd}" "${lig2}" "${mdboxshape}" "${rbuf}" "${load}" "${nsod}" "${ncl}" "${boxbuild}" "${s}" "${firstdel}" "${lastdel}" "{excess_waters}"
+		RunTLEAP "${pff}" "${lff}" "${wm}" "${inpfile}" "${lig1}" "${numnonstd}" "${lig2}" "${mdboxshape}" "${rbuf}" "${load}" "${nsod}" "${ncl}" "${boxbuild}" "${s}" "${firstdel}" "${lastdel}" "${excess_waters}"
         fi
 
         current_nwat=$(calcwaterinparm "out.parm7")
