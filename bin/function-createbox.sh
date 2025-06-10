@@ -371,11 +371,9 @@ EOF
                 # Get list of residue numbers between ldel and fdel (inclusive)
                 res_list=($(seq ${ldel} -1 ${fdel}))
                 # Shuffle the list and pick 'excess' number of residues
-                echo "${excess}"
                 res_to_remove=($(shuf -n ${excess} -e "${res_list[@]}"))
                 echo "${#res_to_remove[@]} residues to remove: ${res_to_remove[@]}"
                 for res in "${res_to_remove[@]}"; do
-                        echo "${res}" # Changed from print(res) to echo "${res}"
                         echo "remove m m.${res}" >> tleap.in
                 done
         	#for res in $(seq ${ldel} -1 ${fdel}); do

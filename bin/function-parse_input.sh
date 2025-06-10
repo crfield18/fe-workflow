@@ -276,6 +276,7 @@ EOFN
 		fi
 
 
+
 #        if [ "${gti_add_sc}" -lt 1 ] || [ "${gti_add_sc}" -gt 5 ] ; then printf "\n\nAcceptable values for \"gti_add_sc\" are 1, 2(Recommended), 3, 4, 5 and 25\n\n" && exit 0; fi
 	case ${gti_add_sc} in
 		1|2|3|4|5|25)
@@ -315,7 +316,10 @@ EOFN
 	if [ "${bidirection_aq}" != "true" ] && [ "${bidirection_aq}" != "false" ]; then printf "\n\n\"bidirection_aq\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 	if [ "${bidirection_com}" != "true" ] && [ "${bidirection_com}" != "false" ]; then printf "\n\n\"bidirection_com\" can either be \"true\" or \"false\" \n\n" && exit 0; fi 
 
-
+	if [ "${mdboxshape}" == "orthorhombic" ] || [ "${mdboxshape}" == "cubic" ]; then
+		mdboxshape="cubic"
+		printf "\n\n\"mdboxshape\" is set to orthorhombic (parameter set to cubic). \n"
+	fi
 	########################
 	# parse intended transformations and identify unique ligands
 	if [ "${ticalc}" == "rbfe" ] || [ "${ticalc}" == "rsfe" ]; then
