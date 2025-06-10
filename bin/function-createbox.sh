@@ -357,6 +357,7 @@ function RunTLEAP
 
         if ! [ -z ${1+x} ]; then local fdel=${1}; fi
         if ! [ -z ${2+x} ]; then local ldel=${2}; fi
+        if ! [ -z ${3+x} ]; then local excess=${3}; fi
 
     	write_tleap_merged_head "${pff}" "${lff}" "${wm}" "${inpfile}" "${lig1}" "${numnonstd}" "${lig2}" "${mdboxshape}" "${rbuf}" "${load}" "${ns}" "${nc}" "${boxbuild}" "${s}"
     	cat <<EOF >> tleap.in
@@ -366,12 +367,20 @@ m = loadpdb tmp.pdb
 setbox m centers
 EOF
 
-    	if [ ! -z "${fdel}" -a ! -z "${ldel}" ]; then
-        	for res in $(seq ${ldel} -1 ${fdel}); do
-            		echo "remove m m.${res}" >> tleap.in
-        	done
+    	if [ ! -z "${fdel}" -a ! -z "${ldel}" -a ! [ -z "${excess}" ] ]; then
+                # Get list of residue numbers between ldel and fdel (inclusive)
+                res_list=($(seq ${ldel} -1 ${fdel}))
+                # Shuffle the list and pick 'excess' number of residues
+                res_to_remove=($(printf "%s\n" "${res_list[@]}" | shuf -n ${excess}))
+                for res in "${res_to_remove[@]}"; do
+                        echo "remove m m.${res}" >> tleap.in
+                done
+        	#for res in $(seq ${ldel} -1 ${fdel}); do
+            	#	echo "remove m m.${res}" >> tleap.in
+        	#done
+
     	fi
-	unset fdel ; unset ldel
+	unset fdel ; unset ldel ; unset excess
 
     	cat <<EOF >> tleap.in
 saveamberparm m out.parm7 out.rst7
@@ -421,8 +430,8 @@ function fix_solvent {
         done
         if [ ${excess_waters} -gt 0 ]; then
                 lastdel=$(calctotalresinparm "out.parm7")
-                firstdel=$(( ${lastdel} - ${excess_waters} + 1 ))
-		RunTLEAP "${pff}" "${lff}" "${wm}" "${inpfile}" "${lig1}" "${numnonstd}" "${lig2}" "${mdboxshape}" "${rbuf}" "${load}" "${nsod}" "${ncl}" "${boxbuild}" "${s}" "${firstdel}" "${lastdel}"
+                firstdel=$(( ${lastdel} - ${current_nwat} + 1 ))
+		RunTLEAP "${pff}" "${lff}" "${wm}" "${inpfile}" "${lig1}" "${numnonstd}" "${lig2}" "${mdboxshape}" "${rbuf}" "${load}" "${nsod}" "${ncl}" "${boxbuild}" "${s}" "${firstdel}" "${lastdel}" "{excess_waters}"
         fi
 
         current_nwat=$(calcwaterinparm "out.parm7")
