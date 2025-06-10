@@ -3,7 +3,7 @@
 #################################
 function writetemplate_rsfe
 {
-        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate)
+        local varlist=(CUTOFF REPEX NSTLIMTI NUMEXCHGTI TIMASK1 TIMASK2 SCMASK1 SCMASK2 NOSHAKEMASK SCALPHA SCBETA GTISC GTIBETA GTICUT GTISCON GTISCOFF GTILAMSCH GTISCELE GTISCVDW GTISCCUT GTIEXPELE GTIEXPVDW trans s twostate NTWX_EQUIL NTWX NTWR NTPR source_header max_dt)
         local i=0
         for value in "$@"; do
             if [[ "${varlist[$i]}" == "TIMASK1" || "${varlist[$i]}" == "TIMASK2" || "${varlist[$i]}" == "SCMASK1" || "${varlist[$i]}" == "SCMASK2" ]]; then
@@ -23,7 +23,12 @@ function writetemplate_rsfe
                 parmbase=unisc
                 rstbase=(stateA stateA)
                 endstates=(0.00000000)
-		eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI preTI)
+		#
+		# Remove preTI from the equilibration stages
+		# It will be performed in each production directory t1/ t2/ etc.
+		#
+		eqstagelist=(init min1 min2 eqpre1P0 eqpre2P0 eqP0 eqV eqP eqA minTI eqpre1P0TI eqpre2P0TI eqP0TI eqATI)
+		
 	fi
 	preminTIstage="eqA"
 
@@ -86,6 +91,7 @@ scmask2         = ${SCMASK2}
 
 gti_syn_mass	= 0
 /
+
 EOF
 	cat<<EOF>inputs/\${min2}.mdin
 Minimization of the entire molecular system
@@ -111,6 +117,7 @@ scmask2         = ${SCMASK2}
 
 gti_syn_mass    = 0
 /
+
 EOF
         cat<<EOF>inputs/\${eqpre1P0}.mdin
 &cntrl
@@ -122,7 +129,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -169,6 +176,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
 EOF
         cat<<EOF>inputs/\${eqpre2P0}.mdin
 &cntrl
@@ -180,7 +188,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -228,6 +236,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
 EOF
         cat<<EOF>inputs/\${eqP0}.mdin
 &cntrl
@@ -239,7 +248,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -287,6 +296,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass	= 0
 /
+
 EOF
         cat<<EOF>inputs/\${eqNTP4}.mdin.template
 &cntrl
@@ -298,7 +308,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -350,6 +360,7 @@ gti_syn_mass    = 0
    target_n=500,
 
 /
+
 EOF
         cat<<EOF>inputs/\${eqV}.mdin
 &cntrl
@@ -361,7 +372,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -408,6 +419,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
 EOF
 
         cat<<EOF>inputs/\${eqP}.mdin
@@ -420,7 +432,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -468,6 +480,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
 EOF
 
         cat<<EOF>inputs/\${eqA}.mdin
@@ -480,7 +493,7 @@ ntx             = 5
 ntxo            = 1
 ntc             = 2 
 ntf             = 1 
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -592,6 +605,7 @@ gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 
 /
+
 EOF
         cat<<EOF>inputs/\${eqpre1P0TI}.mdin
 &cntrl
@@ -603,7 +617,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -647,6 +661,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
 EOF
         cat<<EOF>inputs/\${eqpre2P0TI}.mdin
 &cntrl
@@ -658,7 +673,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -702,6 +717,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
 EOF
         cat<<EOF>inputs/\${eqP0TI}.mdin
 &cntrl
@@ -713,7 +729,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -757,6 +773,7 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
 EOF
         cat << EOF > inputs/\${eqATI}.mdin
 &cntrl
@@ -768,7 +785,7 @@ ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -816,24 +833,27 @@ gti_syn_mass    = 0
  TYPE='TEMP0',
  ISTEP1=0, ISTEP2=298000,
  VALUE1=0.0, VALUE2=298.0,
+/
 &wt
  TYPE='TEMP0',
  ISTEP1=298001, ISTEP2=500000,
  VALUE1=298.0, VALUE2=298.0,
 /
 &wt TYPE='END' /
+
+
 EOF
 	cat << EOF > inputs/\${preTI}.mdin
 &cntrl
 imin            = 0
 nstlim          = 2000000
-dt              = 0.001
+dt              = ${max_dt}
 irest           = 0
 ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = 10000
+ntwx            = ${NTWX_EQUIL}
 ntwr            = 5000
 ntpr            = 1000
 cut             = ${CUTOFF}
@@ -877,21 +897,23 @@ gti_ele_exp     = ${GTIEXPELE}
 gti_vdw_exp     = ${GTIEXPVDW}
 gti_syn_mass    = 0
 /
+
+
 EOF
         cat<< EOF >inputs/\${ti}.mdin
 &cntrl
 imin            = 0
 nstlim          = ${NSTLIMTI}
 numexchg        = ${NUMEXCHGTI}
-dt              = 0.001
+dt              = ${max_dt}
 irest           = 0
 ntx             = 1
 ntxo            = 1
 ntc             = 2
 ntf             = 1
-ntwx            = ${NSTLIMTI}
-ntwr            = ${NSTLIMTI}
-ntpr            = ${NSTLIMTI}
+ntwx            = ${NTWX}
+ntwr            = ${NTWR}
+ntpr            = ${NTPR}
 cut             = ${CUTOFF}
 iwrap           = 1
 
@@ -911,6 +933,8 @@ icfe            = 1
 ifmbar          = 1
 bar_intervall   = ${NSTLIMTI}
 mbar_states     = \${#lams[@]}
+
+
 EOF
 ilam=0
 for l in \${lams[@]}; do
@@ -946,6 +970,8 @@ gremd_acyc      = 1
 /
  &ewald
  /
+
+
 EOF
 
         cat<< EOF >inputs/\${lam}_analyze.mdin
@@ -981,6 +1007,8 @@ icfe            = 1
 ifmbar          = 1
 bar_intervall   = 1
 mbar_states     = \${#lams[@]}
+
+
 EOF
 ilam=0
 for l in \${lams[@]}; do
@@ -1082,10 +1110,14 @@ EOF
 
 done
 
+
+
+
 # slurm to submit all trials
 ###############
 ###############
 if [ "\${twostate}" != true ]; then
+
 	cat<<EOF > run_alltrials.slurm
 #!/usr/bin/env bash
 #SBATCH --job-name="eq_${trans}.slurm"
@@ -1105,132 +1137,401 @@ lams=(\${lams[@]})
 eqstage=(${eqstagelist[*]})
 preminTIstage=\${preminTIstage}
 
+source ${source_header}
 
-# check if AMBERHOME is set
+
+SEREXE=pmemd.cuda
+
+MPIEXE=pmemd.cuda_SPFP.MPI
+
+SERLAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
+
+MPILAUNCH="mpirun -np \\\${#lams[@]}"
+
+
 if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
-# check if cpptraj is present
+
 if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
 
-EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+if ! command -v \\\${SEREXE} &> /dev/null; then echo "\\\${SEREXE} is missing." && exit 0; fi
+
+if ! command -v \\\${MPIEXE} &> /dev/null; then echo "\\\${MPIEXE} is missing." && exit 0; fi
+
+
+function recenterrst()
+{
+   local parm="\\\$1"
+   local rst="\\\$2"
+   local boxline=""
+   if [ \\\$# == 8 ]; then
+       boxline="box x \\\$3 y \\\$4 z \\\$5 alpha \\\$6 beta \\\$7 gamma \\\$8"
+   fi
+   fext="\\\${rst##*.}"
+   fname="\\\${rst%.*}"
+
+   cat <<EOFF > center.in
+parm \\\${parm}
+trajin \\\${rst}
+\\\${boxline}
+autoimage
+trajout \\\${fname}_centered.\\\${fext}
+go
+quit
+EOFF
+
+   cpptraj < center.in
+   sleep 1
+   mv \\\${fname}_centered.\\\${fext} \\\${rst}
+}
+
+
+function checkifneeded()
+{
+   local fnames="\\\$@"
+   local rval=0
+   for fname in \\\${fnames[@]}; do
+      local ext="\\\${fname##*.}"
+      if [ -s "\\\${fname}" ]; then
+         if [ "\\\${ext}" == "mdout" ]; then
+            if grep -q "   5.  TIMINGS" "\\\${fname}"; then
+               continue
+            else
+               rval=1
+               break
+            fi
+         fi
+      else
+         rval=1
+         break
+      fi
+   done
+   echo \\\${rval}
+}
+
+
+function makefnames()
+{
+   for lam in \\\${@:3}; do
+      echo "\\\$1/\\\${lam}_\\\$2"
+   done
+}
+
 
 for trial in \\\$(seq 1 1 ${ntrials}); do
 	
-	cd \\\${top}
-	if [ ! -d t\\\${trial} ];then mkdir t\\\${trial}; fi
+   cd \\\${top}
 
-	count=-1; alllams=0
-	for stage in \\\${eqstage[@]}; do
-        	count=\\\$((\\\$count+1))
-        	lastcount=\\\$((\\\$count-1))
-		if [ "\\\${stage}" == "init" ] || [ "\\\${stage}" == "eqpre1P0TI" ] || [ "\\\${stage}" == "eqpre2P0TI" ] || [ "\\\${stage}" == "eqP0TI" ]; then continue; fi
-        	laststage=\\\${eqstage[\\\${lastcount}]}
+   if [ ! -d equil\\\${trial} ]; then mkdir equil\\\${trial}; fi
 
-		if [ "\\\${stage}" == "minTI" ];then alllams=1; fi
+   count=-1; alllams=0
 
-		
-        	if [ \\\${alllams} -eq 0 ];then
+   for stage in \\\${eqstage[@]}; do
 
+   count=\\\$((\\\$count+1))
 
-			# check if pmemd.cuda is present
-                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
-			export LAUNCH="srun"
-			export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
+   lastcount=\\\$((\\\$count-1))
 
-                	lam=\${endstates[0]}
-                	echo "Running \\\$stage for lambda \\\${lam}..."
-                	\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
-                	cat <<EOF2 > center.in
-parm \\\${top}/unisc.parm7
-trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
-autoimage
-trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
-go
-quit
-EOF2
-                	# check if cpptraj is present
-                	if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
-                	cpptraj < center.in
-                	sleep 1
-                	mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
+   if [ "\\\${stage}" == "init" ] || [ "\\\${stage}" == "eqpre1P0TI" ] || [ "\\\${stage}" == "eqpre2P0TI" ] || [ "\\\${stage}" == "eqP0TI" ]; then continue; fi
 
-		elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
-			# check if pmemd.cuda is present
-			if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda &> /dev/null; then echo "pmemd.cuda is missing." && exit 0; fi
-			export LAUNCH="srun"
-			export EXE=\\\${AMBERHOME}/bin/pmemd.cuda
-			for i in \\\${!lams[@]}; do
-				lam=\\\${lams[\\\$i]}
-				if [ "\\\${i}" -eq 0 ]; then
-					init=\\\${endstates[0]}_\\\${preminTIstage}.rst7
- 				else
-					init=\\\${lams[\\\$((\\\$i-1))]}_eqP0TI.rst7
-				fi			
+      laststage=\\\${eqstage[\\\${lastcount}]}
 
-				echo "Running \\\$stage for lambda \\\${lam}..."
+      if [ "\\\${stage}" == "minTI" ];then alllams=1; fi
 
-				stage=minTI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${init}
-                                sleep 1
+      if [ \\\${alllams} -eq 0 ];then
 
-                                laststage=minTI; stage=eqpre1P0TI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
-                                sleep 1
+         lam=\${endstates[0]}
 
-                                laststage=eqpre1P0TI; stage=eqpre2P0TI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
-                                sleep 1
+         errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
 
-                                laststage=eqpre2P0TI; stage=eqP0TI
-                                \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
-                                sleep 1
+         if [ "\\\${errflg}" == "1" ]; then
 
-                                cat <<EOF2 > center.in
-parm \\\${top}/unisc.parm7
-trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
-autoimage
-trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
-go
-quit
-EOF2
-                                if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
-                                cpptraj < center.in
-                                sleep 1
-                                mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
-                        done
-                        laststage=eqP0TI
-		else
-                        # check if pmemd.cuda_SPFP.MPI is present
-                        if ! command -v \\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI &> /dev/null; then echo "pmemd.cuda_SPFP.MPI is missing." && exit 0; fi
+            echo "Running \\\$stage for lambda \\\${lam}..."
 
-                        export LAUNCH="mpirun -np \\\${#lams[@]}"
-                        export EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
-                        export MV2_ENABLE_AFFINITY=0
-                        \\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
+            cmd="\\\${SEREXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+                    
+            \\\${cmd}
 
-			for lam in \\\${lams[@]};do
-				cat <<EOF2 > center.in
-parm \\\${top}/unisc.parm7
-trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
-autoimage
-trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
-go
-quit
-EOF2
-                                if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
-                                cpptraj < center.in
-                                sleep 1
-                                mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7
-                        done
-		fi
-	done
+            errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
 
-        ### # run production
-        ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
-        ### echo "running replica ti"
-        ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+            if [ "\\\${errflg}" == "1" ]; then
+
+               echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+               echo "Command failed: \\\${cmd}"
+               echo "Current directory: \\\${PWD}"
+
+               exit 1
+
+            fi
+
+         else
+
+            echo "Skipping \\\$stage for lambda \\\${lam} because it is finished"
+
+         fi
+
+	 recenterrst "\\\${top}/unisc.parm7" "equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+      elif [ \\\${alllams} -eq 1 ] && [ "\\\${stage}" == "minTI" ];then
+			
+         for i in \\\${!lams[@]}; do
+
+            lam=\\\${lams[\\\$i]}
+
+            if [ "\\\${i}" -eq 0 ]; then
+
+               init=\\\${endstates[0]}_\\\${preminTIstage}.rst7
+
+            else
+
+               init=\\\${lams[\\\$((\\\$i-1))]}_eqP0TI.rst7
+
+            fi			
 
 
-	cat << EOFP > extract.py
+            stage=minTI
+
+            errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+            if [ "\\\${errflg}" == "1" ]; then
+
+               echo "Running \\\$stage for lambda \\\${lam}..."
+
+               cmd="\\\${SEREXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${init} -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${init}"
+                       
+               \\\${cmd}
+
+               sleep 1
+
+               errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+               if [ "\\\${errflg}" == "1" ]; then
+
+                  echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+                  echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
+
+                  exit 1
+
+               fi
+  
+            else
+ 
+               echo "Skipping \\\$stage for lambda \\\${lam} because it is finished"
+
+            fi
+
+            laststage=minTI; stage=eqpre1P0TI
+
+            errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+            if [ "\\\${errflg}" == "1" ]; then
+
+               echo "Running \\\$stage for lambda \\\${lam}..."
+
+               cmd="\\\${SEREXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+                       
+               \\\${cmd}
+
+               sleep 1
+
+               errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+               if [ "\\\${errflg}" == "1" ]; then
+
+                  echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+                  echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
+
+                  exit 1
+
+               fi
+  
+            else
+
+               echo "Skipping \\\$stage for lambda \\\${lam} because it is finished"
+
+            fi
+
+            laststage=eqpre1P0TI; stage=eqpre2P0TI
+
+            errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+            if [ "\\\${errflg}" == "1" ]; then
+
+               echo "Running \\\$stage for lambda \\\${lam}..."
+
+               cmd="\\\${SEREXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+
+               \\\${cmd}
+
+               sleep 1
+
+               errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+               if [ "\\\${errflg}" == "1" ]; then
+
+                  echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+                  echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
+
+                  exit 1
+
+               fi
+
+            else
+
+               echo "Skipping \\\$stage for lambda \\\${lam} because it is finished"
+
+            fi
+
+            laststage=eqpre2P0TI; stage=eqP0TI
+
+            errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+            if [ "\\\${errflg}" == "1" ]; then
+
+               echo "Running \\\$stage for lambda \\\${lam}..."
+
+               cmd="\\\${SEREXE} -O -p \\\${top}/unisc.parm7 -c equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil\\\${trial}/\\\${lam}_\\\${stage}.mdout -r equil\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref equil\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+
+               \\\${cmd}
+
+               sleep 1
+
+               errflg=\\\$(checkifneeded equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+               if [ "\\\${errflg}" == "1" ]; then
+
+                  echo "Failed to produce equil\\\${trial}/\\\${lam}_\\\${stage}.mdout equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+                  echo "Command failed: \\\${cmd}"
+                  echo "Current directory: \\\${PWD}"
+
+                  exit 1
+
+               fi
+
+            else
+
+               echo "Skipping \\\$stage for lambda \\\${lam} because it is finished"
+
+            fi
+
+            recenterrst "\\\${top}/unisc.parm7" "equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+         done
+
+         laststage=eqP0TI
+
+      else
+
+         export MV2_ENABLE_AFFINITY=0
+
+         mdouts=(\\\$(makefnames "equil\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
+
+         mdrsts=(\\\$(makefnames "equil\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
+
+         errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+         if [ "\\\${errflg}" == "1" ]; then
+
+            cmd="\\\${MPIEXE} -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_\\\${stage}.groupfile"
+
+            echo "Running \\\${MPILAUNCH} \\\${cmd}"
+
+            \\\${MPILAUNCH} \\\${cmd}
+
+            errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+            if [ "\\\${errflg}" == "1" ]; then
+ 
+               echo "Failed to produce \\\${mdouts[@]} \\\${mdrsts[@]}"
+
+               echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
+               echo "Current directory: \\\${PWD}"
+
+               exit 1
+
+            fi
+
+         else
+
+            echo "Skipping \\\$stage because it is finished"
+
+         fi
+
+         for lam in \\\${lams[@]}; do
+
+            recenterrst "\\\${top}/unisc.parm7" "equil\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+         done
+
+      fi
+
+   done
+
+   ### # run production
+   ### EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
+   ### echo "running replica ti"
+   ### mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/equil\\\${trial}_ti.groupfile
+
+
+
+   for stage in preTI ti; do
+
+      mdouts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
+
+      mdrsts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
+
+      errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+      if [ "\\\${errflg}" == "1" ]; then
+
+         echo "Running stage \\\${stage} in environment aq"
+
+         if [ "\\\${stage}" == "preTI" ]; then
+            cmd="\\\${MPIEXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
+         else
+            cmd="\\\${MPIEXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile"
+         fi
+
+         \\\${MPILAUNCH} \\\${cmd}
+
+         errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+         if [ "\\\${errflg}" == "1" ]; then
+ 
+            echo "Failed to produce stage \\\${stage} outputs in environment aq \\\${mdouts[@]} \\\${mdrsts[@]}"
+
+            echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
+            echo "Current directory: \\\${PWD}"
+
+            exit 1
+
+         fi
+
+      else
+
+         echo "Skipping \\\$stage in environment aq because it is finished"
+
+      fi
+
+      for lam in \\\${lams[@]}; do
+
+         recenterrst "unisc.parm7" "t\\\${trial}/\\\${lam}_\\\${stage}.rst7"
+
+      done
+
+   done
+
+
+
+
+   cat << EOFP > extract.py
 #!/usr/bin/env python3
 
 def OpenParm( fname, xyz=None ):
@@ -1347,79 +1648,138 @@ if __name__ == "__main__":
             SaveParmRst(q, args.output)
 
 EOFP
-	chmod a+x extract.py
 
-	mkdir -p ../vac/t\\\${trial} ../vac/inputs
-	for lam in \\\${lams[@]};do
-        	./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
-        	sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
-        	sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
 
-	done
-	cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
+   chmod a+x extract.py
 
-	cd ../vac
-        	cd t\\\${trial}
-                	mv 0.00000000_init.parm7 ../unisc.parm7
-                	rm *.parm7
-        	cd ../
+   for vacdir in "../vac/t\\\${trial}" "../vac/inputs"; do
 
-                vacdir=\\\${PWD}
-        	stage=preTI; laststage=init
-        	EXE=\\\${AMBERHOME}/bin/pmemd.cuda
-        	LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-        	for lam in \\\${lams[@]};do
-                	\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
-        	done
-        	wait
-                boxsize=(\\\$( tail -1 t\\\${trial}/\\\${lams[0]}_init.rst7 ))
-                for lam in \\\${lams[@]};do
-		        cat <<EOFV > center.in
-parm \\\${vacdir}/unisc.parm7
-trajin t\\\${trial}/\\\${lam}_preTI.rst7
-box x \\\${boxsize[0]} y \\\${boxsize[1]} z \\\${boxsize[2]} alpha \\\${boxsize[3]} beta \\\${boxsize[4]} gamma \\\${boxsize[5]}
-autoimage
-trajout t\\\${trial}/\\\${lam}_preTI_centered.rst7
-go
-quit
-EOFV
-			if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
-                        cpptraj < center.in
-                        sleep 1
-			mv t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7 t\\\${trial}/\\\${lam}_\\\${stage}.rst7	
-		done
-	cd ../
+      if [ ! -d "\\\${vacdir}" ]; then
 
-	for dir in aq vac; do
-		cd \\\${dir}
-			stage=ti; laststage=preTI
+         echo "Creating directory \\\${vacdir}"
 
-			if [ \\\${dir} == "aq" ]; then
-        			# run production
-        			EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
-        			echo "running replica ti"
-        			mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
-			else
-                                # run production
-                                EXE=\\\${AMBERHOME}/bin/pmemd.cuda_SPFP.MPI
-                                echo "running replica ti"
-                                mpirun -np \\\${#lams[@]} \\\${EXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile
+         mkdir -p "\\\${vacdir}"
 
-        			#LAUNCH="srun --exclusive -N 1 -n 1 -c 1 --gres=gpu:1"
-        			#EXE=\\\${AMBERHOME}/bin/pmemd.cuda
-				#for lam in \\\${lams[@]};do
-				#		\\\${LAUNCH} \\\${EXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 &
-				#done
-				#wait
-			fi
-		cd ../
-	done
-	wait
+      fi
+
+   done
+
+   for lam in \\\${lams[@]};do
+
+      echo "Running ./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init"
+
+      ./extract.py -p unisc.parm7 -c t\\\${trial}/\\\${lam}_preTI.rst7 -m '!:WAT,Na+,K+,Cl-' -o ../vac/t\\\${trial}/\\\${lam}_init
+
+      sed -e 's/nstlim.*/nstlim          = 500000/g' -e 's/restraint_wt.*/restraint_wt    = 0/g' -e 's/nmropt.*/nmropt          = 0/g' -e '59,65d' -e "s/clambda.*/clambda         = \\\${lam}/g" -e 's/irest.*/irest           = 0/g' -e 's/ntx.*/ntx             = 1/g' inputs/0.00000000_eqA.mdin > ../vac/inputs/\\\${lam}_preTI.mdin
+
+      sed -e 's/ntb.*/ntb             = 1/g' -e '/barostat.*/d' -e '/ntp .*/d' -e '/pres0.*/d' -e '/taup.*/d' inputs/\\\${lam}_ti.mdin > ../vac/inputs/\\\${lam}_ti.mdin
+
+   done
+
+   cp inputs/t\\\${trial}_ti.groupfile ../vac/inputs/
+
+   echo "Changing directory to ../vac/t\\\${trial}"
+
+   cd ../vac/t\\\${trial}
+
+   mv 0.00000000_init.parm7 ../unisc.parm7
+
+   rm *.parm7
+
+   echo "Changing directory to ../ that is, the vac/ directory"
+
+   cd ../
+
+   vacdir=\\\${PWD}
+
+   stage=preTI; laststage=init
+
+   echo "Running the vac/ directory preTI stages..."
+
+   for lam in \\\${lams[@]};do
+
+      errflg=\\\$(checkifneeded t\\\${trial}/\\\${lam}_\\\${stage}.mdout t\\\${trial}/\\\${lam}_\\\${stage}.rst7)
+
+      if [ "\\\${errflg}" == "1" ]; then
+
+         cmd="\\\${SEREXE} -O -p unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7"
+
+         echo "Running \\\${cmd}"
+
+         \\\${SERLAUNCH} \\\${cmd} &
+
+      fi
+
+   done
+
+   wait
+           
+   mdouts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
+
+   mdrsts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
+
+   errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+   if [ "\\\${errflg}" == "1" ]; then
+
+      echo "Failed to produce \\\${stage} outputs \\\${mdouts[@]} \\\${mdrsts[@]}"
+
+      exit 1
+
+   fi
+
+   boxsize=(\\\$( tail -1 t\\\${trial}/\\\${lams[0]}_init.rst7 ))
+
+   for lam in \\\${lams[@]};do
+
+      recenterrst "\\\${vacdir}/unisc.parm7" "t\\\${trial}/\\\${lam}_preTI.rst7" \\\${boxsize[0]} \\\${boxsize[1]} \\\${boxsize[2]} \\\${boxsize[3]} \\\${boxsize[4]} \\\${boxsize[5]} 
+
+   done
+
+   echo "Running the vac/ directory ti stage..."
+
+   stage=ti
+
+   mdouts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.mdout" \\\${lams[@]}))
+
+   mdrsts=(\\\$(makefnames "t\\\${trial}" "\\\${stage}.rst7" \\\${lams[@]}))
+
+   errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+   if [ "\\\${errflg}" == "1" ]; then
+
+      echo "Running stage \\\${stage} in environment vac"
+
+      cmd="\\\${MPIEXE} -rem 3 -remlog remt\\\${trial}.log -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_ti.groupfile"
+
+      \\\${MPILAUNCH} \\\${cmd}
+
+      errflg=\\\$(checkifneeded \\\${mdouts[@]} \\\${mdrsts[@]})
+
+      if [ "\\\${errflg}" == "1" ]; then
+
+         echo "Failed to produce stage \\\${stage} outputs in environment vac \\\${mdouts[@]} \\\${mdrsts[@]}"
+
+         echo "Command failed: \\\${MPILAUNCH} \\\${cmd}"
+         echo "Current directory: \\\${PWD}"
+
+         exit 1
+
+      fi
+
+   else
+
+      echo "Skipping \\\$stage in environment vac because it is finished"
+
+   fi
+
 
 done
 
 EOF
-	fi
+
+fi
+
 
 
 ####
@@ -1478,14 +1838,14 @@ for trial in \\\$(seq 1 1 ${ntrials}); do
 				for lam in \\\${endstates[@]};do
                         		echo "Running \\\$stage for lambda \\\${lam}..."
                         		\\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
-                        		cat <<EOF2 > center.in
+                        		cat <<EOFF > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
 autoimage
 trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
-EOF2
+EOFF
                         		# check if cpptraj is present
                         		if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                         		cpptraj < center.in
@@ -1503,14 +1863,14 @@ EOF2
 				\\\${LAUNCH} \\\${EXE} -ng \\\${#endstates[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 				
 				for lam in \\\${endstates[@]};do
-					cat <<EOF2 > center.in
+					cat <<EOFF > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
 autoimage
 trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
-EOF2
+EOFF
 					if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
 					cpptraj < center.in
 					sleep 1
@@ -1563,14 +1923,14 @@ EOF2
                                         \\\${EXE} -O -p \\\${top}/unisc.parm7 -c t\\\${trial}/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o t\\\${trial}/\\\${lam}_\\\${stage}.mdout -r t\\\${trial}/\\\${lam}_\\\${stage}.rst7 -ref t\\\${trial}/\\\${lam}_\\\${laststage}.rst7
                                         sleep 1
 
-                                        cat <<EOF2 > center.in
+                                        cat <<EOFF > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
 autoimage
 trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
-EOF2
+EOFF
                                         # check if cpptraj is present
                                         if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                                         cpptraj < center.in
@@ -1589,14 +1949,14 @@ EOF2
                         \\\${LAUNCH} \\\${EXE} -ng \\\${#lams[@]} -groupfile inputs/t\\\${trial}_\\\${stage}.groupfile
 
                         for lam in \\\${lams[@]};do
-                                cat <<EOF2 > center.in
+                                cat <<EOFF > center.in
 parm \\\${top}/unisc.parm7
 trajin t\\\${trial}/\\\${lam}_\\\${stage}.rst7
 autoimage
 trajout t\\\${trial}/\\\${lam}_\\\${stage}_centered.rst7
 go
 quit
-EOF2
+EOFF
                                 if ! command -v cpptraj &> /dev/null; then echo "cpptraj is missing." && exit 0; fi
                                 cpptraj < center.in
                                 sleep 1

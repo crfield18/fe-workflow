@@ -17,7 +17,7 @@ def s2(x):
     """
     return 6*x**5 -15*x**4 +10*x**3
 
-def inverse_s2_interpolation(y_values, x_min=0, x_max=1, kind='cubic'):
+def inverse_s2_interpolation_old(y_values, x_min=0, x_max=1, kind='cubic'):
     """ Calculate the inverse of the second order smoothstep function using interpolation.
     
     Parameters
@@ -43,6 +43,52 @@ def inverse_s2_interpolation(y_values, x_min=0, x_max=1, kind='cubic'):
     # Calculate inverse values using interpolation
     return f_inverse(y_values)
 
+
+def get_ssc2_schedule(N,digits=8):
+    """ Calculate the second order smoothstep schedule, given the schedule size.
+
+    For more info, see the function CptSSCSched in
+    FE-ToolKit/fetkutils/src/python/lib/fetkutils/tischedule.py
+
+    Parameters
+    ----------
+    n : int
+        The schedule size
+
+    Returns
+    -------
+    array_like
+        The lambda schedule
+
+    """
+    import numpy as np
+    x = np.linspace(0,1,N)
+    lams = [0.]
+    for i in range(1,N-1):
+        #
+        # Shift the SSC(2) polynomial down by -i/(N-1) and then
+        # find the polynomial root. The root of the shifted
+        # polynomial is the x-value that corresponds to y=-i/(N-1)
+        #
+        a = np.array([ 6., -15., 10., 0., 0., -x[i] ])
+        r = np.roots(a)
+        for j in range(len(r)):
+            if (np.iscomplex(r[j]) == 0) & ((r[j] in lams) == 0):
+                val = np.real(r[j])
+                if val >= 0 and val <= 1:
+                    lams.append(val)
+        lams[i] = round(lams[i],digits)
+    lams.append(1.)
+    lams = np.array(lams)
+    lams.sort()
+    lams[0] = 0.
+    lams[-1] = 1.
+    if len(lams) != N:
+        raise Exception(f"Failed to obtain a {N}-point schedule."+
+                        f" Produced {len(lams)} values")
+    return lams
+
+
 def Predict_Lambda(nlambda):
     """ Predict lambda values using the second order smoothstep function.
     
@@ -57,15 +103,16 @@ def Predict_Lambda(nlambda):
         The predicted lambda values.
 
     """
-    xnew = np.linspace(0,1, nlambda)
-    lams = inverse_s2_interpolation(xnew)
+    #xnew = np.linspace(0,1, nlambda)
+    #lams = inverse_s2_interpolation(xnew)
+    lams = get_ssc2_schedule(nlambda)
     return lams
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Predict lambda values')
-    parser.add_argument('--nlambda', type=int, help='Number of lambda values')
-    parser.add_argument('--output', type=str, help='Output file')
+    parser.add_argument('--nlambda', '-n', type=int, help='Number of lambda values',default=12)
+    parser.add_argument('--output', '-o', type=str, help='Output file')
     args = parser.parse_args()
 
     # Prints output to the screen
