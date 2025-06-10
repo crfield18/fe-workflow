@@ -44,7 +44,11 @@ if [ "${ticalc}" != "asfe" ]; then
                         	parmutils-scmapper.py --graph map-network -t ${mapmethod} >> output 2>&1
 
 
-
+							# Check if any *.map.txt files were generated
+							if ! ls *.map.txt 1> /dev/null 2>&1; then
+									printf "\n\nError: No *.map.txt files were generated. Exiting...\n\n"
+									exit 1
+							fi
 
                         	for map in *map.txt; do
                                 	mv -f ${map} $(echo ${map}|awk -F "_0"  '{print $1$2$3}')

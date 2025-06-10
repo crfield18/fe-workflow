@@ -310,6 +310,8 @@ def MutateMap(mol2file1,mol2file2):
         mol1 = parmed.load_file(mol2file1,structure=False)
     elif isinstance(mol2file1,parmed.modeller.residue.ResidueTemplate):
         mol1 = copy.deepcopy(mol2file1)
+    else:
+        raise TypeError("mol2file1 must be a string or a parmed residue template")
 
         
     for a in mol1.atoms:
@@ -321,13 +323,14 @@ def MutateMap(mol2file1,mol2file2):
     mol1.save(mol2str_1,format="MOL2")
     mol2str_1 = mol2str_1.getvalue()
 
-    
+    print(mol2file2)
     if isinstance(mol2file2,str):
         mol2 = parmed.load_file(mol2file2,structure=False)
     elif isinstance(mol2file2,parmed.modeller.residue.ResidueTemplate):
-    #else:
         mol2 = copy.deepcopy(mol2file2)
-    
+    else:
+        raise Exception("mol2file2 must be a string or a parmed residue template")
+    print(mol2)
     for a in mol2.atoms:
         for elem,num in parmed.periodic_table.AtomicNum.items():
             if num == a.atomic_number:
