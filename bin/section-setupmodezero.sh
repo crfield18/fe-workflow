@@ -827,6 +827,7 @@ EOF
         printf "loadamberparams ${AFTER_TILDE}_0.frcmod\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
         printf "loadoff ${AFTER_TILDE}_0.lib\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
 
+
         # assign MD box
         if [ "${mdboxshape}" == "cubic" ]; then
                 boxcmd="solvateBox"
@@ -1010,6 +1011,7 @@ EOF
 
         # check and load non-standard residue parameter files
         #i=0
+        echo "numnonstd: ${numnonstd}"
 #	numnonstd=$(($numnonstd+0))
 #        while [ "$i" -lt "${numnonstd}" ]; do
 #                printf "loadamberparams ${lig1}_${i}.frcmod\n" >> tleap.in
@@ -1025,6 +1027,20 @@ EOF
         printf "loadoff ${BEFORE_TILDE}_0.lib\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
         printf "loadamberparams ${AFTER_TILDE}_0.frcmod\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
         printf "loadoff ${AFTER_TILDE}_0.lib\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+
+        for f in *_*.frcmod; do
+                # skip if the file is only _0.frcmod
+                if [[ "$f" =~ _0\.frcmod$ ]] || [[ "$f" =~ _0\.lib$ ]]; then
+                        continue
+                fi
+                if [[ "$f" =~ _[0-9]+\.frcmod$ ]] && [ -f "$f" ]; then
+                        libfile="${f%.frcmod}.lib"
+                        printf "loadamberparams %s\n" "$f" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                        if [ -f "$libfile" ]; then
+                                printf "loadoff %s\n" "$libfile" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                        fi
+                fi
+        done
 
         # assign MD box
         if [ "${mdboxshape}" == "cubic" ]; then
