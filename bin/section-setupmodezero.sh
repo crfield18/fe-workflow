@@ -1020,10 +1020,10 @@ EOF
                 printf "loadoff opcbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 boxkey="OPCBOX"
         elif [ "${wm}" == "opcjc" ]; then
-                printf "source leaprc.water.opc\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
-                printf "loadamberparams frcmod.opc\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
-                printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
-                printf "loadoff opcbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "source leaprc.water.opc\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadamberparams frcmod.opc\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadoff opcbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 boxkey="OPCBOX"
         fi
 
