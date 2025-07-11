@@ -152,6 +152,12 @@ function write_tleap_merged {
                 printf "loadamberparams frcmod.ionslm_hfe_opc\n" >> tleap.in
                 printf "loadoff opcbox.off\n" >> tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "opcjc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
+                printf "loadoff opcbox.off\n" >> tleap.in
+                boxkey="OPCBOX"
         fi
 
         # check and load non-standard residue parameter files
@@ -276,7 +282,14 @@ function write_tleap_merged_head {
                 printf "loadamberparams frcmod.ionslm_hfe_opc\n" >> tleap.in
                 printf "loadoff opcbox.off\n" >> tleap.in
                 boxkey="OPCBOX"
-        fi
+        elif [ "${wm}" == "opcjc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
+                printf "loadoff opcbox.off\n" >> tleap.in
+                boxkey="OPCBOX"
+        fi      
+        
 
         # check and load non-standard residue parameter files
         i=0
@@ -371,16 +384,19 @@ EOF
                 # Get list of residue numbers between ldel and fdel (inclusive)
                 res_list=($(seq ${ldel} -1 ${fdel}))
                 # Shuffle the list and pick 'excess' number of residues
-                res_to_remove=($(shuf -n ${excess} -e "${res_list[@]}"))
-                IFS=$'\n' res_to_remove=($(printf "%s\n" "${res_to_remove[@]}" | sort -nr))
-                echo "${#res_to_remove[@]} residues to remove: ${res_to_remove[@]}"
+                if [ ${excess} -gt 0 ]; then
+                        echo "Removing ${excess} residues from the box."
+                
+                        res_to_remove=($(shuf -n ${excess} -e "${res_list[@]}"))
+                        IFS=$'\n' res_to_remove=($(printf "%s\n" "${res_to_remove[@]}" | sort -nr))
+                        echo "${#res_to_remove[@]} residues to remove."
                
-                for res in "${res_to_remove[@]}"; do
-                        echo "remove m m.${res}" >> tleap.in
-                done
-        	#for res in $(seq ${ldel} -1 ${fdel}); do
-            	#	echo "remove m m.${res}" >> tleap.in
-        	#done
+                        for res in "${res_to_remove[@]}"; do
+                                echo "remove m m.${res}" >> tleap.in
+                        done
+                else
+                        echo "No residues to remove."
+                fi
 
     	fi
 	unset fdel ; unset ldel ; unset excess
@@ -495,6 +511,12 @@ function write_tleap_asfe {
                 printf "source leaprc.water.opc\n" >> tleap.in
                 printf "loadamberparams frcmod.opc\n" >> tleap.in
                 boxkey="OPCBOX" 
+        elif [ "${wm}" == "opcjc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
+                printf "loadoff opcbox.off\n" >> tleap.in
+                boxkey="OPCBOX"
         fi
 
         # Adds the counter ions for systems with nucleic acids
@@ -593,6 +615,12 @@ function write_tleap_head_asfe {
                 printf "source leaprc.water.opc\n" >> tleap.in
                 printf "loadamberparams frcmod.opc\n" >> tleap.in
                 printf "loadamberparams frcmod.ionslm_hfe_opc\n" >> tleap.in
+                printf "loadoff opcbox.off\n" >> tleap.in
+                boxkey="OPCBOX"
+        elif [ "${wm}" == "opcjc" ]; then
+                printf "source leaprc.water.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.opc\n" >> tleap.in
+                printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
                 printf "loadoff opcbox.off\n" >> tleap.in
                 boxkey="OPCBOX"
         fi
