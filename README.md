@@ -1,7 +1,5 @@
 # FE-Workflow
 
-The AMBER Drug Discovery Boost package
-
 This free energy workflow package provides a collection of programs that simplify the setup and analysis of alchemical free energy simulations such as relative binding free energy (RBFE), relative solvation free energy (RSFE), and absolute solvation free energy (ASFE) to be run with Amber24.
 
 Some introductory information and examples are available in the links below.

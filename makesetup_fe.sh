@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 #  This script helps prepare the executable setup_fe
-#  It is recommended that all three repositories of the AMBER DD Boost package
-# FE-MDEngine, FE-ToolKit, and FE-Workflow 
-# are placed in a single folder, for example GitLab
 #
 #  For additional help reach out 
 #  to abir.ganguly@rutgers.edu 
