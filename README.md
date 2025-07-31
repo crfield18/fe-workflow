@@ -13,6 +13,20 @@ Some introductory information and examples are available in the links below.
  - AmberTools.
  - [FE-ToolKit](https://gitlab.com/RutgersLBSR/fe-toolkit).
 
+## Installation
+
+AMBER should be installed and `AMBERHOME` defined. AmberTools' `cpptraj`, `parmed`, `edgembar`, and `fetkutils` are used by `FE-Workflow`.
+`bin/` subdirectories within `FE-Workflow` should be in the `$PATH`.
+
+The `setup_fe` script represents the main executable of `FE-Workflow`, and can be created by running the script `makesetup_fe.sh` located in the `FE-Workflow` repository.
+`makesetup_fe.sh` will also write a `setup_directives` file with 3 paths: `MDEngine` (your `$AMBERHOME`) `ToolKit` (`$AMBERHOME`/bin) and `Workflow` (the `FE-Workflow` path), and the `FE-Workflow.bashrc` file that should be sourced before executing `setup_fe`.
+
+
+In the default setup, `setup_fe` is meant to be kept in the `FE-Workflow/bin` directory and, since `FE-Workflow/bin` is added to the `$PATH` variable, `setup_fe` should be available as a command line program.
+In most cases, this should be the most convenient way of using `setup_fe`. However, if needed, the location of `setup_fe` can be changed by changing the `$PATH` variable in `setup_fe` accordingly.
+
+
+
 ## References:
 
 1. Tai-Sung Lee, Hsu-Chun Tsai, Abir Ganguly, Timothy J. Giese, and Darrin M. York. Robust, Efficient
