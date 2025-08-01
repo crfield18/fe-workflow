@@ -17,7 +17,7 @@ for i in "${translist[@]}";do
 					path_out=results/data/${i}/${s}/${trial}
 					path_data=${path_to_data}/${i}/${s}/t${trial}
 					if [ -d "${path_data}" ]; then 
-						${pathTOFEToolKit}/edgembar/src/python/bin/edgembar-amber2dats.py -o ${path_out} $(ls ${path_data}/*ti.mdout)
+						edgembar-amber2dats.py -o ${path_out} $(ls ${path_data}/*ti.mdout)
 					fi
 				done
 			else
@@ -32,7 +32,7 @@ for i in "${translist[@]}";do
 					path_out=results/data/${i}/${s}tmp/${trial}
 					path_data=${path_to_data}/${i}/${s}/reverse/t${trial}
 					if [ -d "${path_data}" ]; then
-						${pathTOFEToolKit}/edgembar/src/python/bin/edgembar-amber2dats.py -o ${path_out} $(ls ${path_data}/*ti.mdout)
+						edgembar-amber2dats.py -o ${path_out} $(ls ${path_data}/*ti.mdout)
 					fi
 				done
 				for trial in $(seq 1 1 ${ntrials});do
