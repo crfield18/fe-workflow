@@ -13,6 +13,7 @@ Some introductory information and examples are available in the links below.
  - AmberTools.
  - [FE-ToolKit](https://gitlab.com/RutgersLBSR/fe-toolkit).
 
+<<<<<<< Updated upstream
 ## Installation
 
 AMBER should be installed and `AMBERHOME` defined. AmberTools' `cpptraj`, `parmed`, `edgembar`, and `fetkutils` are used by `FE-Workflow`.
@@ -25,6 +26,35 @@ The `setup_fe` script represents the main executable of `FE-Workflow`, and can b
 In the default setup, `setup_fe` is meant to be kept in the `FE-Workflow/bin` directory and, since `FE-Workflow/bin` is added to the `$PATH` variable, `setup_fe` should be available as a command line program.
 In most cases, this should be the most convenient way of using `setup_fe`. However, if needed, the location of `setup_fe` can be changed by changing the `$PATH` variable in `setup_fe` accordingly.
 
+=======
+### Additional notes
+
+If you have both `ambertools` and a standalone version of `fe-toolkit` installed (from source or pip), you must ensure the amber is not overriding your standalone installation. This conflict can prevent FE-Workflow from finding the correct fe-toolkit version.
+
+If you're on linux, you can add this to your `.bashrc`:
+
+#### if you installed `fe-toolkit` from source
+
+```
+export BACKUP_PATH=$PATH
+export BACKUP_PYTHONPATH=${PYTHONPATH}
+source <amber installation path>/amber.sh
+export PATH=$BACKUP_PATH:$PATH
+export PYTHONPATH=${BACKUP_PYTHONPATH}:$PYTHONPATH
+export PATH=$PATH:<FE-Workflow path>/bin
+```
+
+This will effectively put the amber binaries and python libraries at the end of each path.
+
+#### if you installed `fe-toolkit` through pip
+
+```
+source <amber installation path>/amber.sh
+export PATH=<fe-toolkit installation path>/local/bin:$PATH
+export PYTHONPATH=<fe-toolkit installation path>/local/lib/python3.11/site-packages:${PYTHONPATH}
+export PATH=$PATH:<FE-Workflow path>/bin
+```
+>>>>>>> Stashed changes
 
 
 ## References:
