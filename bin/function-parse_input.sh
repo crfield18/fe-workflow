@@ -455,11 +455,24 @@ EOFN
 
 	# analysis keywords
 	if [ "${stage}" == "analysis" ]; then
-                if [ ! -d ${pathTOFEToolKit}/local/bin ]; then
-                        printf "%s\n\n" "!!! ERROR !!!"
-                        printf "%s\n" "${pathTOFEToolKit}/local/bin is missing. The location of \"\${pathTOFEToolKit}\" may not be correct. Exiting analysis."
-                        exit 0
-                fi
+		fetoolkit_binaries=(
+		    "edgembar"
+		    "edgembar-amber2dats.py"
+		    "edgembar-WriteGraphHtml.py"
+		)
+		all_found=true
+		for binary in "${fetoolkit_binaries[@]}"; do
+		    if command -v "$binary" &>/dev/null; then
+		        echo "✅ Found '$binary' in the PATH."
+		    else
+		        echo "❌ Error: '$binary' is not installed or not in the PATH. Add fe-toolkit binaries to the PATH." >&2
+		        all_found=false
+		    fi
+		done
+		if ! $all_found; then
+		    echo "One or more required binaries were not found. Exiting." >&2
+		    exit 1
+		fi
 		if [ ! -d "${path_to_data}" ]; then 
 			printf "\n\n!!!! ERROR !!!!\n\n"
 			printf "\n\n!!!! ${path_to_data} does not exist \n\n"
