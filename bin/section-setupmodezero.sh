@@ -649,6 +649,12 @@ EOF
                 printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "loadoff opcbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "spce" ]; then
+                printf "source leaprc.water.spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.ions234lm_1264_spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                boxkey="SPCBOX"
         fi
 
 
@@ -819,6 +825,12 @@ EOF
                 printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 printf "loadoff opcbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "spce" ]; then
+                printf "source leaprc.water.spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                printf "loadamberparams frcmod.ions234lm_1264_spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_aq_tleap.in
+                boxkey="SPCBOX"
         fi
 
         # check and load non-standard residue parameter files
@@ -1025,6 +1037,12 @@ EOF
                 printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 printf "loadoff opcbox.off\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "spce" ]; then
+                printf "source leaprc.water.spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadamberparams frcmod.spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                printf "loadamberparams frcmod.ions234lm_1264_spce\n" >> fix_box_${BEFORE_TILDE}~${AFTER_TILDE}-${num}_com_tleap.in
+                boxkey="SPCBOX"
         fi
 
         # check and load non-standard residue parameter files

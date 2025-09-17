@@ -158,6 +158,12 @@ function write_tleap_merged {
                 printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
                 printf "loadoff opcbox.off\n" >> tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "spce" ]; then
+                printf "source leaprc.water.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ions234lm_1264_spce\n" >> tleap.in
+                boxkey="SPCBOX"
         fi
 
         # check and load non-standard residue parameter files
@@ -288,6 +294,12 @@ function write_tleap_merged_head {
                 printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
                 printf "loadoff opcbox.off\n" >> tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "spce" ]; then
+                printf "source leaprc.water.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ions234lm_1264_spce\n" >> tleap.in
+                boxkey="SPCBOX"
         fi      
         
 
@@ -517,6 +529,12 @@ function write_tleap_asfe {
                 printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
                 printf "loadoff opcbox.off\n" >> tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "spce" ]; then
+                printf "source leaprc.water.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ions234lm_1264_spce\n" >> tleap.in
+                boxkey="SPCBOX"
         fi
 
         # Adds the counter ions for systems with nucleic acids
@@ -623,6 +641,12 @@ function write_tleap_head_asfe {
                 printf "loadamberparams frcmod.ionsjc_tip4pew\n" >> tleap.in
                 printf "loadoff opcbox.off\n" >> tleap.in
                 boxkey="OPCBOX"
+        elif [ "${wm}" == "spce" ]; then
+                printf "source leaprc.water.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ionslm_hfe_spce\n" >> tleap.in
+                printf "loadamberparams frcmod.ions234lm_1264_spce\n" >> tleap.in
+                boxkey="SPCBOX"
         fi
 
 
