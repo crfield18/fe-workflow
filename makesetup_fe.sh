@@ -41,7 +41,7 @@ function read_input {
 # MAIN
 
 #check if required python packages are installed and install each if not
-python_packages=(simtk numpy scipy pdb4amber parmed rdkit)
+python_packages=(simtk numpy scipy pdb4amber parmed rdkit netCDF4 pyyaml)
 echo 'checking required python packages...'
 echo 'will install missing packages with pip'
 for pp in ${python_packages[@]};do
