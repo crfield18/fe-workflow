@@ -1,5 +1,6 @@
 # FE-Workflow
 
+[!NOTE]
 This is a forked copy of the original [GitLab repo](https://gitlab.com/RutgersLBSR/FE-Workflow) by [@pgbarletta](https://github.com/pgbarletta)!
 
 This free energy workflow package provides a collection of programs that simplify the setup and analysis of alchemical free energy simulations such as relative binding free energy (RBFE), relative solvation free energy (RSFE), and absolute solvation free energy (ASFE) to be run with Amber24.
@@ -9,13 +10,12 @@ Some introductory information and examples are available in the links below.
  - [Setting up alchemical free energy simulations](https://ambertutorials-rutgerslbsr-c744272d5a9c1169e0dc9e19b8d800019105.gitlab.io/workshop/05_afeSims/03_asfe.html)
  - [Analyzing alchemical free energy simulations](https://ambertutorials-rutgerslbsr-c744272d5a9c1169e0dc9e19b8d800019105.gitlab.io/workshop/05_afeSims/04_rbfe.html)
 
-
 ## Requirements:
 
- - AmberTools.
- - [FE-ToolKit](https://gitlab.com/RutgersLBSR/fe-toolkit).
+ - [AmberTools](https://ambermd.org/AmberTools.php)
+ - [FE-ToolKit](https://gitlab.com/RutgersLBSR/fe-toolkit)
 
-## Installation
+## Installation:
 
 AMBER should be installed and `AMBERHOME` defined. AmberTools' `cpptraj`, `parmed`, `edgembar`, and `fetkutils` are used by `FE-Workflow`.
 `bin/` subdirectories within `FE-Workflow` should be in the `$PATH`.
