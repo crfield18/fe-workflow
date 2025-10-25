@@ -1,7 +1,7 @@
 # FE-Workflow
 
-[!NOTE]
-This is a forked copy of the original [GitLab repo](https://gitlab.com/RutgersLBSR/FE-Workflow) by [@pgbarletta](https://github.com/pgbarletta)!
+> [!NOTE]
+> This is a forked copy of the original [GitLab repo](https://gitlab.com/RutgersLBSR/FE-Workflow) by [@pgbarletta](https://github.com/pgbarletta)!
 
 This free energy workflow package provides a collection of programs that simplify the setup and analysis of alchemical free energy simulations such as relative binding free energy (RBFE), relative solvation free energy (RSFE), and absolute solvation free energy (ASFE) to be run with Amber24.
 
