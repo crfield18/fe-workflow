@@ -2115,13 +2115,13 @@ source ${source_header}
 
 #if [ -z "\\\${AMBERHOME}" ]; then echo "AMBERHOME is not set" && exit 0; fi
 
-### CUDA MPS # BEGIN ###
-temp_path=/tmp/temp_${jobname_prefix}_${trans}
-mkdir -p \\\${temp_path}
-export CUDA_MPS_PIPE_DIRECTORY=\\\${temp_path}/nvidia-mps
-export CUDA_MPS_LOG_DIRECTORY=\\\${temp_path}/nvidia-log
-nvidia-cuda-mps-control -d
-### CUDA MPS # END ###
+# ### CUDA MPS # BEGIN ###
+# temp_path=/tmp/temp_${jobname_prefix}_${trans}
+# mkdir -p \\\${temp_path}
+# export CUDA_MPS_PIPE_DIRECTORY=\\\${temp_path}/nvidia-mps
+# export CUDA_MPS_LOG_DIRECTORY=\\\${temp_path}/nvidia-log
+# nvidia-cuda-mps-control -d
+# ### CUDA MPS # END ###
 
 
 
@@ -2231,7 +2231,7 @@ EOF2
 				sleep 1
 
 				laststage=eqpre1P0TI; stage=eqpre2P0TI
-				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil${laststage}.rst7"
+				echo "\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7"
 				\\\${EXE} -O -p \\\${top}/unisc.parm7 -c equil/\\\${lam}_\\\${laststage}.rst7 -i inputs/\\\${lam}_\\\${stage}.mdin -o equil/\\\${lam}_\\\${stage}.mdout -r equil/\\\${lam}_\\\${stage}.rst7 -ref equil/\\\${lam}_\\\${laststage}.rst7
 				sleep 1
 
@@ -2305,9 +2305,9 @@ done
 
 
 
-### CUDA MPS # BEGIN ###
-echo quit | nvidia-cuda-mps-control
-### CUDA MPS # END ###
+# ### CUDA MPS # BEGIN ###
+# echo quit | nvidia-cuda-mps-control
+# ### CUDA MPS # END ###
 
 echo "--- DONE ---"
 
